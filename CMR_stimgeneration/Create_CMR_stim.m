@@ -20,143 +20,197 @@
 
 clear all; close all; clc
 
+%% Parameters
+f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
+Q10 = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and Heinz 2010)
+% BWnoise_Hz=f_hz/Q10; 
+
+%%%%%%%%%%%%%%%%%%% 
+% pick chin or human
+%%%%%%%%%%%%%%%%%%%
+% BWnoise_Hz=1000;  % chin approx to make it easy for now
+BWnoise_Hz=600;  % human approx to make it easy for now (4000 * 0.15)
+
+%%%%%%%%%%%%%%%%%%% 
+% Adjust to find threshold
+%%%%%%%%%%%%%%%%%%%
+level_tone_dBSPL = 45
+No_SPL_Hz=30;  % Noise Spectrum level
+dur_noise_sec=500/1000;
+delay_tone_sec=0.1*dur_noise_sec;
+rft_sec=10/1000;
+fmod_Hz = 10;   % SAM modulation for noises
+
 %% Read in previously calibrated stim, and confirm TDT Fs sampling rate (Fs)
-calib_fname='4kHz80dBT_999dBAM_NN.wav';
-calib_dBSPL=80; % This tone was calibrated at one point to be 80 dB SPL
-cd('orig_signals\')
-[calibtone,Fs] = audioread(calib_fname);
-calib_rms_80dBtone = rms(calibtone);   % 0.0196 Same for both!
-a
-calib_rms_80dBtone=0.02;
+% see confirm_old_calib (based on tone we know was calibrated at one point
+% to be 70 dB SPL) 
+[calib_dBSPL,calib_70dBtone_rms,Fs_Hz] = confirm_old_calib;  % 70 dB SPL tone is rms of 0.02.
+levels_tone_dBSPL = 40:3:70;
 
-cd('../')
-
-%% Compute duration, confirm the same, and make silence of same duration for playback.
-dur_std_sec = length(std)/Fs;   % 
-dur_sig_sec = length(sig)/Fs;   % 
-if dur_std_sec ~= dur_sig_sec
-    error('mismatching duration')
-else
-    dur_sec=dur_sig_sec;
-    clear dur_sig_sec dur_std_sec
+%% Compute center frequencies of all noise bands
+f_LSB_Hz = f_Hz - 3*BWnoise_Hz;  % center frequency of lower-side-band (LSB) (creates 2 BWgap between OFB lower edge and LSB upper edge)
+f_USB_Hz = f_Hz + 3*BWnoise_Hz;  % center frequency of upper-side-band (USB) (creates 2 BWgap between OFB upper edge and USB lower edge)
+if (f_LSB_Hz-0.5*BWnoise_Hz <= 0) % confirm there is room for LSB
+    error('lower side band is below 0Hz');
 end
-silence = zeros(size(sig));
-timevec_sec = (1:length(sig))/Fs;
-freqvec_Hz = (0:(length(sig)-1))*Fs/length(sig);
-
-%% Compute amplitudes, confirm similar
-max_std = max(abs(std));   % ~0.05 Good!! headroom
-max_sig = max(abs(sig));
-rms_std = rms(std);   % 0.0196 Same for both!
-rms_sig = rms(sig);
-if abs(max_std-max_sig) > 0.25*mean([max_std max_sig])
-    error('mismatching max - more than 25% diff')
-end
-if abs(rms_std-rms_sig) > 0.01*mean([rms_std rms_sig])
-    error('mismatching rms - more than 1% diff')
+if (f_USB_Hz+0.5*BWnoise_Hz >= Fs_Hz/2) % confirm there is room for USB
+    error('upper side band is above Fs/2 Hz');
 end
 
-%% Plot original sounds 
+%% Compute length of relevant signals
+len_tone = round((dur_noise_sec - delay_tone_sec)*Fs_Hz);   % length of tone
+len_noise = round(dur_noise_sec*Fs_Hz);   
+len_delay = len_noise - len_tone;   % silence before tone 
+
+%% Make signals
+timevec_sec = (0:(len_noise-1))/Fs_Hz;
+freqvec_Hz = (0:(len_noise-1))*Fs_Hz/len_noise;   
+% Tone
+silence = zeros(1,len_delay);  % Delay for tone
+tone = sin(2*pi*f_Hz*timevec_sec(1:len_tone));
+%% Make noise bands
+% Filter design (LPF at BW/2)
+Rp  = 0.00057565; % Corresponds to 0.01 dB peak-to-peak ripple
+Rst = 1e-4;       % Corresponds to 80 dB stopband attenuation
+TW_Hz=100;  % Transition Width = 100 Hz
+b = firgr('minorder',[0,((BWnoise_Hz)/2/(Fs_Hz/2)),((BWnoise_Hz/2+TW_Hz)/(Fs_Hz/2)),1],[1 1 0 0],...
+    [Rp Rst]);
+% fvt = fvtool(b,1,'Fs',Fs_Hz,'Color','White');
+
+% start with BBnoise, 
+noise_BB = randn(1,2*len_noise);
+% create LPnoise,
+temp_noise=filter(b,1,noise_BB);  % Apply filter to BB noise (twice length to avoid endpt issues)
+noise_LPF=temp_noise(2*length(b):(len_noise+2*length(b)-1));  % proper length LPnoise by taking from middle
+% modulate up to 3 CFs
+noise_OFB = noise_LPF.*sin(2*pi*f_Hz*timevec_sec);
+noise_LSB = noise_LPF.*sin(2*pi*f_LSB_Hz*timevec_sec);
+noise_USB = noise_LPF.*sin(2*pi*f_USB_Hz*timevec_sec);
+
+%% Modulate all noise bands
+noise_OFB = noise_OFB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+noise_LSB_UCORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
+noise_USB_UCORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
+
+%% Calibration
+rms_tone_new = calib_70dBtone_rms * 10^((level_tone_dBSPL-calib_dBSPL)/20);
+tone = tone/rms(tone)*rms_tone_new;
+
+rms_noise_new = calib_70dBtone_rms * 10^((No_SPL_Hz+10*log10(BWnoise_Hz)-calib_dBSPL)/20);
+noise_OFB= noise_OFB/rms(noise_OFB)*rms_noise_new;
+noise_LSB_CORR= noise_LSB_CORR/rms(noise_LSB_CORR)*rms_noise_new;
+noise_USB_CORR= noise_USB_CORR/rms(noise_USB_CORR)*rms_noise_new;
+noise_LSB_UCORR= noise_LSB_UCORR/rms(noise_LSB_UCORR)*rms_noise_new;
+noise_USB_UCORR= noise_USB_UCORR/rms(noise_USB_UCORR)*rms_noise_new;
+
+
+%% Apply ramps to each signals
+tone_rft=linear_window_waveform(tone,Fs_Hz,rft_sec);  % apply window to tone signal
+noise_OFB_rft=linear_window_waveform(noise_OFB,Fs_Hz,rft_sec);  % apply window to noise band
+noise_LSB_CORR_rft=linear_window_waveform(noise_LSB_CORR,Fs_Hz,rft_sec);  % apply window to CORR noise band
+noise_USB_CORR_rft=linear_window_waveform(noise_USB_CORR,Fs_Hz,rft_sec);  % apply window to CORR noise band
+noise_LSB_UCORR_rft=linear_window_waveform(noise_LSB_UCORR,Fs_Hz,rft_sec);  % apply window to UCORR noise band
+noise_USB_UCORR_rft=linear_window_waveform(noise_USB_UCORR,Fs_Hz,rft_sec);  % apply window to UCORR noise band
+
+%% Create complete signals
+signal_REF = [silence tone_rft] + noise_OFB_rft;
+standard_REF = noise_OFB_rft;
+signal_CORR = [silence tone_rft] + noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
+standard_CORR = noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
+signal_UCORR = [silence tone_rft] + noise_OFB_rft + noise_LSB_UCORR_rft + noise_USB_UCORR_rft;
+standard_UCORR = noise_OFB_rft + noise_LSB_UCORR_rft + noise_USB_UCORR_rft;
+
+%% Save files
+% eventtually we'll need to put in some parameter values for all the signal
+% levels
+% sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+% stdSNR_fname=sprintf('%s%s.wav',std_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+std_REF_fname = 'CMR1_REF_std.wav';  % test condition1
+sig_REF_fname = 'CMR1_REF_sig.wav'; 
+std_CORR_fname = 'CMR1_CORR_std.wav';  % test condition1
+sig_CORR_fname = 'CMR1_CORR_sig.wav'; 
+std_UCORR_fname = 'CMR1_UCORR_std.wav';  % test condition1
+sig_UCORR_fname = 'CMR1_UCORR_sig.wav'; 
+
+
+audiowrite(std_REF_fname,standard_REF,Fs_Hz)
+audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
+audiowrite(std_CORR_fname,standard_CORR,Fs_Hz)
+audiowrite(sig_CORR_fname,signal_CORR,Fs_Hz)
+audiowrite(std_UCORR_fname,standard_UCORR,Fs_Hz)
+audiowrite(sig_UCORR_fname,signal_UCORR,Fs_Hz)
+
+
+
+%% Plot and listen to REF stimuli
 figure(1); clf
 subplot(211)
-plot(timevec_sec*1000,std,'r'); hold on; plot(timevec_sec*1000,sig,'b'); hold off
-xlim([0 250])
+plot(timevec_sec*1000,signal_REF,'r'); hold on; plot(timevec_sec*1000,standard_REF,'b'); hold off
+YLIMITS=ylim;
+YLIMITS = 2.5*max(abs(YLIMITS))*[-1 1];
+ylim(YLIMITS)
+xlim([0 dur_noise_sec*1000])
 ylabel('Amp')
 xlabel('Time (msec)')
-title(sprintf('STD: %s;    \nSIG: %s',std_fname,sig_fname),'interpreter','none')
+title(sprintf('REF CONDITION:   STD: %s;    \nSIG: %s',std_REF_fname,sig_REF_fname),'interpreter','none')
 subplot(212)
-plot(freqvec_Hz,20*log10(abs(fft(std))),'r'); hold on; plot(freqvec_Hz,20*log10(abs(fft(sig))),'b'); hold off
-xlim([0 Fs/2])
+plot(freqvec_Hz,20*log10(abs(fft(signal_REF))),'r'); hold on; plot(freqvec_Hz,20*log10(abs(fft(standard_REF))),'b'); hold off
+xlim([0 Fs_Hz/2])
 ylabel('Magnitude (dB)')
 xlabel('Frequency (Hz)')
 
 set(gcf,'units','norm','pos',[0.5005    0.0565    0.4990    0.8324])
 
 
-%% Play original sounds 
-disp('Playing Standard then Signal')
-sound([std silence sig],Fs)
+%% Plot and listen to CORR stimuli
+figure(2); clf
+subplot(211)
+plot(timevec_sec*1000,signal_CORR,'r'); hold on; plot(timevec_sec*1000,standard_CORR,'b'); hold off
+xlim([0 dur_noise_sec*1000])
+ylim(YLIMITS)
+ylabel('Amp')
+xlabel('Time (msec)')
+title(sprintf('CORR CONDITION:   STD: %s;    \nSIG: %s',std_CORR_fname,sig_CORR_fname),'interpreter','none')
+subplot(212)
+plot(freqvec_Hz,20*log10(abs(fft(signal_CORR))),'r'); hold on; plot(freqvec_Hz,20*log10(abs(fft(standard_CORR))),'b'); hold off
+xlim([0 Fs_Hz/2])
+ylabel('Magnitude (dB)')
+xlabel('Frequency (Hz)')
 
-input('Press Enter to Continue')
+set(gcf,'units','norm','pos',[0.5005    0.0565    0.4990    0.8324])
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Make NEW STIMULI
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-cd('new_signals\')
 
-%% Create BB (10kHz) noise to add to the original sounds
-% Filter design
-Wn=10000/(Fs/2);                 % normalized frequency re: Fs/2.
-[b,a]=butter(8,Wn,'low');        % 8th order Butterworth - Lowpass digital filter design
-% h = fvtool(b,a);                 % Visualize filter
+%% Plot and listen to UCORR stimuli
+figure(3); clf
+subplot(211)
+plot(timevec_sec*1000,signal_UCORR,'r'); hold on; plot(timevec_sec*1000,standard_UCORR,'b'); hold off
+xlim([0 dur_noise_sec*1000])
+ylim(YLIMITS)
+ylabel('Amp')
+xlabel('Time (msec)')
+title(sprintf('UCORR CONDITION:   STD: %s;    \nSIG: %s',std_UCORR_fname,sig_UCORR_fname),'interpreter','none')
+subplot(212)
+plot(freqvec_Hz,20*log10(abs(fft(signal_UCORR))),'r'); hold on; plot(freqvec_Hz,20*log10(abs(fft(standard_UCORR))),'b'); hold off
+xlim([0 Fs_Hz/2])
+ylabel('Magnitude (dB)')
+xlabel('Frequency (Hz)')
 
-%% Run through all SNRs
-for SNR_dB = 8:-2:-12;
-    SNR_fact= 10^(-SNR_dB/20);
-    % noise for standard
-    temp = randn(size(std));
-    temp2=filter(b,a,temp);  % Apply filter to limit to 10 kHz
-    std_noise = temp2/rms(temp2)*rms_std*SNR_fact;
+set(gcf,'units','norm','pos',[0.5005    0.0565    0.4990    0.8324])
 
-    % noise for signal
-    temp = randn(size(std));  
-    temp2=filter(b,a,temp);  % Apply filter to limit to 10 kHz  
-    sig_noise = temp2/rms(temp2)*rms_sig*SNR_fact;
+%% Play sounds 
 
-    %% make new STIM
-    sigIN=sig + sig_noise;
-    stdIN=std + std_noise;
+disp('Playing Standard the Signal:  REF condition then CORR then UCORR')
+soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ...
+    standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_noise) ...
+    standard_UCORR zeros(size(signal_UCORR)) signal_UCORR],Fs_Hz)
 
-    %% Compute amplitudes, confirm similar
-    rms_std_noise = rms(std_noise);   % 0.0196 Same for both!
-    rms_sig_noise = rms(sig_noise);
-    max_std_noise = max(abs(std_noise));   % ~0.15 Good!! bit of headroom
-    max_sig_noise = max(abs(sig_noise));
+input('press Enter to Hear Again (REF then CORR then UCORR)')
 
-    if abs(rms_std_noise-rms_sig_noise) > 0.25*mean([rms_std_noise rms_sig_noise])
-        error('mismatching rms(with noise) - more than 25% diff')
-    end
-    % Confirm no WAV clipping 
-    if max([max_std_noise max_std_noise]) >= 1
-        error('sig_or_std_noise has MAXamp > 1)')
-    end
-    
-    
-    %% Plot new sounds
-    figure(2); clf
-    subplot(211)
-    plot(timevec_sec*1000,stdIN,'r'); hold on; plot(timevec_sec*1000,sigIN,'b'); hold off
-    xlim([0 250])
-    ylabel('Amp')
-    xlabel('Time (msec)')
-    title(sprintf('SNR=%.fdB;  STD: %s;    \nSIG: %s',SNR_dB, std_fname,sig_fname),'interpreter','none')
-    subplot(212)
-    plot(freqvec_Hz,20*log10(abs(fft(stdIN))),'r'); hold on; plot(freqvec_Hz,20*log10(abs(fft(sigIN))),'b'); hold off
-    xlim([0 Fs/2])
-    ylabel('Magnitude (dB)')
-    xlabel('Frequency (Hz)')
-    
-    set(gcf,'units','norm','pos',[0.5005    0.0565    0.4990    0.8324])
-    
-    
-    %% Play new sounds
-    disp(sprintf('In Noise (SNR=%.fdB): Playing Standard then Signal',SNR_dB))
-    sound([stdIN silence sigIN],Fs)
+soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ...
+    standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_noise) ...
+    standard_UCORR zeros(size(signal_UCORR)) signal_UCORR],Fs_Hz)
 
-    %% Save New Stim files
-    if SNR_dB<0
-        SNRaddon_text = sprintf('_n%.fdBSNR2f',abs(SNR_dB));
-    else
-        SNRaddon_text = sprintf('_%.fdBSNR2f',abs(SNR_dB));
-    end
-    sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
-    stdSNR_fname=sprintf('%s%s.wav',std_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
-    
-    disp(sprintf('Saving\n   Std: %s\n   Sig: %s',stdSNR_fname,sigSNR_fname))
-    audiowrite(stdSNR_fname,stdIN,Fs)
-    audiowrite(sigSNR_fname,sigIN,Fs)
-            
-    input('Press Enter to Continue')
-end
 
 cd('..\')    
