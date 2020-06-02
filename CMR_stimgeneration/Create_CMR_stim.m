@@ -1,4 +1,4 @@
-% File: Create_CMR_stim
+% File: Create_CMR_stim.m
 %
 % Created: M. Heinz Jun 1 2020
 % Modified by: ??
