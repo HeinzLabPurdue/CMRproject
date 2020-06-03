@@ -1163,7 +1163,7 @@ if ~running(handles)
                 fs_TDT = 48828;
             end
         end
-        fprintf('TDT Sampling Freq = %.f Hz\n',round(fs_TDT))
+%         fprintf('TDT Sampling Freq = %.f Hz\n',round(fs_TDT))
         handles.fs_TDT=fs_TDT; % for use in declare_sound_files functions to avoid extra calls to TDT to GetSFreq
 
         replace_errors = get_replace(handles);
@@ -1505,11 +1505,11 @@ if ~running(handles)
                     atten1 = 20;
                     atten2 = 20;
                 elseif handles.stmlist(handles.stmidx(stim)).same && (nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893 || nplayfromfile==892 || nplayfromfile==890) % SAM (Catch Trial)
-                    atten1 = 10
-                    atten2 = 10
+                    atten1 = 10;
+                    atten2 = 10;
                 elseif handles.stmlist(handles.stmidx(stim)).same && nplayfromfile==891 % SAMIN (Catch Trial - 65 dB SPL)
-                    atten1 = 15
-                    atten2 = 15
+                    atten1 = 15;
+                    atten2 = 15;
                 elseif handles.stmlist(handles.stmidx(stim)).test && nplayfromfile==998 % PTA (Signal Trial)
                     atten1 = 120;
                     atten2 = attenarrayQuiet(stimcount);
@@ -1534,11 +1534,11 @@ if ~running(handles)
                     atten1 = 20;
                     atten2 = 20;
                 elseif handles.stmlist(handles.stmidx(stim)).test && (nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893 || nplayfromfile==892 || nplayfromfile==890) % SAM (Signal Trial)
-                    atten1 = 10
-                    atten2 = 10
+                    atten1 = 10;
+                    atten2 = 10;
                 elseif handles.stmlist(handles.stmidx(stim)).test && nplayfromfile==891 % SAMIN (Signal Trial - 65 dB SPL)
-                    atten1 = 15
-                    atten2 = 15
+                    atten1 = 15;
+                    atten2 = 15;
                 end
                 a1 = atten1;
                 a2 = atten2;
@@ -2130,7 +2130,7 @@ while temp_Playing
     else
         temp_Playing = 0; % end trial?
     end
-    fprintf('Waiting for Trial to END (check each %.0f ms): %d\n   ***Playing = %d\n',BarCheck_resolution_ms,bcCOUNT,temp_Playing)
+%     fprintf('Waiting for Trial to END (check each %.0f ms): %d\n   ***Playing = %d\n',BarCheck_resolution_ms,bcCOUNT,temp_Playing)
     pause(BarCheck_resolution_ms/1000)
     bcCOUNT=bcCOUNT+1;
 end
@@ -2165,7 +2165,7 @@ test_bot.ZeroTag=0;
 MAXtrys=10;
 TRYnum=1;
 while ~test_bot.ZeroTag
-    buffer
+%     buffer
     if ~handles.DEBUG_emulate
         test_bot.ZeroTag = handles.RP_bot.ZeroTag(buffer)
     else
@@ -2181,7 +2181,7 @@ while ~test_bot.ZeroTag
             pause(1)
         end        
     else
-        disp(sprintf('ZeroTag SUCCESS (ABLE to clear buffer: %s) ',buffer))
+%         disp(sprintf('ZeroTag SUCCESS (ABLE to clear buffer: %s) ',buffer))
     end
 end
 
@@ -2616,7 +2616,7 @@ while barTEMP~=0 & barTEMP~=1
         bTEMP = randperm(2)-1;
         barTEMP = bTEMP(1);
     end
-    fprintf('bar = %d\n',barTEMP);
+%     fprintf('bar = %d\n',barTEMP);
 end
 barVALUE=barTEMP;
 
@@ -2661,11 +2661,11 @@ AbortCheck_resolution_ms=200;
 bcCOUNT=0;
 while bar_pressed(handles)
     bcCOUNT=bcCOUNT+1;
-    fprintf('BarReleaseCheck %d\n',bcCOUNT)
+%     fprintf('BarReleaseCheck %d\n',bcCOUNT)
     pause(BarCheck_resolution_ms/1000)
     % Only if AbortCheck resolution has passed, check for Abort
     if bcCOUNT>=(round(AbortCheck_resolution_ms/BarCheck_resolution_ms))
-        disp('AbortCheck')
+%         disp('AbortCheck')
         if ~running(handles)  % Added pause(.1) inside running to slow downs  %MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout
             break
         end
@@ -2683,11 +2683,11 @@ end
 bcCOUNT=0;
 while ~bar_pressed(handles)
     bcCOUNT=bcCOUNT+1;
-    fprintf('BarPressCheck %d\n',bcCOUNT)
+%     fprintf('BarPressCheck %d\n',bcCOUNT)
     pause(BarCheck_resolution_ms/1000)
     % Only if AbortCheck resolution has passed, check for Abort
     if bcCOUNT>=(round(AbortCheck_resolution_ms/BarCheck_resolution_ms)) 
-        disp('AbortCheck')
+%         disp('AbortCheck')
         if ~running(handles)  % Added pause(.1) inside running to slow downs  %MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout
             break
         end
