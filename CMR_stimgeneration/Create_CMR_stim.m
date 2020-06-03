@@ -28,16 +28,16 @@ Q10 = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and
 %%%%%%%%%%%%%%%%%%% 
 % pick chin or human
 %%%%%%%%%%%%%%%%%%%
-% BWnoise_Hz=1000;  % chin approx to make it easy for now
-BWnoise_Hz=600;  % human approx to make it easy for now (4000 * 0.15)
+BWnoise_Hz=1000;  % chin approx to make it easy for now
+% BWnoise_Hz=600;  % human approx to make it easy for now (4000 * 0.15)
 
 %%%%%%%%%%%%%%%%%%% 
 % Adjust to find threshold
 %%%%%%%%%%%%%%%%%%%
-level_tone_dBSPL = 45
-No_SPL_Hz=30;  % Noise Spectrum level
+level_tone_dBSPL = 70
+No_SPL_Hz=30;  % Noise Spectrum level (OAL noise = No + 10*log10(BW))
 dur_noise_sec=500/1000;
-delay_tone_sec=0.1*dur_noise_sec;
+delay_tone_sec=0.1*dur_noise_sec;  % 10% delay for tone
 rft_sec=10/1000;
 fmod_Hz = 10;   % SAM modulation for noises
 
@@ -45,7 +45,7 @@ fmod_Hz = 10;   % SAM modulation for noises
 % see confirm_old_calib (based on tone we know was calibrated at one point
 % to be 70 dB SPL) 
 [calib_dBSPL,calib_70dBtone_rms,Fs_Hz] = confirm_old_calib;  % 70 dB SPL tone is rms of 0.02.
-levels_tone_dBSPL = 40:3:70;
+levels_tone_dBSPL = 40:3:70;  % to be used later for testing tone detection
 
 %% Compute center frequencies of all noise bands
 f_LSB_Hz = f_Hz - 3*BWnoise_Hz;  % center frequency of lower-side-band (LSB) (creates 2 BWgap between OFB lower edge and LSB upper edge)
@@ -127,6 +127,10 @@ standard_UCORR = noise_OFB_rft + noise_LSB_UCORR_rft + noise_USB_UCORR_rft;
 % levels
 % sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
 % stdSNR_fname=sprintf('%s%s.wav',std_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LATER - add to file name/chinch code storage (chin/human, tone level,
+% noise level, BW) 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 std_REF_fname = 'CMR1_REF_std.wav';  % test condition1
 sig_REF_fname = 'CMR1_REF_sig.wav'; 
 std_CORR_fname = 'CMR1_CORR_std.wav';  % test condition1
