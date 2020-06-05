@@ -1,7 +1,9 @@
 % File: Create_CMR_stim.m
 %
 % Created: M. Heinz Jun 1 2020
-% Modified by: ??
+% Modified by: Fernando Aguilera de Alba
+% Branched Created: June 5th 2020
+
 %
 % Creates a set of basic CMR stimuli (REF, CORR, UNCORR) for one condition.
 %% REF:
