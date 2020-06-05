@@ -1,6 +1,7 @@
 % File: Create_CMR_stim.m
 %
 % Created: M. Heinz Jun 1 2020
+<<<<<<< HEAD
 % Updated Jun 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -19,6 +20,11 @@
 %  file name 
 % ????? still to resolve: adapt on tone or noise level? (easy to setup
 % either way)
+=======
+% Modified by: Fernando Aguilera de Alba
+% Branched Created: June 5th 2020
+
+>>>>>>> Test run: modified branch and date
 %
 % Creates a set of basic CMR stimuli (REF, CORR, ACORR) for one condition.
 %% REF:
