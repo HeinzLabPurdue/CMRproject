@@ -109,6 +109,7 @@ noise_USB_UCORR= noise_USB_UCORR/rms(noise_USB_UCORR)*rms_noise_new;
 
 
 %% Apply ramps to each signals
+cd()
 tone_rft=linear_window_waveform(tone,Fs_Hz,rft_sec);  % apply window to tone signal
 noise_OFB_rft=linear_window_waveform(noise_OFB,Fs_Hz,rft_sec);  % apply window to noise band
 noise_LSB_CORR_rft=linear_window_waveform(noise_LSB_CORR,Fs_Hz,rft_sec);  % apply window to CORR noise band
@@ -219,4 +220,4 @@ soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ..
     standard_UCORR zeros(size(signal_UCORR)) signal_UCORR],Fs_Hz)
 
 
-%cd ../   
+cd('..\')    
