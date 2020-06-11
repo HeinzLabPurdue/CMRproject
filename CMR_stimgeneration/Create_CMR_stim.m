@@ -1,11 +1,11 @@
 % File: Create_CMR_stim.m
 %
 % Created: M. Heinz Jun 1 2020
-<<<<<<< HEAD
+% <<<<<<< HEAD
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
-=======
+% =======
 % Updated Jun 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -24,7 +24,7 @@
 %  file name 
 % ????? still to resolve: adapt on tone or noise level? (easy to setup
 % either way)
->>>>>>> master
+% >>>>>>> master
 %
 % Creates a set of basic CMR stimuli (REF, CORR, ACORR) for one condition.
 %% REF:
@@ -105,7 +105,7 @@ if (f_LSB_Hz-0.5*BWnoise_Hz <= 0) % confirm there is room for LSB
     error('lower side band is below 0Hz');
 end
 if (f_USB_Hz+0.5*BWnoise_Hz >= Fs_Hz/2) % confirm there is room for USB
-    error('upper side band is above Fs/2 Hz');
+    error('upper side band is above Fs = %s Hz', mat2str(Fs_Hz/2));
 end
 
 %% Make signals
@@ -142,7 +142,7 @@ noise_USB = noise_LPF(1,:).*sin(2*pi*f_USB_Hz*timevec_sec);
 noise_OFB = noise_OFB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
 noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated modulation 
 noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
-<<<<<<< HEAD
+%<<<<<<< HEAD
 noise_LSB_UCORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 noise_USB_UCORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 
@@ -270,7 +270,7 @@ soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ..
 
 
 %cd ../   
-=======
+%=======
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
 noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
 
@@ -397,4 +397,4 @@ end % noise levels
 %     standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
     
 
->>>>>>> master
+%>>>>>>> master
