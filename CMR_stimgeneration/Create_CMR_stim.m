@@ -3,13 +3,19 @@
 % Created: M. Heinz Jun 1 2020
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
 % <<<<<<< HEAD
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
 % =======
+<<<<<<< HEAD
 >>>>>>> updated error messages for noise bands
+=======
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
 % Updated Jun 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -29,6 +35,7 @@
 % ????? still to resolve: adapt on tone or noise level? (easy to setup
 % either way)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
@@ -37,6 +44,9 @@
 =======
 % >>>>>>> master
 >>>>>>> updated error messages for noise bands
+=======
+% >>>>>>> master
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
 %
 % Creates a set of basic CMR stimuli (REF, CORR, ACORR) for one condition.
 %% REF:
@@ -154,6 +164,7 @@ noise_USB = noise_LPF(1,:).*sin(2*pi*f_USB_Hz*timevec_sec);
 noise_OFB = noise_OFB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
 noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated modulation 
 noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
@@ -286,6 +297,9 @@ end % noise levels
 =======
 %<<<<<<< HEAD
 >>>>>>> updated error messages for noise bands
+=======
+%<<<<<<< HEAD
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
 noise_LSB_UCORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 noise_USB_UCORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 
@@ -414,8 +428,11 @@ soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ..
 
 %cd ../   
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Experimenting with CMR code: changed cd commands to work with my computer
 =======
+=======
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
 %=======
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
 noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
@@ -544,4 +561,7 @@ end % noise levels
     
 
 %>>>>>>> master
+<<<<<<< HEAD
 >>>>>>> updated error messages for noise bands
+=======
+>>>>>>> 1a9d9d40766b6df6ae22a3f28d16f803843868d0
