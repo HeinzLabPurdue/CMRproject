@@ -7,8 +7,6 @@ function [calib_dBSPL,calib_70dBtone_rms,Fs] = confirm_old_calib
 % SPL overall level.  Includes 10 dB attenuation in chinch code.
 
 
-clear all; close all; clc
-
 %% Read in previously calibrated stim, and confirm TDT Fs sampling rate (Fs)
 calib_fname='4kHz80dBT_999dBAM_NN.wav';   % 10 dB attenuation is added in chinch code.
 calib_dBSPL=70; % This tone was calibrated at one point to be 70 dB SPL
