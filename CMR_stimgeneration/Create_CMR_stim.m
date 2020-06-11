@@ -39,13 +39,8 @@
 %% or CMR_dB = Threshold_REF (tone dB SPL) - Thresholds_CORR (tone dB SPL) (Hari YNH: ~3 dB)
 
 clear all; close all; clc
-
-%% Define CMR condition to keep different stimulus sets apart (e.g., chin vs human, different ways of defiing things - keep log in NOTES on chinCMRstimuli.docx 
-CMRcondition='CMR2';
-fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
-
 %% Noise BW set to 1 ERB (either chin or human)
 % Chin
 Q10_chin = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and Heinz 2010)
@@ -64,21 +59,25 @@ ERB_chin_Hz = BW10dB_chin_Hz/2;  % from Patterson et al (2005) ISH2003, response
 ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 Hz at 4kHz]
 %  B.C.J. Moore and B.R. Glasberg, "Suggested formulae for calculating
 %  auditory-filter bandwidths and excitation patterns" Journal of the Acoustical Society of America 74: 750-753, 1983. 
-
-% Pick chin (1) or human (0)
-chin = 1;  % 0 = human
-if chin
-    BWnoise_Hz = ERB_chin_Hz;
-    fprintf('...Using chin ERBs\n')
-else % human 
-    BWnoise_Hz = ERB_human_Hz;
-    fprintf('...Using human ERBs\n')
+%% Menu Selection: Chin or Human
+% Pick chin (C) or human (H)
+subjectPrompt = '\nSubject: Chinchilla (C) OR Human (H) -> ';
+subject = input(subjectPrompt);
+if subject == 'C'
+   BWnoise_Hz = ERB_chin_Hz;
+   fprintf('...Using chin ERBs\n')
+   CMRcondition='CMRChin';
+else if subject == 'H' 
+        BWnoise_Hz = ERB_human_Hz;
+        fprintf('...Using human ERBs\n')
+        CMRcondition='CMRHuman';
+else
+    error('Please enter a valid character (C or H)');
+    end
 end
-
-%%%%%%%%%%%%%%%%%%% 
-% Adjust to find threshold
-%%%%%%%%%%%%%%%%%%%
-%% LATER - 
+% CMR condition predetermined from Menu option (CMRChin or CMRHuman)
+fprintf('Generating "%s" stimuli ...\n',CMRcondition)
+%% Adjust to find threshold
 levelVEC_tone_dBSPL = 35:3:65;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
@@ -255,7 +254,7 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         
         input('press Enter to move to next level)')
         
-    end % tone lebvels
+    end % tone levels
 end % noise levels
 
 
