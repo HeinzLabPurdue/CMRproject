@@ -2,6 +2,14 @@
 %
 % Created: M. Heinz Jun 1 2020
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+% <<<<<<< HEAD
+% Modified by: Fernando Aguilera de Alba
+% Branched Created: June 5th 2020
+
+% =======
+>>>>>>> updated error messages for noise bands
 % Updated Jun 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -20,11 +28,15 @@
 %  file name 
 % ????? still to resolve: adapt on tone or noise level? (easy to setup
 % either way)
+<<<<<<< HEAD
 =======
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
 >>>>>>> Test run: modified branch and date
+=======
+% >>>>>>> master
+>>>>>>> updated error messages for noise bands
 %
 % Creates a set of basic CMR stimuli (REF, CORR, ACORR) for one condition.
 %% REF:
@@ -105,7 +117,7 @@ if (f_LSB_Hz-0.5*BWnoise_Hz <= 0) % confirm there is room for LSB
     error('lower side band is below 0Hz');
 end
 if (f_USB_Hz+0.5*BWnoise_Hz >= Fs_Hz/2) % confirm there is room for USB
-    error('upper side band is above Fs/2 Hz');
+    error('upper side band is above Fs = %s Hz', mat2str(Fs_Hz/2));
 end
 
 %% Make signals
@@ -142,6 +154,7 @@ noise_USB = noise_LPF(1,:).*sin(2*pi*f_USB_Hz*timevec_sec);
 noise_OFB = noise_OFB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
 noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated modulation 
 noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+<<<<<<< HEAD
 <<<<<<< HEAD
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
 noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
@@ -270,6 +283,9 @@ end % noise levels
     
 
 =======
+=======
+%<<<<<<< HEAD
+>>>>>>> updated error messages for noise bands
 noise_LSB_UCORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 noise_USB_UCORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec+pi));
 
@@ -397,4 +413,135 @@ soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_noise) ..
 
 
 %cd ../   
+<<<<<<< HEAD
 >>>>>>> Experimenting with CMR code: changed cd commands to work with my computer
+=======
+%=======
+noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
+noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
+
+%% Generate all tone levels
+
+
+for noiseIND=1:length(NoVEC_dBSPL_Hz)
+    No_dBSPL_Hz=NoVEC_dBSPL_Hz(noiseIND);  % Noise Spectrum level (OAL noise = No + 10*log10(BW))
+    for toneIND=1:length(levelVEC_tone_dBSPL)
+        level_tone_dBSPL = levelVEC_tone_dBSPL(toneIND);
+        
+        %% Calibration
+        rms_tone_new = calib_70dBtone_rms * 10^((level_tone_dBSPL-calib_dBSPL)/20);
+        tone = tone/rms(tone)*rms_tone_new;
+        
+        rms_noise_new = calib_70dBtone_rms * 10^((No_dBSPL_Hz+10*log10(BWnoise_Hz)-calib_dBSPL)/20);
+        noise_OFB= noise_OFB/rms(noise_OFB)*rms_noise_new;
+        noise_LSB_CORR= noise_LSB_CORR/rms(noise_LSB_CORR)*rms_noise_new;
+        noise_USB_CORR= noise_USB_CORR/rms(noise_USB_CORR)*rms_noise_new;
+        noise_LSB_ACORR= noise_LSB_ACORR/rms(noise_LSB_ACORR)*rms_noise_new;
+        noise_USB_ACORR= noise_USB_ACORR/rms(noise_USB_ACORR)*rms_noise_new;
+        
+        %% Apply ramps to each signals (after calibration)
+        tone_rft=linear_window_waveform(tone,Fs_Hz,rft_tone_sec);    % Tone is ramped differently then noise bands
+        noise_OFB_rft=linear_window_waveform(noise_OFB,Fs_Hz,rft_noise_sec);
+        noise_LSB_CORR_rft=linear_window_waveform(noise_LSB_CORR,Fs_Hz,rft_noise_sec);
+        noise_USB_CORR_rft=linear_window_waveform(noise_USB_CORR,Fs_Hz,rft_noise_sec);
+        noise_LSB_ACORR_rft=linear_window_waveform(noise_LSB_ACORR,Fs_Hz,rft_noise_sec);
+        noise_USB_ACORR_rft=linear_window_waveform(noise_USB_ACORR,Fs_Hz,rft_noise_sec);
+        
+        %% Create complete signals
+        signal_REF = tone_rft + noise_OFB_rft;
+        standard_REF = noise_OFB_rft;
+        signal_CORR = tone_rft + noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
+        standard_CORR = noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
+        signal_ACORR = tone_rft + noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
+        standard_ACORR = noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
+        
+        %% Save files
+        % eventually we'll need to put in some parameter values for all the signal
+        % levels
+        % sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+        % stdSNR_fname=sprintf('%s%s.wav',std_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % LATER - add to file name/chinch code storage (chin/human, tone level,
+        % noise level, BW)
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        std_REF_fname = sprintf('%s_REF_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition1
+        sig_REF_fname = sprintf('%s_REF_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
+        std_CORR_fname = sprintf('%s_CORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition1
+        sig_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
+        std_ACORR_fname = sprintf('%s_ACORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);
+        sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
+        
+        cd('new_signals')
+        fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
+        audiowrite(std_REF_fname,standard_REF,Fs_Hz)
+        audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
+        audiowrite(std_CORR_fname,standard_CORR,Fs_Hz)
+        audiowrite(sig_CORR_fname,signal_CORR,Fs_Hz)
+        audiowrite(std_ACORR_fname,standard_ACORR,Fs_Hz)
+        audiowrite(sig_ACORR_fname,signal_ACORR,Fs_Hz)
+        cd('..\')
+        
+        
+        
+        %% Plot Stimuli
+        %REF stimuli
+        figure(1); clf
+        ax1=subplot(231);
+        plot(timevec_sec*1000,signal_REF,'r'); hold on; plot(timevec_sec*1000,standard_REF,'b'); hold off
+        xlim([0 dur_sec*1000])
+        ylabel('Amplitude')
+        title(sprintf('REF CONDITION:\nSTD: %s;    \nSIG: %s',std_REF_fname,sig_REF_fname),'interpreter','none')
+        ax4=subplot(234);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_REF))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_REF))),'b'); hold off
+        xlim([0 10])
+        ylabel('Magnitude (dB)')
+        set(gca,'XTick',[0:2:10])
+        
+        % CORR stimuli
+        ax2=subplot(232);
+        plot(timevec_sec*1000,signal_CORR,'r'); hold on; plot(timevec_sec*1000,standard_CORR,'b'); hold off
+        xlim([0 dur_sec*1000])
+        xlabel('Time (msec)')
+        title(sprintf('CORR CONDITION:\nSTD: %s;    \nSIG: %s',std_CORR_fname,sig_CORR_fname),'interpreter','none')
+        ax5=subplot(235);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_CORR))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_CORR))),'b'); hold off
+        xlim([0 10])
+        xlabel('Frequency (kHz)')
+        set(gca,'XTick',[0:2:10])
+        
+        % ACORR stimuli
+        ax3=subplot(233);
+        plot(timevec_sec*1000,signal_ACORR,'r'); hold on; plot(timevec_sec*1000,standard_ACORR,'b'); hold off
+        xlim([0 dur_sec*1000])
+        title(sprintf('ACORR CONDITION:\nSTD: %s;    \nSIG: %s',std_ACORR_fname,sig_ACORR_fname),'interpreter','none')
+        ax6=subplot(236);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_ACORR))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_ACORR))),'b'); hold off
+        xlim([0 10])
+        set(gca,'XTick',[0:2:10])
+        
+        linkaxes([ax1, ax2, ax3])
+        linkaxes([ax4, ax5, ax6])
+        
+        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324])
+        
+        %% Play sounds
+        
+        disp('Playing Standard the Signal:  REF condition then CORR then ACORR')
+        soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
+            standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
+            standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
+        
+        input('press Enter to move to next level)')
+        
+    end % tone lebvels
+end % noise levels
+
+
+% soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
+%     standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
+%     standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
+    
+
+%>>>>>>> master
+>>>>>>> updated error messages for noise bands
