@@ -32,13 +32,15 @@
 % flanking noise bands edge (e.g., lower edge of upper band) is 2 ERBs
 % (i.e., edge to edge gap is 1.5 ERBs). All three bands are co-modulated
 % (in phase) with 10 Hz SAM. 
-%% ANTI-UNCORR (ACORR):
+%% ANTI-CORR (ACORR):
 % Same two flanking noise bands are added.  But here, the flanking bands
 % are modualted out of phase (180 deg) with the center band.
 %% CMR_dB = Threshold_ACORR (tone dB SPL) - Thresholds_CORR (tone dB SPL)  (Hari YNH: ~10-12 dB, < 5% have 3 dB or less) 
 %% or CMR_dB = Threshold_REF (tone dB SPL) - Thresholds_CORR (tone dB SPL) (Hari YNH: ~3 dB)
 
 clear all; close all; clc
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%% SECTION 1: SIGNAL GENERATION
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
 %% Noise BW set to 1 ERB (either chin or human)
@@ -63,11 +65,11 @@ ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 H
 % Pick chin (C) or human (H)
 subjectPrompt = '\nSubject: Chinchilla (C) OR Human (H) -> ';
 subject = input(subjectPrompt);
-if subject == 'C'
+if subject == 'C' || subject == 'c'
    BWnoise_Hz = ERB_chin_Hz;
    fprintf('...Using chin ERBs\n')
    CMRcondition='CMRChin';
-else if subject == 'H' 
+else if subject == 'H' || subject == 'h' 
         BWnoise_Hz = ERB_human_Hz;
         fprintf('...Using human ERBs\n')
         CMRcondition='CMRHuman';
@@ -175,6 +177,15 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         signal_ACORR = tone_rft + noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
         standard_ACORR = noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
         
+        % save all audio in signal and standard matrices
+%         standard_output = zeros(length(levelVEC_tone_dBSPL), 3*length(signal_REF)); 
+%         signal_output = zeros(length(levelVEC_tone_dBSPL), 3*length(signal_REF)); 
+        standard_output_REF(toneIND,:) = standard_REF;  
+        standard_output_CORR(toneIND,:) = standard_CORR;
+        standard_output_ACORR(toneIND,:) = standard_ACORR;
+        signal_output_REF(toneIND,:) = signal_REF;       
+        signal_output_CORR(toneIND,:) = signal_CORR;
+        signal_output_ACORR(toneIND,:) = signal_ACORR;
         %% Save files
         % eventually we'll need to put in some parameter values for all the signal
         % levels
@@ -206,7 +217,7 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         
         %% Plot Stimuli
         %REF stimuli
-        figure(1); clf
+        figure(toneIND); clf;
         ax1=subplot(231);
         plot(timevec_sec*1000,signal_REF,'r'); hold on; plot(timevec_sec*1000,standard_REF,'b'); hold off
         xlim([0 dur_sec*1000])
@@ -243,21 +254,60 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         linkaxes([ax1, ax2, ax3])
         linkaxes([ax4, ax5, ax6])
         
-        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324])
-        
-        %% Play sounds
-        
-        disp('Playing Standard the Signal:  REF condition then CORR then ACORR')
-        soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
-            standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
-            standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
-        
-        input('press Enter to move to next level)')
-        
+        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
     end % tone levels
 end % noise levels
+close all; % close all plots
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%% SECTION 2: TESTING USER INTERFACE
+% User input
+userID = input('\nUser ID: ','s');
+%% Signal presentation (randomized using "randomize_user_output.m")
+% Function syntax --> [rand1, rand2] = randomize_user_output(tones)
+% rand 1 = array of randomized conditions             reference --> [REF CORR ACORR] = [1 2 3]
+% rand 2 = array of randomized tone levels            reference --> [a b c ...] --> depends on "tones"
+% tones = array of tone levels 
+
+% arrays of created signals:
+% Order must be [ REF  CORR  ACORR ]
+
+[rand_conditions, rand_tone_levels] = randomize_user_output(levelVEC_tone_dBSPL); % randomize order of conditions (REF, CORR, ACORR) and tone levels
 
 
-% soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
-%     standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
-%     standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
+
+
+
+%% STILL IN THE WORKS!
+% Tone level randomization
+for i = 1:length(rand_tone_levels)
+    for j = 1:length(rand_conditions)
+% Condition randomization --> 3 options: REF = 1 | CORR = 2  |  ACORR = 3
+input('\nPress Enter to play audio');
+fprintf('\nPlaying audio #%6.0f\n', j);
+        if rand_conditions(j) == 1 % REF
+            fprintf('\nREF Signal Playing... \nNoise Level: %6.1f dB\nCondition: %6.0f\n', rand_tone_levels(i), rand_conditions(j));
+            soundsc([standard_output_REF(i,:) zeros(size(signal_REF)) signal_output_REF(i,:) zeros(1,3*len_samples)],Fs_Hz)
+        elseif rand_conditions(j) == 2 % CORR
+            fprintf('\nCORR Signal Playing... \nNoise Level: %6.1f dB\nCondition: %6.0f\n', rand_tone_levels(i), rand_conditions(j));
+            soundsc([standard_output_CORR(i,:) zeros(size(signal_CORR)) signal_output_CORR(i,:) zeros(1,3*len_samples)],Fs_Hz)
+        elseif rand_conditions(j) == 3 % ACORR
+            fprintf('\nACORR Signal Playing... \nNoise Level: %6.1f dB\nCondition: %6.0f\n', rand_tone_levels(i), rand_conditions(j));
+            soundsc([standard_output_ACORR(i,:) zeros(size(signal_ACORR)) signal_output_ACORR(i,:) zeros(1,3*len_samples)],Fs_Hz)
+                    else 
+                        error('ERROR: Cannot continue testing');
+        end
+        
+    end
+    userResponse = input('\nIn which audio (1-3) did you hear the tone? ');
+    if userResponse ~= '1' || userResponse ~= '2' || userResponse ~= '3'
+        error('ERROR: Invalid input. Please enter either 1, 2 or 3');
+    end
+end
+
+%% Notes: 
+% 1. Can randomize every time for loop is run by including function within
+% for loop. 
+% % Example to reproduce audio:
+% soundsc( [standard_REF      zeros(size(signal_REF))      signal_REF      zeros(1,3*len_samples) ...
+%           standard_CORR     zeros(size(signal_CORR))     signal_CORR     zeros(1,3*len_samples) ...
+%           standard_ACORR    zeros(size(signal_ACORR))    signal_ACORR                         ], Fs_Hz);
