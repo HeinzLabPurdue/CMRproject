@@ -264,7 +264,7 @@ end % noise levels
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %% SECTION 2: TESTING USER INTERFACE
 % User input
-userID = input('\nUser ID: \n','s');
+userID = input('\nUser ID:','s');
 %% Signal presentation (randomized using "randomize_user_output.m")
 tally = ones(length(levelVEC_tone_dBSPL),3); % record responses from user
 reps = length(levelVEC_tone_dBSPL)*3; % number of audios played (# of tones * # of conditions
@@ -363,7 +363,9 @@ for i = 1:length(user_parameters)
 user_parameters(i,1) = levelVEC_tone_dBSPL(user_parameters(i,1));
 end
 userResults = [user_parameters testResponse]; % row = audio # | col1 = tone level | col2 = condition (1 = REF, 2 = CORR, 3 = ACORR) 
-                                                              % col3 = Standard(1) vs Signal(2) order | col4 = user responses (correct answers on col3)
-user_filename = sprintf('%s_CMRStimuli_Responses.mat',userID);  % test condition1
-save(user_filename,mat2str(userResults,'cl));
+                                                              % col3 = output order( 1 = standard first | 2 = signal order | col4 = user responses (correct answers on col3)
+user_filename = sprintf('%s_CMRStimuli_Results.mat',userID);  % user results file name
+cd CMRpilot_results
+save(user_filename,'userResults');
+cd ../
 %% Notes: 
