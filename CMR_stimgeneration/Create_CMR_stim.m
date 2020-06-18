@@ -68,11 +68,11 @@ subject = input(subjectPrompt);
 if subject == 'C' || subject == 'c'
    BWnoise_Hz = ERB_chin_Hz;
    fprintf('...Using chin ERBs\n')
-   CMRcondition='CMRChin';
+   CMRcondition='CMR2_Chin';
 else if subject == 'H' || subject == 'h' 
         BWnoise_Hz = ERB_human_Hz;
         fprintf('...Using human ERBs\n')
-        CMRcondition='CMRHuman';
+        CMRcondition='CMR2_Human';
 else
     error('Please enter a valid character (C or H)');
     end

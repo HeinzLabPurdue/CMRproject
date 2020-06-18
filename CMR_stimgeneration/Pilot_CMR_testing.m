@@ -16,7 +16,13 @@ run('Create_CMR_stim.m');
 %% SECTION 2: TESTING USER INTERFACE
 % User input
 userID = input('\nUser ID: ','s');
-userTrial = input('\nTrial #');
+userBlock = input('\nBlock #','s');
+if isempty(userBlock)
+   userBlock =  'X';
+end
+if isempty(userID)
+    userID = 'X';
+end
 %% Signal presentation (randomized using "randomize_user_output.m")
 tally = ones(length(levelVEC_tone_dBSPL),3); % record responses from user
 reps = length(levelVEC_tone_dBSPL)*3; % number of audios played (# of tones * # of conditions
@@ -52,10 +58,8 @@ if user_parameters(i,2) == 1 % REF
     input('\nPress Enter to play audio');
     fprintf('\nPlaying audio #%d\n',i);
         if user_parameters(i,3) == 1 % standard is played first
-            fprintf('\nStandard first (1)');
             soundsc([standard_output_REF(user_parameters(i,1),:) zeros(size(signal_REF)) signal_output_REF(user_parameters(i,1),:) ],Fs_Hz);
         elseif user_parameters(i,3) == 2 % signal is played first
-            fprintf('\nSignal first (2)');
             soundsc([signal_output_REF(user_parameters(i,1),:) zeros(size(signal_REF)) standard_output_REF(user_parameters(i,1),:)],Fs_Hz);
         else
             fprintf('\nError: Cannot play audio');
@@ -72,10 +76,8 @@ elseif user_parameters(i,2) == 2 % CORR
     input('\nPress Enter to play audio');            
     fprintf('\nPlaying audio #%d\n', i);
         if user_parameters(i,3) == 1 % standard is played first
-            fprintf('\nStandard first (1)');
             soundsc([standard_output_CORR(user_parameters(i,1),:) zeros(size(signal_CORR)) signal_output_CORR(user_parameters(i,1),:) ],Fs_Hz);
         elseif user_parameters(i,3) == 2 % signal is played first
-            fprintf('\nSignal first (2)');
             soundsc([signal_output_CORR(user_parameters(i,1),:) zeros(size(signal_CORR)) standard_output_CORR(user_parameters(i,1),:)],Fs_Hz);
         else
             fprintf('\nError: Cannot play audio');
@@ -92,11 +94,9 @@ elseif user_parameters(i,2) == 3 % ACORR
     input('\nPress Enter to play audio');
     fprintf('\nPlaying audio #%d\n', i);       
         if user_parameters(i,3) == 1 % standard is played first
-            fprintf('\nStandard first (1)');
             soundsc([standard_output_ACORR(user_parameters(i,1),:) zeros(size(signal_ACORR)) signal_output_ACORR(user_parameters(i,1),:) ],Fs_Hz);
         elseif user_parameters(i,3) == 2 % signal is played first
             soundsc([signal_output_ACORR(user_parameters(i,1),:) zeros(size(signal_ACORR)) standard_output_ACORR(user_parameters(i,1),:)],Fs_Hz); 
-            fprintf('\nSignal first (2)');
         else
             fprintf('\nError: Cannot play audio');
         end
@@ -122,20 +122,41 @@ user_parameters(i,1) = levelVEC_tone_dBSPL(user_parameters(i,1));
 end
 userResults = [user_parameters testResponse]; % row = audio # | col1 = tone level | col2 = condition (1 = REF, 2 = CORR, 3 = ACORR) 
                                                               % col3 = output order (1 = standard first, 2 = signal first) | col4 = user responses (correct answers on col3)
-score = 0; 
+REFscore = 0; CORRscore = 0; ACORRscore = 0;
 % calculate percent correctness
 for i = 1:length(userResults)
-    if userResults(i,3) ~= userResults(i,4)
-        if userResults(i,4) == 0
-            score = score - 1;
+    if userResults(i,2) == 1 % REF
+        if userResults(i,3) ~= userResults(i,4)
+            if userResults(i,4) == 0
+                REFscore = REFscore - 1;
+            end
+        REFscore = REFscore + 1;
         end
-        score = score + 1;
+    end
+    
+    if userResults(i,2) == 2 % CORR
+        if userResults(i,3) ~= userResults(i,4)
+            if userResults(i,4) == 0
+                CORRscore = CORRscore - 1;
+            end
+        CORRscore = CORRscore + 1;
+        end
+    end
+    
+    if userResults(i,2) == 3 % ACORR
+        if userResults(i,3) ~= userResults(i,4)
+            if userResults(i,4) == 0
+                ACORRscore = ACORRscore - 1;
+            end
+        ACORRscore = ACORRscore + 1;
+        end
     end
 end
-userScore = (score/length(userResults))*100; % percent score
-user_filename = sprintf('%s_Trial%d_CMRStimuli_Pilot_Results.mat',userID,userTrial);  % user results file name
+userScore = ((REFscore + CORRscore + ACORRscore)/length(userResults))*100; % percent score
+user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRcondition);  % user results file name
 cd CMRpilot_results
-save(user_filename,'userID', 'userResults','userScore');
+save(user_filename,'userID', 'userResults','userScore','REFscore','CORRscore', 'ACORRscore');
 cd ../
-fprintf('\nRESULTS\n\nCorrect: %d\nScore: %6.2f\n',score, userScore);
+fprintf('\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + CORRscore + ACORRscore), userScore);
+fprintf('\nScore By Category\nREF: %6.2f \nCOR: %6.2f \nACORR: %6.2f\n',(REFscore/length(levelVEC_tone_dBSPL)*100), (CORRscore/length(levelVEC_tone_dBSPL)*100), (ACORRscore/length(levelVEC_tone_dBSPL)*100));
 %% Notes: 
