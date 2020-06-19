@@ -1,6 +1,9 @@
 % File: Create_CMR_stim.m
 %
 % Created: M. Heinz Jun 1 2020
+% Modified by: Fernando Aguilera de Alba
+% Branched Created: June 5th 2020
+
 % Updated Jun 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -19,7 +22,6 @@
 %  file name 
 % ????? still to resolve: adapt on tone or noise level? (easy to setup
 % either way)
-%
 % Creates a set of basic CMR stimuli (REF, CORR, ACORR) for one condition.
 %% REF:
 % Steady tone is to be detected within a modulated (10 Hz SAM) narrowband
@@ -30,20 +32,17 @@
 % flanking noise bands edge (e.g., lower edge of upper band) is 2 ERBs
 % (i.e., edge to edge gap is 1.5 ERBs). All three bands are co-modulated
 % (in phase) with 10 Hz SAM. 
-%% ANTI-UNCORR (ACORR):
+%% ANTI-CORR (ACORR):
 % Same two flanking noise bands are added.  But here, the flanking bands
 % are modualted out of phase (180 deg) with the center band.
 %% CMR_dB = Threshold_ACORR (tone dB SPL) - Thresholds_CORR (tone dB SPL)  (Hari YNH: ~10-12 dB, < 5% have 3 dB or less) 
 %% or CMR_dB = Threshold_REF (tone dB SPL) - Thresholds_CORR (tone dB SPL) (Hari YNH: ~3 dB)
 
 clear all; close all; clc
-
-%% Define CMR condition to keep different stimulus sets apart (e.g., chin vs human, different ways of defiing things - keep log in NOTES on chinCMRstimuli.docx 
-CMRcondition='CMR2';
-fprintf('Generating "%s" stimuli ...\n',CMRcondition)
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%% SECTION 1: SIGNAL GENERATION
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
-
 %% Noise BW set to 1 ERB (either chin or human)
 % Chin
 Q10_chin = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and Heinz 2010)
@@ -62,21 +61,25 @@ ERB_chin_Hz = BW10dB_chin_Hz/2;  % from Patterson et al (2005) ISH2003, response
 ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 Hz at 4kHz]
 %  B.C.J. Moore and B.R. Glasberg, "Suggested formulae for calculating
 %  auditory-filter bandwidths and excitation patterns" Journal of the Acoustical Society of America 74: 750-753, 1983. 
-
-% Pick chin (1) or human (0)
-chin = 1;  % 0 = human
-if chin
-    BWnoise_Hz = ERB_chin_Hz;
-    fprintf('...Using chin ERBs\n')
-else % human 
-    BWnoise_Hz = ERB_human_Hz;
-    fprintf('...Using human ERBs\n')
+%% Menu Selection: Chin or Human
+% Pick chin (C) or human (H)
+subjectPrompt = '\nSubject: Chinchilla (C) OR Human (H) -> ';
+subject = input(subjectPrompt);
+if subject == 'C' || subject == 'c'
+   BWnoise_Hz = ERB_chin_Hz;
+   fprintf('...Using chin ERBs\n')
+   CMRcondition='CMR2_Chin';
+else if subject == 'H' || subject == 'h' 
+        BWnoise_Hz = ERB_human_Hz;
+        fprintf('...Using human ERBs\n')
+        CMRcondition='CMR2_Human';
+else
+    error('Please enter a valid character (C or H)');
+    end
 end
-
-%%%%%%%%%%%%%%%%%%% 
-% Adjust to find threshold
-%%%%%%%%%%%%%%%%%%%
-%% LATER - 
+% CMR condition predetermined from Menu option (CMRChin or CMRHuman)
+fprintf('Generating "%s" stimuli ...\n',CMRcondition)
+%% Adjust to find threshold
 levelVEC_tone_dBSPL = 35:3:65;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
@@ -99,7 +102,7 @@ if (f_LSB_Hz-0.5*BWnoise_Hz <= 0) % confirm there is room for LSB
     error('lower side band is below 0Hz');
 end
 if (f_USB_Hz+0.5*BWnoise_Hz >= Fs_Hz/2) % confirm there is room for USB
-    error('upper side band is above Fs/2 Hz');
+    error('upper side band is above Fs = %s Hz', mat2str(Fs_Hz/2));
 end
 
 %% Make signals
@@ -138,15 +141,21 @@ noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated mo
 noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
 noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
-
 %% Generate all tone levels
-
-
+signalsavePrompt = '\nSave audio files (Y/N): ';
+signalsave_user = input(signalsavePrompt);
+if signalsave_user == 'Y' || signalsave_user == 'y'
+    signalplotPrompt = '\nPlot audio files (Y/N): ';
+signalplot_user = input(signalplotPrompt);
+end
+% cannot plot signals if they are not saved
+if signalsave_user == 'N' || signalsave_user == 'n'
+    signalplot_user = 'N';
+end
 for noiseIND=1:length(NoVEC_dBSPL_Hz)
     No_dBSPL_Hz=NoVEC_dBSPL_Hz(noiseIND);  % Noise Spectrum level (OAL noise = No + 10*log10(BW))
     for toneIND=1:length(levelVEC_tone_dBSPL)
         level_tone_dBSPL = levelVEC_tone_dBSPL(toneIND);
-        
         %% Calibration
         rms_tone_new = calib_70dBtone_rms * 10^((level_tone_dBSPL-calib_dBSPL)/20);
         tone = tone/rms(tone)*rms_tone_new;
@@ -173,8 +182,15 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         standard_CORR = noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
         signal_ACORR = tone_rft + noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
         standard_ACORR = noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
-        
+        % save all audio in signal and standard matrices 
+        standard_output_REF(toneIND,:) = standard_REF;  
+        standard_output_CORR(toneIND,:) = standard_CORR;
+        standard_output_ACORR(toneIND,:) = standard_ACORR;
+        signal_output_REF(toneIND,:) = signal_REF;       
+        signal_output_CORR(toneIND,:) = signal_CORR;
+        signal_output_ACORR(toneIND,:) = signal_ACORR;
         %% Save files
+if signalsave_user == 'Y' || signalsave_user == 'y'
         % eventually we'll need to put in some parameter values for all the signal
         % levels
         % sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
@@ -199,13 +215,12 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         audiowrite(sig_CORR_fname,signal_CORR,Fs_Hz)
         audiowrite(std_ACORR_fname,standard_ACORR,Fs_Hz)
         audiowrite(sig_ACORR_fname,signal_ACORR,Fs_Hz)
-        cd('..\')
-        
-        
-        
+        cd('../')      
+end % save files prompt
         %% Plot Stimuli
+if signalplot_user == 'Y' || signalplot_user == 'y'
         %REF stimuli
-        figure(1); clf
+        figure(toneIND); clf;
         ax1=subplot(231);
         plot(timevec_sec*1000,signal_REF,'r'); hold on; plot(timevec_sec*1000,standard_REF,'b'); hold off
         xlim([0 dur_sec*1000])
@@ -242,23 +257,8 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         linkaxes([ax1, ax2, ax3])
         linkaxes([ax4, ax5, ax6])
         
-        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324])
-        
-        %% Play sounds
-        
-        disp('Playing Standard the Signal:  REF condition then CORR then ACORR')
-        soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
-            standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
-            standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
-        
-        input('press Enter to move to next level)')
-        
-    end % tone lebvels
+        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
+end % plot prompt
+    end % tone levels
 end % noise levels
-
-
-% soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
-%     standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
-%     standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
-    
 
