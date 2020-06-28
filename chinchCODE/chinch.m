@@ -1378,8 +1378,25 @@ if ~running(handles)
                         % CMR condition : REF/CORR/UCORR
                         strIND1b=underscoreINDs(1)+1;
                         strIND2b=underscoreINDs(2)-1;
-                        CMRsetupNum{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1a:strIND2a);
-                        CMRcondition{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1b:strIND2b);
+                        CMRstimPARAMS.CMRsetupNum{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1a:strIND2a);
+                        CMRstimPARAMS.CMRcondition{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1b:strIND2b);
+                        % CMR1 did not have No and T values in filename, so
+                        % have to hard code that
+                        if ~strcmp(CMRstimPARAMS.CMRsetupNum{sigINDtemp},'CMR1')
+                            % No Level
+                            strIND1_No=underscoreINDs(2)+3;
+                            strIND2_No=underscoreINDs(3)-1;
+                            % No Level
+                            strIND1_T=underscoreINDs(3)+2;
+                            strIND2_T=underscoreINDs(4)-1;
+                            % Edited June 28 - to explicitly save T and No
+                            % levels (M. Heinz)
+                            CMRstimPARAMS.No_dBSPL(sigINDtemp)=str2num(handles.stmlist(handles.stmidx(stim)).name2(strIND1_No:strIND2_No));
+                            CMRstimPARAMS.T_dBSPL(sigINDtemp)=str2num(handles.stmlist(handles.stmidx(stim)).name2(strIND1_T:strIND2_T));
+                        else
+                            CMRstimPARAMS.No_dBSPL(sigINDtemp)=30;
+                            CMRstimPARAMS.T_dBSPL(sigINDtemp)=70;
+                        end
                         
                     end
                 end
@@ -1573,7 +1590,7 @@ if ~running(handles)
                     if handles.stmlist(handles.stmidx(stim)).same
                         disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
                     else
-                        fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRsetupNum{stimcount},CMRcondition{stimcount});
+                        fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRstimPARAMS.CMRsetupNum{stimcount},CMRstimPARAMS.CMRcondition{stimcount});
                     end
                 elseif nplayfromfile==995
                     if handles.stmlist(handles.stmidx(stim)).same
