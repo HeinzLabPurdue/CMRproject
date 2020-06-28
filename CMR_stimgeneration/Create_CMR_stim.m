@@ -77,7 +77,7 @@ end
 % Adjust to find threshold
 %%%%%%%%%%%%%%%%%%%
 %% LATER - 
-levelVEC_tone_dBSPL = 35:3:65;  % ALL tone levels to include
+levelVEC_tone_dBSPL = 30:4:70;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
