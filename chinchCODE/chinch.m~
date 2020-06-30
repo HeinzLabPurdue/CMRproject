@@ -1695,11 +1695,7 @@ if ~running(handles)
                 % Tried 1, .5, .1 - ALL WORKED.  yes just too fast a PC
                 
                 %Start trial when user hits spacebar
-                %play trial, start tic
-                %when release use toc
-                %check the release time and verify its in the right window
-                
-                %see if you can stop sound play
+                %
                 
                 pause(.1);  
                 
