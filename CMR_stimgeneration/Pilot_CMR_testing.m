@@ -2,6 +2,7 @@
 % Created: Fernando Aguilera - Jun 16 2020
 % Last Modified by: Andrew Sivaprakasam- July 1 2020
     %-Just added 's' in inputs to make run properly on my computer
+    
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -266,5 +267,5 @@ fprintf('\n\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + COR
 fprintf('\nScore By Condition\nREF: %6.2f \nCOR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
 %% Data analysis for psychometric curves
 cd CMRpilot_results
-save(user_filename,'userID', 'userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
+save(user_filename,'userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 cd ../
