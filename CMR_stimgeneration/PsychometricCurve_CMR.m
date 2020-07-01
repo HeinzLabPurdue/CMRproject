@@ -11,12 +11,21 @@ blocks = input('How many blocks of data will you analyze?: ');
 cd CMRpilot_results % open pilot data folder 
 % create vector for each condition with data from all blocks
 for i = 1:blocks
+<<<<<<< HEAD
     filename = [userID '_Block' num2str(i) '_CMR2_Human_Pilot_Results.mat'];
     load(filename);
     REFresults_avg(:,i+1) = (REFtonescore(:,2)/2)*100;
     CORRresults_avg(:,i+1) = (CORRtonescore(:,2)/2)*100;
     ACORRresults_avg(:,i+1) = (ACORRtonescore(:,2)/2)*100;
     fprintf('\nFile loaded:%s ',filename);
+=======
+    fprintf('\nBlock #%d\n',i);
+    block = input('Filename: ','s'); % LINE MODIFIED
+    load(block);
+    REFresults_avg(:,i+1) = REFtonescore(:,2);
+    CORRresults_avg(:,i+1) = CORRtonescore(:,2);
+    ACORRresults_avg(:,i+1) = ACORRtonescore(:,2);
+>>>>>>> master
 end
 cd ../
 REFresults_avg(:,1) = levelVEC_tone_dBSPL'; CORRresults_avg(:,1) = levelVEC_tone_dBSPL'; ACORRresults_avg(:,1) = levelVEC_tone_dBSPL';

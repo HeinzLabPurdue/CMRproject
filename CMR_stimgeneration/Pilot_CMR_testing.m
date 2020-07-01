@@ -1,6 +1,8 @@
 % File: Pilot_CMR_testing.m
 % Created: Fernando Aguilera - Jun 16 2020
-% Last Modified by: Fernando Aguilera de Alba - July 1 2020
+% Last Modified by: Andrew Sivaprakasam- July 1 2020
+    %-Just added 's' in inputs to make run properly on my computer
+    
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -35,11 +37,13 @@ fprintf('\n\nPlease, select a comfortable volume setting based on the following 
 input('\nPress Enter to play audio sample');
 fprintf('Playing audio sample...');
 sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ');
+
+volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
 while volume_setup == 'Y' || volume_setup == 'y'
     fprintf('Playing audio sample...');
     sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ');
+    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
+    
 end
 fprintf('\nNOTE: Make sure to keep the volume unchanged until the testing block is completed.');
 fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n');
