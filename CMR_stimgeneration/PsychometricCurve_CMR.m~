@@ -1,6 +1,6 @@
-% File: Pilot_CMR_testing.m
-% Created: Fernando Aguilera - Jun 16 2020
-% Last Modified by: Fernando Aguilera de Alba - June 29 2020
+% File: PsychometricCurve_CMR.m
+% Created: Fernando Aguilera - Jun 28 2020
+% Last Modified by: Fernando Aguilera de Alba - July 1 2020
 %% Goal
 % Generate psychometric curver for REF, CORR, and ACORR conditions from user data for CMR pilot testing.
 clear all;close all;clc;
@@ -13,9 +13,9 @@ for i = 1:blocks
     fprintf('\nBlock #%d\n',i);
     block = input('Filename: ');
     load(block);
-    REFresults_avg(:,i+1) = REFtonescore(:,2);
-    CORRresults_avg(:,i+1) = CORRtonescore(:,2);
-    ACORRresults_avg(:,i+1) = ACORRtonescore(:,2);
+    REFresults_avg(:,i+1) = (REFtonescore(:,2)/2)*100;
+    CORRresults_avg(:,i+1) = (CORRtonescore(:,2)/2)*;
+    ACORRresults_avg(:,i+1) = (ACORRtonescore(:,2);
 end
 REFresults_avg(:,1) = levelVEC_tone_dBSPL'; CORRresults_avg(:,1) = levelVEC_tone_dBSPL'; ACORRresults_avg(:,1) = levelVEC_tone_dBSPL';
 %% Average results
@@ -32,15 +32,21 @@ for j = 1:length(levelVEC_tone_dBSPL)
     REF = 0; CORR = 0; ACORR = 0;
 end
 %% Psychometric curve generation
-figure(1);
-plot(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'LineWidth', 1.5);
+for i = 1:(blocks+2)
+figure;
+subplot(1,3,1); % REF 
+scatter(REFresults_avg(:,1),REFresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average REF
 title('Psychometric Curve (Condition: REF)');
 xlabel('Tone Level (dB)'); ylabel('Average Correctness (%)');
-figure(2);
-plot(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'LineWidth', 1.5);
+ylim([0,110]);
+subplot(1,3,2); % CORR
+scatter(CORRresults_avg(:,1),CORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average CORR
 title('Psychometric Curve (Condition: CORR)');
 xlabel('Tone Level (dB)'); ylabel('Average Correctness (%)');
-figure(3);
-plot(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'LineWidth', 1.5);
+ylim([0,110]);
+subplot(1,3,3); % ACORR
+scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average ACORR
 title('Psychometric Curve (Condition: ACORR)');
 xlabel('Tone Level (dB)'); ylabel('Average Correctness (%)');
+ylim([0,110]);
+end
