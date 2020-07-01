@@ -1703,7 +1703,7 @@ if ~running(handles)
                 
                 pause(.1);  
                 
-                play_pair(hObject, eventdata, handles);%replace with emulate_TDT_trial, measure the spacebar output and integrate with 
+                play_pair(hObject, eventdata, handles); %replace with emulate_TDT_trial, measure the spacebar output and integrate with 
 
                 %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
                 %                keyboard
