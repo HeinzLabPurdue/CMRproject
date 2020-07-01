@@ -11,7 +11,7 @@ blocks = input('How many blocks of data will you analyze?: ');
 % create vector for each condition with data from all blocks
 for i = 1:blocks
     fprintf('\nBlock #%d\n',i);
-    block = input('Filename: ');
+    block = input('Filename: ','s'); % LINE MODIFIED
     load(block);
     REFresults_avg(:,i+1) = REFtonescore(:,2);
     CORRresults_avg(:,i+1) = CORRtonescore(:,2);

@@ -1,6 +1,7 @@
 % File: Pilot_CMR_testing.m
 % Created: Fernando Aguilera - Jun 16 2020
-% Last Modified by: Fernando Aguilera de Alba - June 29 2020
+% Last Modified by: Andrew Sivaprakasam- July 1 2020
+    %-Just added 's' in inputs to m
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -35,11 +36,13 @@ fprintf('\n\nPlease, select a comfortable volume setting based on the following 
 input('\nPress Enter to play audio sample');
 fprintf('Playing audio sample...');
 sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ');
+
+volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
 while volume_setup == 'Y' || volume_setup == 'y'
     fprintf('Playing audio sample...');
     sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ');
+    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
+    
 end
 fprintf('\nNOTE: Make sure to keep the volume unchanged until the testing block is completed.');
 fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n');
@@ -230,16 +233,32 @@ end
 % Calculate each tone's score
 REFtonescore = zeros(length(levelVEC_tone_dBSPL),2); CORRtonescore = zeros(length(levelVEC_tone_dBSPL),2); ACORRtonescore = zeros(length(levelVEC_tone_dBSPL),2);
 REFtonescore(:,1) = levelVEC_tone_dBSPL'; CORRtonescore(:,1) = levelVEC_tone_dBSPL'; ACORRtonescore(:,1) = levelVEC_tone_dBSPL';
-REF = 0; CORR = 0; ACORR = 0;
-while counter < 22
-    for i = 1:length(REF
-    
+for i = 1:length(REFresults)
+   if REFresults(i,1) ~= 0
+       for j = 1:length(REFtonescore)
+           if REFresults(i,1) == REFtonescore(j,1)
+               REFtonescore(j,2) = REFtonescore(j,2) + REFresults(i,2);
+           end
+       end
+   end
 end
 for i = 1:length(CORRresults)
-    
+if CORRresults(i,1) ~= 0
+   for j = 1:length(CORRtonescore)
+       if CORRresults(i,1) == CORRtonescore(j,1)
+           CORRtonescore(j,2) = CORRtonescore(j,2) + CORRresults(i,2);
+       end
+   end
+end
 end
 for i = 1:length(ACORRresults)
-    
+if ACORRresults(i,1) ~= 0
+    for j = 1:length(ACORRtonescore)
+        if ACORRresults(i,1) == ACORRtonescore(j,1)
+            ACORRtonescore(j,2) = ACORRtonescore(j,2) + ACORRresults(i,2);
+        end
+    end
+end
 end
 userScore = ((REFscore + CORRscore + ACORRscore)/length(userResults))*100; % total percent score
 user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRcondition);  % user results file name
@@ -247,5 +266,5 @@ fprintf('\n\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + COR
 fprintf('\nScore By Condition\nREF: %6.2f \nCOR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
 %% Data analysis for psychometric curves
 cd CMRpilot_results
-save(user_filename,'userID', 'userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFresults','CORRresults','ACORRresults','levelVEC_tone_dBSPL');
+save(user_filename,'userID', 'userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 cd ../
