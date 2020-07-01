@@ -34,41 +34,55 @@ for j = 1:length(levelVEC_tone_dBSPL)
     REF = 0; CORR = 0; ACORR = 0;
 end
 %% Psychometric curve generation for each block
+for i = 1:blocks+1
+plotlegend(i,:) = ['Block ' num2str(i)];
+if i == blocks+1
+    plotlegend(i,:) = ['Average'];
+end
+end
+
+Markers = {'+','o','*','x','v','d','^','s','>','<'};
+counter = 1;
+
+
 for i = 2:(blocks+1)
-figure;
-subplot(1,3,1); % REF 
-scatter(REFresults_avg(:,1),REFresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average REF
-REFplot = sprintf('Psychometric Curve (Condition: REF | Block: %d)', i-1);
-title(REFplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-subplot(1,3,2); % CORR
-scatter(CORRresults_avg(:,1),CORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average CORR
-CORRplot = sprintf('Psychometric Curve (Condition: CORR | Block: %d)', i-1);
-title(CORRplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-subplot(1,3,3); % ACORR
-scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of average ACORR
-ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | Block: %d)', i-1);
-title(ACORRplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
+% REF
+figure(1);
+hold on;
+plot(REFresults_avg(:,1),REFresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block REF
+hold off;
+% CORR
+figure(2);
+hold on;
+scatter(CORRresults_avg(:,1),CORRresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block CORR
+hold off;
+% ACORR
+figure(3);
+hold on;
+scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block ACORR
+hold off;
+counter = counter + 1; 
 end
 %% Psychometric curve generation average
-figure;
-subplot(1,3,1); % REF 
-scatter(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average REF
-title('Average Psychometric Curve (Condition: REF)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-subplot(1,3,2); % CORR
-scatter(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average CORR
-title('Average Psychometric Curve (Condition: CORR)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-subplot(1,3,3); % ACORR
-scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average ACORR
-title('Average Psychometric Curve (Condition: ACORR)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
+REFplot = sprintf('Psychometric Curve (Condition: REF | User ID: %s)', userID);
+CORRplot = sprintf('Psychometric Curve (Condition: CORR | User ID: %s)', userID);
+ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', userID);
+
+figure(1); % REF 
+hold on;
+plot(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average REF
+title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
+hold off;
+figure(2); % CORR
+hold on;
+plot(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average CORR
+title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
+hold off;
+figure(3); % ACORR
+hold on;
+plot(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average ACORR
+title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
+hold off;
