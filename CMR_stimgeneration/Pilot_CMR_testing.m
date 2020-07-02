@@ -27,13 +27,13 @@ end
 if isempty(userID)
     userID = 'X';
 end
-fprintf('\n\nInstructions:\n\nYou will be presented a set of two audio samples for 66 trials');
-fprintf('\nAfter each trial, you will need to indicate in which interval (1 or 2) you heard the tone');
-fprintf('\nThe sound level of the tone will vary across trials, so sometimes it will be hard to detect the tone');
-fprintf('\nMake sure to record an answer for all trial even if you are not sure');
-fprintf('\nThe tone presented will be similar to the audio sample used for volume setting');
+fprintf('\n\nInstructions:\n\nYou will be presented a set of two audio samples for 66 trials.');
+fprintf('\nAfter each trial, you will need to indicate in which interval (1 or 2) you heard the tone.');
+fprintf('\nThe sound level of the tone will vary across trials, so sometimes it will be hard to detect the tone.');
+fprintf('\nMake sure to record an answer for all trial even if you are not sure.');
+fprintf('\nThe tone presented will be similar to the audio sample used for volume setting.');
 fprintf('\n\nVolume Setting:');
-fprintf('\n\nPlease, select a comfortable volume setting based on the following audio sample');
+fprintf('\n\nPlease, select a comfortable volume setting based on the following audio sample.');
 input('\nPress Enter to play audio sample');
 fprintf('Playing audio sample...');
 sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
@@ -46,6 +46,7 @@ while volume_setup == 'Y' || volume_setup == 'y'
     
 end
 fprintf('\nNOTE: Make sure to keep the volume unchanged until the testing block is completed.');
+fprintf('\n      Please, allow both audios to finish playing before answering the question.');
 fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n');
 %% Signal presentation
 trials = length(levelVEC_tone_dBSPL) * 3 * 2; % number of audios played (# of tones * # of conditions * # of outputs)
