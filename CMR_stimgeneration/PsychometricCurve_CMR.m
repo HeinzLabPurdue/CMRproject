@@ -6,12 +6,12 @@
 clear all;close all;clc;
 %% Requirement
 % Load all blocks from user files from CMRpilot_results folder
-userID = input('User ID: ','s');
+userid = input('User ID: ','s');
 blocks = input('How many blocks of data will you analyze?: ');
 cd CMRpilot_results % open pilot data folder 
 % create vector for each condition with data from all blocks
 for i = 1:blocks
-    filename = [userID '_Block' num2str(i) '_CMR2_Human_Pilot_Results.mat'];
+    filename = [userid '_Block' num2str(i) '_CMR2_Human_Pilot_Results.mat'];
     load(filename);
     REFresults_avg(:,i+1) = (REFtonescore(:,2)/2)*100;
     CORRresults_avg(:,i+1) = (CORRtonescore(:,2)/2)*100;
@@ -40,11 +40,8 @@ if i == blocks+1
     plotlegend(i,:) = ['Average'];
 end
 end
-
 Markers = {'+','o','*','x','v','d','^','s','>','<'};
 counter = 1;
-
-
 for i = 2:(blocks+1)
 % REF
 figure(1);
@@ -64,10 +61,9 @@ hold off;
 counter = counter + 1; 
 end
 %% Psychometric curve generation average
-REFplot = sprintf('Psychometric Curve (Condition: REF | User ID: %s)', userID);
-CORRplot = sprintf('Psychometric Curve (Condition: CORR | User ID: %s)', userID);
-ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', userID);
-
+REFplot = sprintf('Psychometric Curve (Condition: REF | User ID: %s)', userid);
+CORRplot = sprintf('Psychometric Curve (Condition: CORR | User ID: %s)', userid);
+ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', userid);
 figure(1); % REF 
 hold on;
 plot(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average REF
@@ -86,3 +82,6 @@ plot(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5
 title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
 legend(plotlegend,'Location','SouthEast');
 hold off;
+%% Notes:
+% Create curves of averages for all subjects --> save average of each
+% subject in matlab file to compile all data 

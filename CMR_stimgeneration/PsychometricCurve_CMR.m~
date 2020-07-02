@@ -6,12 +6,12 @@
 clear all;close all;clc;
 %% Requirement
 % Load all blocks from user files from CMRpilot_results folder
-userID = input('User ID: ','s');
+userid = input('User ID: ','s');
 blocks = input('How many blocks of data will you analyze?: ');
 cd CMRpilot_results % open pilot data folder 
 % create vector for each condition with data from all blocks
 for i = 1:blocks
-    filename = [userID '_Block' num2str(i) '_CMR2_Human_Pilot_Results.mat'];
+    filename = [userid '_Block' num2str(i) '_CMR2_Human_Pilot_Results.mat'];
     load(filename);
     REFresults_avg(:,i+1) = (REFtonescore(:,2)/2)*100;
     CORRresults_avg(:,i+1) = (CORRtonescore(:,2)/2)*100;
@@ -40,60 +40,51 @@ if i == blocks+1
     plotlegend(i,:) = ['Average'];
 end
 end
+Markers = {'+','o','*','x','v','d','^','s','>','<'};
+counter = 1;
 for i = 2:(blocks+1)
-figure(1); % REF
+% REF
+figure(1);
 hold on;
-scatter(REFresults_avg(:,1),REFresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of block REF
-plot(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'--','LineWidth', 1.5); % scatter plot of average REF
-REFplot = sprintf('Psychometric Curve (Condition: REF | Block: %d)', i-1);
-title(REFplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-legend(plotlegend);
+plot(REFresults_avg(:,1),REFresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block REF
 hold off;
-
-figure(2); % CORR
+% CORR
+figure(2);
 hold on;
-scatter(CORRresults_avg(:,1),CORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of block CORR
-plot(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'--','LineWidth', 1.5); % scatter plot of average CORR
-CORRplot = sprintf('Psychometric Curve (Condition: CORR | Block: %d)', i-1);
-title(CORRplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-legend(plotlegend);
+scatter(CORRresults_avg(:,1),CORRresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block CORR
 hold off;
-
-figure(3); % ACORR
+% ACORR
+figure(3);
 hold on;
-scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,i),'*','LineWidth', 1.5); % scatter plot of block ACORR
-plot(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'--','LineWidth', 1.5); % scatter plot of average ACORR
-ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | Block: %d)', i-1);
-title(ACORRplot);
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-legend(plotlegend);
+scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,i),strcat(Markers{counter})); % scatter plot of block ACORR
 hold off;
+counter = counter + 1; 
 end
 %% Psychometric curve generation average
-figure(1); % REF 
+REFplot = sprintf('Psychometric Curve (Condition: REF | User ID: %s)', userid);
+CORRplot = sprintf('Psychometric Curve (Condition: CORR | User ID: %s)', userid);
+ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', userid);
+figure(1); % REF
+subplot(1,3,1);
 hold on;
-scatter(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average REF
-title('Average Psychometric Curve (Condition: REF)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
-legend(plotlegend);
+plot(REFresults_avg(:,1),REFresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average REF
+title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
 hold off;
-figure(2); % CORR
+%figure(2); % CORR
+subplot(1,3,2);
 hold on;
-scatter(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average CORR
-title('Average Psychometric Curve (Condition: CORR)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
+plot(CORRresults_avg(:,1),CORRresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average CORR
+title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
 hold off;
-figure(3); % ACORR
+%figure(3); % ACORR
+subplot(1,
 hold on;
-scatter(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'*','LineWidth', 1.5); % scatter plot of average ACORR
-title('Average Psychometric Curve (Condition: ACORR)');
-xlabel('Tone Level (dB)'); ylabel('Correctness (%)');
-ylim([0,110]);
+plot(ACORRresults_avg(:,1),ACORRresults_avg(:,(blocks+2)),'*--','LineWidth', 1.5); % scatter plot of average ACORR
+title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+legend(plotlegend,'Location','SouthEast');
 hold off;
+%% Notes:
+% Create curves of averages for all subjects --> save average of each
+% subject in matlab file to compile all data 
