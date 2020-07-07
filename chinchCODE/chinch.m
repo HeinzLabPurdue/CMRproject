@@ -35,7 +35,7 @@ function varargout = chinch(varargin)
 % Last Modified by GUIDE v2.5 21-Feb-2007 11:59:25
 
 %% %%%%%
-% M.Heinz - setting up DEBUG_emulate version to allow offline (no TDT) 
+% M.Heinz - setting up DEBUG_emulate version to allow offline (no TDT)
 % debugging
 global DEBUG_emulate
 DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT
@@ -151,10 +151,10 @@ interfaces = {'USB'};
 %         interfaces(i) = [];
 %     end
 % end
-% 
+%
 % % Changed - MH/AM 11/11/2019 due to new PC having trouble with this command
 % % (and old PC few time over weekend
-% if isempty(interfaces)   
+% if isempty(interfaces)
 %     interfaces = {'USB'};
 %     disp(sprintf('USB Connection HardCoded due to zbus_bot.ConnectZBUS(interfaces{i})   error.\n***Should be OK for now.'))
 % %     waitfor(errordlg({'USB Connection HardCoded due to zbus_bot.ConnectZBUS(interfaces{i})   error.', ...
@@ -211,7 +211,7 @@ while ~testCON_RP_bot
     if ~handles.DEBUG_emulate
         testCON_RP_bot = handles.RP_bot.ConnectRP2('USB',2)  %12/13/19 - put in here to confirm NO connect
     else
-        testCON_RP_bot = 1; 
+        testCON_RP_bot = 1;
     end
     if ~testCON_RP_bot
         disp('FAILED TDT connection (Device #2), re-trying ...')
@@ -239,13 +239,13 @@ if eventdata == handles.interface
     if isempty(interface)
         set(hObject, 'Enable', 'off', 'Value', 1)
     else
-%         devices = {'RA16', 'RL2', 'RM1', 'RM2', 'RP2', 'RV8', ...
-%             'RX5', 'RX6', 'RX7', 'RX8'};
-%         for i = length(devices):-1:1
-%             if ~invoke(handles.RP_bot, ['Connect' devices{i}], interface, 2)
-%                 devices(i) = [];
-%             end
-%         end
+        %         devices = {'RA16', 'RL2', 'RM1', 'RM2', 'RP2', 'RV8', ...
+        %             'RX5', 'RX6', 'RX7', 'RX8'};
+        %         for i = length(devices):-1:1
+        %             if ~invoke(handles.RP_bot, ['Connect' devices{i}], interface, 2)
+        %                 devices(i) = [];
+        %             end
+        %         end
         devices = {'RP2'};
         if isempty(devices)
             errordlg({'There are no devices attached to this interface.', ...
@@ -275,7 +275,7 @@ function device_number_Callback(hObject, eventdata, handles)
 
 value = get(hObject, 'Value');
 if value ~= 1
-%     device = get_device(handles);
+    %     device = get_device(handles);
     interface = get_interface(handles);
     device_number = value - 1;
     if ~handles.DEBUG_emulate
@@ -309,15 +309,15 @@ if running(handles)
 elseif isempty(get_interface(handles)) || isempty(get_device(handles))
     set(hObject, 'Enable', 'off', 'Value', 1);
 elseif eventdata == handles.device
-
+    
     % M. Heinz - Aug 4, 2017
     %
-    % Hard Coded CHAMBER to set device number (ASSUMES TOP turned on 1st, 
+    % Hard Coded CHAMBER to set device number (ASSUMES TOP turned on 1st,
     % bottom turned on 2nd)
     % Saves device number in GUI - rather than Select - no option to Select
     % Removed "Select feature, which had error horzcat error anyway.
     
-%     CHAMBER='TOP'
+    %     CHAMBER='TOP'
     CHAMBER='BOTTOM'
     
     if strcmp(CHAMBER,'TOP')
@@ -326,23 +326,23 @@ elseif eventdata == handles.device
         set(hObject, 'Enable', 'on', 'String', '2');
     else
         errordlg('CHAMBER must be "TOP" or "BOTTOM"')
-    end  
-
-%     interface = get_interface(handles);
-%     device = get_device(handles);
-%     for highest_device = 1:16
-%         if ~invoke(handles.RP_bot, ['Connect' device], interface, highest_device)
-%             break
-%         end
-%     end
-%     highest_device = highest_device - 1;
-%     if highest_device == 1
-%         set(hObject, 'Enable', 'on', 'String', '1');
-%     else
-%         selection = [{'Select'} cellstr(num2str((1:highest_device)'))];
-%         set(hObject, 'Enable', 'on');
-%         set(hObject, 'String', selection);
-%     end
+    end
+    
+    %     interface = get_interface(handles);
+    %     device = get_device(handles);
+    %     for highest_device = 1:16
+    %         if ~invoke(handles.RP_bot, ['Connect' device], interface, highest_device)
+    %             break
+    %         end
+    %     end
+    %     highest_device = highest_device - 1;
+    %     if highest_device == 1
+    %         set(hObject, 'Enable', 'on', 'String', '1');
+    %     else
+    %         selection = [{'Select'} cellstr(num2str((1:highest_device)'))];
+    %         set(hObject, 'Enable', 'on');
+    %         set(hObject, 'String', selection);
+    %     end
 else
     set(hObject, 'Enable', 'on');
 end
@@ -1105,11 +1105,11 @@ if ~running(handles)
             end
         end
         
-
+        
         if getbar(handles)
             waitfor(warndlg('Make sure device panel is switched on', 'Power to device panel?', 'modal'))
         end
-
+        
         % AEH 12/12/13: Pellet dispenser test is optional
         % (so that extra pellets are not dispensed between different tests)
         testdisp = 0;
@@ -1126,7 +1126,7 @@ if ~running(handles)
             reinforce(handles);
             switch questdlg('Is there a pellet in the dispenser?', 'Dispenser check')
                 case 'Cancel'
-                    if ~handles.DEBUG_emulate          
+                    if ~handles.DEBUG_emulate
                         handles.RP_bot.Halt;
                     end
                     return
@@ -1134,7 +1134,7 @@ if ~running(handles)
                     break
             end
         end
-
+        
         set(hObject, 'String', 'Abort', 'ForeGroundColor', 'b')
         uiupdate(hObject, eventdata, handles);
         set(handles.output_log, 'String', {'Tr St    fileA ISI    fileB N Re Time'; ...
@@ -1163,14 +1163,14 @@ if ~running(handles)
                 fs_TDT = 48828;
             end
         end
-%         fprintf('TDT Sampling Freq = %.f Hz\n',round(fs_TDT))
+        %         fprintf('TDT Sampling Freq = %.f Hz\n',round(fs_TDT))
         handles.fs_TDT=fs_TDT; % for use in declare_sound_files functions to avoid extra calls to TDT to GetSFreq
-
+        
         replace_errors = get_replace(handles);
         replace_trial = logical(0);
         tbt = get_tbt(handles);
         tto = get_tto(handles);
-
+        
         Hts = 0; adj_Hts = 0;
         Mss = 0; adj_Mss = 0;
         CRs = 0; adj_CRs = 0;
@@ -1178,7 +1178,7 @@ if ~running(handles)
         Abs = 0; adj_Abs = 0;
         tic
         t = 0;
-
+        
         %         % AEH edit
         %         global mancount
         %         global animpresscount
@@ -1189,16 +1189,16 @@ if ~running(handles)
         magtraincount = 0; % AEH
         nplayfromfile = max(handles.nplist); % needed below in np results: setfield, getfield
         stimdatacount = 1;
-
+        
         np_results = repmat(struct('Ab', 0, 'Ht', 0, 'Ms', 0, 'CR', 0, 'FA', 0), length(handles.nplist), 1);
         targets = get_target_reps(handles);
-
+        
         %         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %         % JUST FOR playing tone to SR1
         %                 targets = 100000;
         %         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+        
+        
         %         if targets == 0 % AEH commented out this section 130909
         %             targets = 3;
         %             bbb = logical(1);
@@ -1206,14 +1206,14 @@ if ~running(handles)
         %             bbb = logical(0);
         %         end
         %         handles.RP_bot.SetTagVal('BBB', bbb);
-
-
+        
+        
         for trial = 1:reps
             if ~running(handles)
                 break
             end
             handles = shuffle(hObject,handles);
-
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%% AEH modified 11/16/13
             % generate array of randomized hold times first,
@@ -1224,11 +1224,11 @@ if ~running(handles)
             % 141009 ALL CHINS ON 1-6s
             ChinID = get_id(handles);
             %if strcmp(ChinID,'Q201') || strcmp(ChinID,'Q206') || strcmp(ChinID,'Q213')
-                %randmax = 4;
-                % AM edited to 8 max 092915
-            %else            
-%             randmax= 8;
-                   
+            %randmax = 4;
+            % AM edited to 8 max 092915
+            %else
+            %             randmax= 8;
+            
             %end
             nplayfromfile = max(handles.nplist); % get "dummy" from file
             if nplayfromfile==999 || nplayfromfile==998 || nplayfromfile==997 ...
@@ -1310,7 +1310,7 @@ if ~running(handles)
                     attenarrayNoise = [attenarrayNoise;sortedarray(:,1)];
                 end
             end
-
+            
             if nplayfromfile==994 || nplayfromfile==993 % vary wav files for SAM discrim (AEH 140926)
                 attenarrayAMdB = [];
                 for attencount = 1:3 % 3 reps for Tone in Noise
@@ -1354,7 +1354,7 @@ if ~running(handles)
                             strIND1_fmod=findstr(handles.stmlist(handles.stmidx(stim)).name2,'kHz')+3;
                             strIND2_fmod=findstr(handles.stmlist(handles.stmidx(stim)).name2,'hzAM')-1;
                             AM_modfreq_Hz = str2num(handles.stmlist(handles.stmidx(stim)).name2(strIND1_fmod:strIND2_fmod));  % save scalar for this condition
-
+                            
                             strIND1_moddepth=findstr(handles.stmlist(handles.stmidx(stim)).name2,'dBT_')+4;
                             strIND2_moddepth=findstr(handles.stmlist(handles.stmidx(stim)).name2,'dBAM')-1;
                             AM_moddepth_dB = str2num(handles.stmlist(handles.stmidx(stim)).name2(strIND1_moddepth:strIND2_moddepth));  % save scalar for this condition
@@ -1386,7 +1386,7 @@ if ~running(handles)
                             % No Level
                             strIND1_No=underscoreINDs(2)+3;
                             strIND2_No=underscoreINDs(3)-1;
-                            % No Level
+                            % T Level
                             strIND1_T=underscoreINDs(3)+2;
                             strIND2_T=underscoreINDs(4)-1;
                             % Edited June 28 - to explicitly save T and No
@@ -1401,9 +1401,9 @@ if ~running(handles)
                     end
                 end
             end
-
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+            
             stim = 1;
             stimcount = 1; % for counting SPLs in level-varying paradigms
             while stim <= length(handles.stmidx) && magtraincount < 111
@@ -1414,11 +1414,11 @@ if ~running(handles)
                 if isempty(npidx)
                     npidx = randperm(length(handles.nplist));
                 end
-
+                
                 if ~handles.DEBUG_emulate
                     handles.RP_bot.SetTagVal('ISI', handles.stmlist(handles.stmidx(stim)).isi);
                 end
-
+                
                 %                 if length(handles.nplist) > 1 && handles.stmlist(handles.stmidx(stim)).test
                 % test stimuli always have an NP of 5
                 %                     if max(handles.nplist) > 5
@@ -1486,7 +1486,7 @@ if ~running(handles)
                 if ~handles.DEBUG_emulate
                     handles.RP_bot.SetTagVal('NB', nb);
                 end
-
+                
                 atten1 = get_atten1(handles);
                 atten2 = get_atten2(handles);
                 if get_rove(handles)
@@ -1532,11 +1532,11 @@ if ~running(handles)
                     atten2 = attenarrayQuiet(stimcount);
                 elseif handles.stmlist(handles.stmidx(stim)).test && nplayfromfile==999 % Shape/Rand/CT
                     atten1 = 120;
-%                     atten2 = 0;
-                    atten2 = 10;    %11-02-2015 edited MKW for SAM-NN to bring OAL down to 67dBOAL 
-                                    %since stim switched from 4kHzSAM20HzT.wav to 4kHz80dBT_0dBAM_NN.wav
-                                    %to add NN to probe stimulus during RC Sam training next step creep
-                                    %standard Tone-in NN up in level
+                    %                     atten2 = 0;
+                    atten2 = 10;    %11-02-2015 edited MKW for SAM-NN to bring OAL down to 67dBOAL
+                    %since stim switched from 4kHzSAM20HzT.wav to 4kHz80dBT_0dBAM_NN.wav
+                    %to add NN to probe stimulus during RC Sam training next step creep
+                    %standard Tone-in NN up in level
                 elseif handles.stmlist(handles.stmidx(stim)).test && nplayfromfile==997 % TINTrain (Signal Trial)
                     atten1 = 10; % do not attenuate standard stimulus (noise bursts)
                     atten2 = 10; % do not attenuate signal (TIN)
@@ -1560,7 +1560,7 @@ if ~running(handles)
                 a1 = atten1;
                 a2 = atten2;
                 thisSPL = 80-atten2; % for display purposes only
-
+                
                 % AEH moved here after "atten2" is set, while in "dB"
                 if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
                     if handles.stmlist(handles.stmidx(stim)).same
@@ -1599,14 +1599,14 @@ if ~running(handles)
                         disp([testtype,' trial, Standard at ',num2str(atten1),' dB atten, Test at ',num2str(atten2),' dB atten, ',num2str(nplay),'s hold time',]);
                     end
                 end
-
+                
                 atten1 = 10^(-atten1/20);
                 atten2 = 10^(-atten2/20);
-
+                
                 %                if handles.stmlist(handles.stmidx(stim)).same
                 %                    atten2 = atten1;
                 %                end
-
+                
                 % AEH added 1/13/14
                 % allow user to control noise and tone levels independently
                 % and keep "old" way of attenuating .wav files for previous templates
@@ -1683,16 +1683,35 @@ if ~running(handles)
                         end
                     end
                 else  % 893, 892 , 891, 890 MH: 040620 new simple********
-                    if ~declare_sound_file(handles, handles.stmlist(handles.stmidx(stim)).name1, 'StimA', atten1)
-                        set(hObject, 'String', '')
-                        break
-                    end
-                    if ~declare_sound_file(handles, handles.stmlist(handles.stmidx(stim)).name2, 'StimB', atten2)
-                        set(hObject, 'String', '')
-                        break
+                    if ~handles.DEBUG_emulate
+                        if ~declare_sound_file(handles, handles.stmlist(handles.stmidx(stim)).name1, 'StimA', atten1)
+                            set(hObject, 'String', '')
+                            break
+                        end
+                        if ~declare_sound_file(handles, handles.stmlist(handles.stmidx(stim)).name2, 'StimB', atten2)
+                            set(hObject, 'String', '')
+                            break
+                        end
+                    else  % Human version
+                        standard=declare_sound_file_Human(handles, handles.stmlist(handles.stmidx(stim)).name1, 'StimA', atten1); % Standard
+                        signal=declare_sound_file_Human(handles, handles.stmlist(handles.stmidx(stim)).name2, 'StimB', atten2); % Signal
                     end
                 end
+                standard = standard';
+                signal = signal'
+                
+                %% Create stimulus HERE (apply scaling to be same MAXamp)
+                % nplay versions of standard, with silence in between ;
+                % then (nb=4); SIG sil STD sil SIG sil STD sil 
+                % [standard zeros(size(standard) standard
+                % zeros(size(standard) ... standard zeros(size(standard) ||
+                % signal zeros(size(standard) standard zeros(size(standard)
+                % signal zeros(size(standard) standard zeros(size(standard) ];
+                
+                stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08;
+%                 sound(stimulus,handles.fs_TDT)                
 
+                
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -1702,20 +1721,35 @@ if ~running(handles)
                     break
                 end
                 startTime = datestr(now,13);
-                wait_for_bar_press(handles,nplayfromfile);
+                wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
+                input('Press Enter to Start trial')
+                
                 if ~running(handles)
                     break
                 end
-
+                
                 %% Nov 15 2019 - when breakpoint here, all works.  OW/ often getting 500ms rt even when hold
                 % maybe new PC too fast?  Add in 1 sec pause here.
                 % Tried 1, .5, .1 - ALL WORKED.  yes just too fast a PC
-                pause(.1);  
-                play_pair(hObject, eventdata, handles);
+                pause(.1);
+                play_pair(hObject, eventdata, handles);  % Replace with play_pair_Human
+                
 
+                %% rt = play_pair_HUMAN structure
+                % Press Enter to start trial
+                % tic
+                % sound(stimulus)
+                % wait for space bar press
+                % toc
+                % shut off sound (see Rose's code ADC = audioplayer??)
+                % rt = toc - tic (in seconds?)
+                % return rt to main run 
+                
+                
+                
                 %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
                 %                keyboard
-
+                
                 if getbar(handles)
                     pause(handles.stmlist(handles.stmidx(stim)).isi/1000)
                 else
@@ -1727,7 +1761,7 @@ if ~running(handles)
                 else
                     count = 4;  % ??? what should this be?
                 end
-
+                
                 %                 if handles.stmlist(handles.stmidx(stim)).same
                 % %                     fprintf('#%d: same\n', stim)
                 %                 else
@@ -1735,14 +1769,16 @@ if ~running(handles)
                 %                 end
                 result = 'xx';
                 AbCriterion = 0;
-
+                
                 % response time in miliseconds (duration of lever press)
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000);
                 else
-                    rt = (nplay)*1000+150+500;
+                    rt = (nplay)*1000+150+500;   %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
                 end
-
+                
+                %% FROM HERE, all is the same  %% 
+                 
                 if nplayfromfile==800 % magazine training
                     reinforce(handles); % reward!
                     reward_count = reward_count+1;
@@ -1761,7 +1797,7 @@ if ~running(handles)
                     if nplayfromfile < 20 % shaping
                         AbCriterion = (nplay)*1000+150;  %MH_AM:9/10/2018 fix dumWav.wav
                         HtCriterion = (nplay)*1000+4000;  % MH_AM:9/10/2018 fix dumWav.wav
-                    elseif nplayfromfile==999 || nplayfromfile==998 % Random or PTA                                   
+                    elseif nplayfromfile==999 || nplayfromfile==998 % Random or PTA
                         AbCriterion = (nplay)*1000+150;  % MH_AM:9/10/2018 fix dumWav.wav
                         %should be 4000  *BUT - MATLAB is timing out after 3000ms. and rewarding MISSES***
                         % FIND WHERE THIS IS HAPPENING FOR RC - it's OK for
@@ -1776,8 +1812,8 @@ if ~running(handles)
                         AbCriterion = (nplay)*1000+150;
                         HtCriterion = (nplay)*1000+4000; % AH/MH/MW 20170619 4s RT for SAM and SAMNN, need to make this variable based
                     end
-%                     AbCriterion
-%                     HtCriterion
+                    %                     AbCriterion
+                    %                     HtCriterion
                     if ScoreFlag % there are test trials and same trials
                         if (rt <= AbCriterion)
                             result = 'Ab';
@@ -1799,7 +1835,7 @@ if ~running(handles)
                             result = 'Ms';
                         end
                     end
-
+                    
                     if strcmp(result, 'Ht') || strcmp(result, 'CR')... % returned CR on 141002
                             %|| (handles.stmlist(handles.stmidx(stim)).test && strcmp(result, 'Ms'))
                         reinforce_count = reinforce_count + 1;
@@ -1842,17 +1878,17 @@ if ~running(handles)
                         end
                     end
                 end
-
+                
                 while getbar(handles)  % MICRO LOOP needs pauses
                     pause(0.1);  % CHECK THIS IS OK??  MH/AM Jan 22 2020
                 end
                 set(handles.bar, 'BackGroundColor', get(gcbf, 'Color'))
                 drawnow
-
+                
                 tic
-
+                
                 %                 rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000);
-
+                
                 if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
                     % This gets saved to file
                     fprintf(handles.fid, '%s Trial: %d; Stim: %d; %s %d %s %d %s %4d A1: %.1f A2: %.1f\n', ...
@@ -1876,7 +1912,7 @@ if ~running(handles)
                         handles.stmlist(handles.stmidx(stim)).name2, ...
                         nplay, result, rt, a1, a2); % AEH 130905 added 1 for display purposes
                 end
-
+                
                 if nplayfromfile~=800 % not magazine training
                     % This is displayed during test for experimenter to see
                     if handles.stmlist(handles.stmidx(stim)).same
@@ -1907,7 +1943,7 @@ if ~running(handles)
                             handles.stmlist(handles.stmidx(stim)).name2, ...
                             nplay, result, rt)}]); % AEH 130905 added 1 for display purposes
                     end
-
+                    
                     %                 if ~handles.stmlist(handles.stmidx(stim)).test
                     eval(sprintf('%ss = %ss + 1;', result, result));
                     if ~replace_trial
@@ -1918,7 +1954,7 @@ if ~running(handles)
                         1 + getfield(np_results, {handles.nplist == nplayfromfile}, result, {1}));
                     %                 end
                 end
-
+                
                 if handles.stmlist(handles.stmidx(stim)).test ...
                         | strcmp(result, 'Ht') | strcmp(result, 'CR') ...
                         | strcmp(result, 'Ab')
@@ -1926,7 +1962,7 @@ if ~running(handles)
                 else
                     t = tto;
                 end
-
+                
                 stimdata.trialType{stimdatacount} = testtype;
                 stimdata.standard{stimdatacount} = handles.stmlist(handles.stmidx(stim)).name1;
                 stimdata.signalOrCatch{stimdatacount} = handles.stmlist(handles.stmidx(stim)).name2;
@@ -1938,9 +1974,9 @@ if ~running(handles)
                 %                 response.stimNum % REVISIT
                 response.holdTime(stimdatacount) = rt/1000;
                 response.score{stimdatacount} = result;
-
+                
                 replace_trial = logical(0);
-
+                
                 %% AEH modified 12/3/13
                 if ScoreFlag==0 % only test trials (shaping or random without catch trials)
                     if replace_errors & handles.stmlist(handles.stmidx(stim)).test ...
@@ -1969,10 +2005,10 @@ if ~running(handles)
                         stim = stim + 1;
                     end
                 end
-
+                
             end % end of while stim<=length stims
         end
-
+        
         % AEH modified 140505 moved this section out of running loop:
         %         if running(handles)
         %             fprintf(handles.fid, '\n------------------------------------------------\nExperiment Parameters\n\n');
@@ -2141,13 +2177,13 @@ drawnow
 BarCheck_resolution_ms=100;
 bcCOUNT=1;
 temp_Playing = 1;
-while temp_Playing 
+while temp_Playing
     if ~handles.DEBUG_emulate
         temp_Playing = handles.RP_bot.GetTagVal('Playing');
     else
         temp_Playing = 0; % end trial?
     end
-%     fprintf('Waiting for Trial to END (check each %.0f ms): %d\n   ***Playing = %d\n',BarCheck_resolution_ms,bcCOUNT,temp_Playing)
+    %     fprintf('Waiting for Trial to END (check each %.0f ms): %d\n   ***Playing = %d\n',BarCheck_resolution_ms,bcCOUNT,temp_Playing)
     pause(BarCheck_resolution_ms/1000)
     bcCOUNT=bcCOUNT+1;
 end
@@ -2182,11 +2218,11 @@ test_bot.ZeroTag=0;
 MAXtrys=10;
 TRYnum=1;
 while ~test_bot.ZeroTag
-%     buffer
+    %     buffer
     if ~handles.DEBUG_emulate
         test_bot.ZeroTag = handles.RP_bot.ZeroTag(buffer)
     else
-        test_bot.ZeroTag = 1; 
+        test_bot.ZeroTag = 1;
     end
     if ~test_bot.ZeroTag
         fprintf('FAILED TDT ZeroTag (Unable to clear buffer) (TRY #: %d), re-trying ...\n',TRYnum)
@@ -2196,9 +2232,9 @@ while ~test_bot.ZeroTag
         else
             TRYnum=TRYnum+1;
             pause(1)
-        end        
+        end
     else
-%         disp(sprintf('ZeroTag SUCCESS (ABLE to clear buffer: %s) ',buffer))
+        %         disp(sprintf('ZeroTag SUCCESS (ABLE to clear buffer: %s) ',buffer))
     end
 end
 
@@ -2219,6 +2255,34 @@ if ~handles.DEBUG_emulate
 end
 
 success = logical(1);
+
+
+%% ADDING new function for Human Emulate version
+function stim = declare_sound_file_Human(handles, filename, buffer, atten)
+
+filename = fullfile('stim', filename);
+try
+    [stim fs] = audioread(strcat(filename,'.wav'));     % [stim fs] = wavread(filename);
+catch
+    err = lasterror;
+    waitfor(errordlg(sprintf('Unable to open %s:\n%s', strcat(filename,'.wav'), err.message), ...
+        'File error', 'modal'))
+    return
+end
+
+% stim = [zeros(10,1); 10*atten*stim; zeros(10,1)];
+stim = [zeros(10,1); stim; zeros(10,1)];   % NO attenuation for now
+
+if fs ~= round(handles.fs_TDT)
+    waitfor(errordlg(sprintf('Sampling rate of sound file (%d Hz) does not match that of device (%d Hz).', ...
+        round(fs), round(handles.fs_TDT)), 'Sound File Error', 'modal'))
+    return
+end
+
+
+
+
+
 
 %% AEH added 1/12/14
 % Play tone and noise waveforms simultaneously
@@ -2342,9 +2406,9 @@ if ~accepted(handles)
             waitfor(errordlg(sprintf('Unable to find %s.', stm_file), 'File error', 'modal'));
             return
         end
-%         if ~invoke(handles.RP_bot, ['Connect' get_device(handles)], get_interface(handles), ...
-%                 get_device_number(handles))
-% 12/13/19 - still not working
+        %         if ~invoke(handles.RP_bot, ['Connect' get_device(handles)], get_interface(handles), ...
+        %                 get_device_number(handles))
+        % 12/13/19 - still not working
         if ~handles.DEBUG_emulate
             if ~handles.RP_bot.ConnectRP2(get_interface(handles),get_device_number(handles))
                 waitfor(errordlg(sprintf('Unable to connect to device %s #%d on %s interface.', ...
@@ -2633,11 +2697,11 @@ while barTEMP~=0 & barTEMP~=1
         bTEMP = randperm(2)-1;
         barTEMP = bTEMP(1);
     end
-%     fprintf('bar = %d\n',barTEMP);
+    %     fprintf('bar = %d\n',barTEMP);
 end
 barVALUE=barTEMP;
 
-function pressed = bar_pressed(handles)  % 0 or 1 returned 
+function pressed = bar_pressed(handles)  % 0 or 1 returned
 
 barVALUE=getbar(handles);  % Clean (no glitches) version of barVALUE
 % Only do this after getting a non-jibberish value
@@ -2657,17 +2721,17 @@ function wait_for_bar_press(handles,nplayfromfile)
 switch_lamp(handles, logical(0));
 
 % MH/AM - Jan 9 2020 - MicroLoop *** causes problems for other system
-% connecting when this one is busy "checking" bar and aborts ALL THE TIME 
+% connecting when this one is busy "checking" bar and aborts ALL THE TIME
 % need pause to give some time to breathe, but need to keep bar check to
 % every 10 ms to keep RT computation accurate enough for time window
-% 150-4000 determination.  
-% ** IF EVER need really accurate RT, this will need revisted. 
+% 150-4000 determination.
+% ** IF EVER need really accurate RT, this will need revisted.
 % So, for now we have a precision of <10-ms for bar press and <10-ms for
 % bar release, so RT has precision of <20-ms!!  Need to keep in mind.
 %
 % What we want check bar every 10?? ms, check ABORT every 200 ms
 %
-%MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout 
+%MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout
 % USE these parameters throughout in ALL MicroLoops to manage timing with
 % breathes to avoid other chamber conflicts, but in a way we know the
 % resolutions we want.
@@ -2678,11 +2742,11 @@ AbortCheck_resolution_ms=200;
 bcCOUNT=0;
 while bar_pressed(handles)
     bcCOUNT=bcCOUNT+1;
-%     fprintf('BarReleaseCheck %d\n',bcCOUNT)
+    %     fprintf('BarReleaseCheck %d\n',bcCOUNT)
     pause(BarCheck_resolution_ms/1000)
     % Only if AbortCheck resolution has passed, check for Abort
     if bcCOUNT>=(round(AbortCheck_resolution_ms/BarCheck_resolution_ms))
-%         disp('AbortCheck')
+        %         disp('AbortCheck')
         if ~running(handles)  % Added pause(.1) inside running to slow downs  %MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout
             break
         end
@@ -2700,11 +2764,11 @@ end
 bcCOUNT=0;
 while ~bar_pressed(handles)
     bcCOUNT=bcCOUNT+1;
-%     fprintf('BarPressCheck %d\n',bcCOUNT)
+    %     fprintf('BarPressCheck %d\n',bcCOUNT)
     pause(BarCheck_resolution_ms/1000)
     % Only if AbortCheck resolution has passed, check for Abort
-    if bcCOUNT>=(round(AbortCheck_resolution_ms/BarCheck_resolution_ms)) 
-%         disp('AbortCheck')
+    if bcCOUNT>=(round(AbortCheck_resolution_ms/BarCheck_resolution_ms))
+        %         disp('AbortCheck')
         if ~running(handles)  % Added pause(.1) inside running to slow downs  %MH/AM Jan 9 2020 - need to slow this down to avoid checking a million times a second in the tiny loops used throughout
             break
         end

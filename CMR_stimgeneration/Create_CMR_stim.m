@@ -77,8 +77,8 @@ end
 % Adjust to find threshold
 %%%%%%%%%%%%%%%%%%%
 %% LATER - 
-levelVEC_tone_dBSPL = 30:4:70;  % ALL tone levels to include
-NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
+NoVEC_dBSPL_Hz=25;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
 rft_tone_sec=150/1000;
@@ -247,7 +247,7 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         %% Play sounds
         
         disp('Playing Standard the Signal:  REF condition then CORR then ACORR')
-        soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
+        sound([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
             standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
             standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
         
