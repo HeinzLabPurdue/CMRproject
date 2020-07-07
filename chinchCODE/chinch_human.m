@@ -1399,7 +1399,7 @@ if ~running(handles)
                 end
 
                 if ~handles.DEBUG_emulate
-                    handles.RP_bot.SetTagVal('ISI', handles.stmlist(handles.stmidx(stim)).isi); %ActiveX object for TDT
+                    handles.RP_bot.SetTagVal('ISI', handles.stmlist(handles.stmidx(stim)).isi);
                 end
 
                 %                 if length(handles.nplist) > 1 && handles.stmlist(handles.stmidx(stim)).test
@@ -1694,16 +1694,15 @@ if ~running(handles)
                 % maybe new PC too fast?  Add in 1 sec pause here.
                 % Tried 1, .5, .1 - ALL WORKED.  yes just too fast a PC
                 
+                
                 %Start trial when user hits spacebar
                 %play trial, start tic
                 %when release use toc
                 %check the release time and verify its in the right window
                 
-                %see if you can stop sound play
                 
                 pause(.1);  
-                
-                play_pair(hObject, eventdata, handles); %replace with emulate_TDT_trial, measure the spacebar output and integrate with 
+                play_pair(hObject, eventdata, handles);
 
                 %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
                 %                keyboard
@@ -1729,13 +1728,10 @@ if ~running(handles)
                 AbCriterion = 0;
 
                 % response time in miliseconds (duration of lever press)
-                
-                %debug_emulate = 1 allow to run without TDT
-                
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000);
                 else
-                    rt = (nplay)*1000+150+500; %time allowed for response, makes sure it's in the window
+                    rt = (nplay)*1000+150+500;
                 end
 
                 if nplayfromfile==800 % magazine training
@@ -2150,8 +2146,6 @@ end
 set(handles.play, 'BackGroundColor', get(gcbf, 'Color'))
 drawnow
 
-
-%Send to TDT
 function success = declare_sound_file(handles, filename, buffer, atten)
 
 success = logical(0);
