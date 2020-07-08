@@ -4,7 +4,7 @@
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
-% Updated Jun 7 2020 
+% Updated Jul 7 2020 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
 %  estimates to see if any diffs, since chins see to be broadband
@@ -63,24 +63,25 @@ ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 H
 %  auditory-filter bandwidths and excitation patterns" Journal of the Acoustical Society of America 74: 750-753, 1983. 
 %% Menu Selection: Chin or Human
 % Pick chin (C) or human (H)
-subjectPrompt = '\nSubject: Chinchilla (C) OR Human (H) -> ';
-subject = input(subjectPrompt);
+subject = input('\nSubject --> Chinchilla (C) OR Human (H): ','s');
+CMRstimuli = input('\nType of CMR stimuli: ','s');
 if subject == 'C' || subject == 'c'
    BWnoise_Hz = ERB_chin_Hz;
    fprintf('...Using chin ERBs\n')
-   CMRcondition='CMR2_Chin';
-else if subject == 'H' || subject == 'h' 
+   CMRcondition = sprintf('%s_Chin',CMRstimuli);
+end
+if subject == 'H' || subject == 'h' 
         BWnoise_Hz = ERB_human_Hz;
         fprintf('...Using human ERBs\n')
-        CMRcondition='CMR2_Human';
+        CMRcondition = sprintf('%s_Human',CMRstimuli);
 else
     error('Please enter a valid character (C or H)');
-    end
+  
 end
 % CMR condition predetermined from Menu option (CMRChin or CMRHuman)
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
-levelVEC_tone_dBSPL = 35:3:65;  % ALL tone levels to include
+levelVEC_tone_dBSPL = 0:5:65;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
@@ -142,11 +143,9 @@ noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
 noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation 
 noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
 %% Generate all tone levels
-signalsavePrompt = '\nSave audio files (Y/N): ';
-signalsave_user = input(signalsavePrompt);
+signalsave_user = input('\nSave audio files (Y/N): ', 's');
 if signalsave_user == 'Y' || signalsave_user == 'y'
-    signalplotPrompt = '\nPlot audio files (Y/N): ';
-signalplot_user = input(signalplotPrompt);
+signalplot_user = input('\nPlot audio files (Y/N): ','s');
 end
 % cannot plot signals if they are not saved
 if signalsave_user == 'N' || signalsave_user == 'n'
@@ -208,14 +207,16 @@ if signalsave_user == 'Y' || signalsave_user == 'y'
         sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  
         
         cd('new_signals')
+        cd CMR2C % CHANGE FOLDER TO TYPE OF STIMULI
         fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
         audiowrite(std_REF_fname,standard_REF,Fs_Hz)
         audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
         audiowrite(std_CORR_fname,standard_CORR,Fs_Hz)
         audiowrite(sig_CORR_fname,signal_CORR,Fs_Hz)
         audiowrite(std_ACORR_fname,standard_ACORR,Fs_Hz)
-        audiowrite(sig_ACORR_fname,signal_ACORR,Fs_Hz)
-        cd('../')      
+        audiowrite(sig_ACORR_fname,signal_ACORR,Fs_Hz)   
+        cd ../
+        cd ../
 end % save files prompt
         %% Plot Stimuli
 if signalplot_user == 'Y' || signalplot_user == 'y'
@@ -261,7 +262,30 @@ if signalplot_user == 'Y' || signalplot_user == 'y'
 end % plot prompt
     end % tone levels
 end % noise levels
+%% Normalize output amplitude
+standard_output = [max(max(abs(standard_output_REF))) max(max(abs(standard_output_CORR))) max(max(abs(standard_output_ACORR)))];
+signal_output = [max(max(abs(signal_output_REF))) max(max(abs(signal_output_CORR))) max(max(abs(signal_output_ACORR)))];
+max_standard_output = max(standard_output);
+max_signal_output = max(signal_output);
+max_amplitude = 0;
+% max amplitude is signal
+if max_signal_output > max_standard_output
+    max_amplitude = max_signal_output;
+end
+% max amplitude is standard
+if max_standard_output > max_signal_output
+    max_amplitude = max_standard_output;
+end 
+standard_output_REF = standard_output_REF/max_amplitude;
+standard_output_CORR = standard_output_CORR/max_amplitude;
+standard_output_ACORR = standard_output_ACORR/max_amplitude;
+signal_output_REF = signal_output_REF/max_amplitude;
+signal_output_CORR = signal_output_CORR/max_amplitude; 
+signal_output_ACORR = signal_output_ACORR/max_amplitude;
 %% save signal and standard output vectors
 cd new_signals
-CMRstimuli = sprintf('%s_Stimuli.wav',CMRcondition);  % test condition1
-save('CMR2stimuli','standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
+cd CMR2C % CHANGE FOLDER TO TYPE OF STIMULI
+filename = sprintf('%s_Stimuli.mat',CMRcondition);  % test condition1
+save(filename,'standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
+cd ../
+cd ../
