@@ -1,8 +1,6 @@
 % File: Pilot_CMR_testing.m
 % Created: Fernando Aguilera - Jun 16 2020
-% Last Modified by: Andrew Sivaprakasam- July 1 2020
-    %-Just added 's' in inputs to make run properly on my computer
-    
+% Last Modified by: Fernando Aguilera - July 7 2020
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -14,9 +12,19 @@
 %% Requirement
 clear all; close all; clc;
 % Load stimuli from folder "new_signals"
+CMRstimuli = input('\nType of CMR stimuli: ','s');
+subject = input('\nSubject --> Chinchilla (C) OR Human (H): ','s');
+if subject == 'H' || subject == 'h'
+    subject = 'Human';
+elseif subject == 'C' || subject == 'c'
+    subject = 'Chin';
+else
+    error('Please enter a valid character (C or H)');
+end
+filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
 cd new_signals
-load('CMR2stimuli.mat');
-cd ../
+cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+load(filename);
 %% USER INTERFACE
 % User input
 userID = input('\nUser ID: ','s');
@@ -27,28 +35,143 @@ end
 if isempty(userID)
     userID = 'X';
 end
-fprintf('\n\nInstructions:\n\nYou will be presented a set of two audio samples for 66 trials.');
-fprintf('\nAfter each trial, you will need to indicate in which interval (1 or 2) you heard the tone.');
-fprintf('\nThe sound level of the tone will vary across trials, so sometimes it will be hard to detect the tone.');
-fprintf('\nMake sure to record an answer for all trial even if you are not sure.');
-fprintf('\nThe tone presented will be similar to the audio sample used for volume setting.');
 fprintf('\n\nVolume Setting:');
 fprintf('\n\nPlease, select a comfortable volume setting based on the following audio sample.');
 input('\nPress Enter to play audio sample');
 fprintf('Playing audio sample...');
 sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-
-volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
-while volume_setup == 'Y' || volume_setup == 'y'
+volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s'); 
+while volume_setup == 'Y' || volume_setup == 'y' || isempty(volume_setup)
     fprintf('Playing audio sample...');
     sound(signal_output_REF(1,:),Fs_Hz); % softest tone in REF condition for user reference
-    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s') %LINE MODIFIED
-    
+    volume_setup = input('\nWould you like to replay the audio sample? (Y/N): ','s');
 end
+fprintf('\n\nInstructions:');
+fprintf('\n\nTo begin, make sure you are in a quiet room wearing WIRED headphones or earphones. Please do not use computer speakers');
+fprintf('\nYou will be presented a set of two audio samples for a total of 66 times.');
+fprintf('\nAfter each trial, you will need to indicate in which interval (1 or 2) you heard the tone.');
+fprintf('\nThe sound level of the tone will vary across trials, so sometimes it will be hard to detect the tone.');
+fprintf('\nMake sure to record an answer for all trials even if you are not sure.');
 fprintf('\nNOTE: Make sure to keep the volume unchanged until the testing block is completed.');
 fprintf('\n      Please, allow both audios to finish playing before answering the question.');
-fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n');
+demoBlock = input('\n\nWould you like to have a demo block before starting testing block? (Y/N): ','s');
+demoScore = 0;
+if demoBlock == 'Y' || demoBlock == 'y' || isempty(demoBlock)
+%% Pre-task user demo
+fprintf('\n\nDEMO BLOCK: \n\nYou will be presented with a 6-trial demo to familiarize yourself with the testing task. You are allowed to repeat this demo as many times as you would like.');
+fprintf('\nThis demo is meant to guide you through a similar behavioral task in order for you to fully understand the actual testing task. NO DATA WILL BE RECORDED FOR THE DEMO BLOCK');
+input('\nPress Enter when you are ready to begin the demo block');
+fprintf('***********************************************************************************************');
+fprintf('\n\nDEMO BLOCK WILL BEGIN NOW\n');
+demo_trials = 6;
+demo_parameters = zeros(demo_trials,3);
+demo_parameters(:,1) = levelVEC_tone_dBSPL(end); % loudest tone level
+for i = 1:demo_trials
+    if i <= demo_trials/3
+        demo_parameters(i,2) = 1; % REF
+        if i <= (demo_trials/6)
+                demo_parameters(i,3) = 1; % standard first, signal second
+        end
+        if i > (demo_trials/6) && i <= (demo_trials/3)
+            demo_parameters(i,3) = 2; % signal first, standard second
+        end
+    elseif i >= demo_trials/3 && i <= 2*demo_trials/3
+        demo_parameters(i,2) = 2; % CORR
+        if i > (demo_trials/3) && i <= (demo_trials/2)
+                demo_parameters(i,3) = 1; % standard first, signal second
+        end
+        if i > (demo_trials/2) && i <= (2*demo_trials/3)  
+            demo_parameters(i,3) = 2; % signal first, standard second
+        end
+    else
+        demo_parameters(i,2) = 3; % ACORR
+        if i > (2*demo_trials/3) && i <= (5*demo_trials/6)
+                demo_parameters(i,3) = 1; % standard first, signal second
+        end
+        if i > (5*demo_trials/6) && i <= demo_trials
+            demo_parameters(i,3) = 2; % signal first, standard second
+        end
+    end
+end
+% Play sounds for demo
+demoResponse = 'Y';
+while demoResponse == 'Y' || demoResponse == 'y'
+for i = 1:length(demo_parameters)
+% REF user input/output
+if demo_parameters(i,2) == 1 % REF
+    input('\nPress Enter to play audio');
+    fprintf('\nPlaying audio #%d\n',i);
+        if demo_parameters(i,3) == 1 % standard is played first
+            sound([standard_output_REF(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_REF)) signal_output_REF(length(levelVEC_tone_dBSPL),:) ],Fs_Hz);
+        elseif demo_parameters(i,3) == 2 % signal is played first
+            sound([signal_output_REF(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_REF)) standard_output_REF(length(levelVEC_tone_dBSPL),:)],Fs_Hz);
+        else
+            fprintf('\nError: Cannot play audio');
+        end
+    % Collect user input            
+    response = input('In which interval (1 or 2) did you hear the tone? ');
+        if isempty(response) 
+            fprintf('\nERROR: Invalid input\n');
+            response = 0;
+        elseif response == demo_parameters(i,3)
+            fprintf('\nINCORRECT\n');
+        elseif response ~= demo_parameters(i,3)
+            fprintf('\nCORRECT\n');
+            demoScore = demoScore + 1;
+        end    
+elseif demo_parameters(i,2) == 2 % CORR
+    input('\nPress Enter to play audio');
+    fprintf('\nPlaying audio #%d\n',i);
+        if demo_parameters(i,3) == 1 % standard is played first
+            sound([standard_output_CORR(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_CORR)) signal_output_CORR(length(levelVEC_tone_dBSPL),:) ],Fs_Hz);
+        elseif demo_parameters(i,3) == 2 % signal is played first
+            sound([signal_output_CORR(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_CORR)) standard_output_CORR(length(levelVEC_tone_dBSPL),:)],Fs_Hz);
+        else
+            fprintf('\nError: Cannot play audio');
+        end
+    % Collect user input            
+    response = input('In which interval (1 or 2) did you hear the tone? ');
+        if isempty(response) 
+            fprintf('\nERROR: Invalid input\n');
+            response = 0;
+        elseif response == demo_parameters(i,3)
+            fprintf('\nINCORRECT\n');
+        elseif response ~= demo_parameters(i,3)
+            fprintf('\nCORRECT\n');
+            demoScore = demoScore + 1;
+        end    
+elseif demo_parameters(i,2) == 3 % ACORR
+    input('\nPress Enter to play audio');
+    fprintf('\nPlaying audio #%d\n',i);
+        if demo_parameters(i,3) == 1 % standard is played first
+            sound([standard_output_ACORR(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_ACORR)) signal_output_ACORR(length(levelVEC_tone_dBSPL),:) ],Fs_Hz);
+        elseif demo_parameters(i,3) == 2 % signal is played first
+            sound([signal_output_ACORR(length(levelVEC_tone_dBSPL),:) zeros(1,length(standard_output_ACORR)) standard_output_ACORR(length(levelVEC_tone_dBSPL),:)],Fs_Hz);
+        else
+            fprintf('\nError: Cannot play audio');
+        end
+    % Collect user input            
+    response = input('In which interval (1 or 2) did you hear the tone? ');
+        if isempty(response) 
+            fprintf('\nERROR: Invalid input\n');
+            response = 0;
+        elseif response == demo_parameters(i,3)
+            fprintf('\nINCORRECT\n');
+        elseif response ~= demo_parameters(i,3)
+            fprintf('\nCORRECT\n');
+            demoScore = demoScore + 1;
+        end    
+end
+end
+demoResponse = input('\nWould you like to repeat the demo block? (Y/N): ', 's');
+end
+demoScore = (demoScore/demo_trials) * 100;
+fprintf('\nDemo Score: %d', demoScore); 
+fprintf('\n\nDEMO BLOCK COMPLETED\n\n');
+fprintf('***********************************************************************************************');
+end
 %% Signal presentation
+fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n\n');
 trials = length(levelVEC_tone_dBSPL) * 3 * 2; % number of audios played (# of tones * # of conditions * # of outputs)
 user_parameters = zeros(trials,3); % row # = audio # | col1 = tone level | col2 = condition | col3 = output order |
 % create user parameters for 66 trials
@@ -265,8 +388,12 @@ end
 userScore = ((REFscore + CORRscore + ACORRscore)/length(userResults))*100; % total percent score
 user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRcondition);  % user results file name
 fprintf('\n\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + CORRscore + ACORRscore), userScore);
-fprintf('\nScore By Condition\nREF: %6.2f \nCOR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
+fprintf('\nScore By Condition\nREF: %6.2f \nCORR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
 %% Data analysis for psychometric curves
-cd CMRpilot_results
-save(user_filename,'userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 cd ../
+cd ../
+cd CMRpilot_results
+cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+save(user_filename,'demoScore','userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
+%% Notes:
+% give option to do demo block
