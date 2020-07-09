@@ -16,7 +16,7 @@ else
 end
 filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
 cd new_signals
-cd CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 load(filename,'CMRcondition');
 cd ../
 cd ../
@@ -33,7 +33,7 @@ if menuresponse == 1
     userid = input('\nUser ID: ','s');
     blocks = input('Number of blocks: ');
     cd CMRpilot_results % open pilot data folder
-    cd CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
+    cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 % load files for subject based on userid    
     for i = 1:blocks   
         filename = [userid '_Block' num2str(i) '_' CMRcondition '_Pilot_Results.mat'];
@@ -60,8 +60,9 @@ for j = 1:length(levelVEC_tone_dBSPL)
 end
 REFresults_avg(:,1) = levelVEC_tone_dBSPL'; CORRresults_avg(:,1) = levelVEC_tone_dBSPL'; ACORRresults_avg(:,1) = levelVEC_tone_dBSPL';
 %% Psychometric curve generation for each block
+plotlegend = string(zeros(blocks,1));
 for i = 1:blocks
-plotlegend(i,:) = ['Block ' num2str(i)];
+plotlegend(i,1) = ['Block ' num2str(i)];
 end
 Markers = {'+','o','*','x','v','d','^','s','>','<'};
 counter = 1;
@@ -111,9 +112,9 @@ legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
 cd CMRpilot_results
-cd CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
-cd Psychometric_Curves_CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
-cd Subject_Average_CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd Psychometric_Curves_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd Subject_Average_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 plotnameREF = sprintf('%s_Block_Averages_REF_%s_Pilot_Results.jpg',userid, CMRcondition);
 plotnameCORR = sprintf('%s_Block_Averages_CORR_%s_Pilot_Results.jpg',userid, CMRcondition);
 plotnameACORR = sprintf('%s_Block_Averages_ACORR_%s_Pilot_Results.jpg',userid, CMRcondition);
@@ -128,7 +129,7 @@ REFtotalavg = []; CORRtotalavg = []; ACORRtotalavg = [];
 if menuresponse == 2
     numsubjects = input('\nNumber of Subjects: ');
     cd CMRpilot_results % open pilot data folder   
-    cd CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
+    cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 % load files for each subject based on userid    
 for i = 1:numsubjects
         fprintf('\n\nUser ID #%d: ', i); userid = input('','s');
@@ -204,29 +205,29 @@ ACORRplot = sprintf('Subject Averages Psychometric Curve (Condition: ACORR | Sub
 
 figure(1); % REF 
 hold on;
-title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);ylim([0,110]);
 fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,(numsubjects+1)), 1, criteria);
+title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);ylim([0,110]);
 legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
 hold off;
 
 figure(2); % CORR
 hold on;
 fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
-title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); ylim([0,110]);
+title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); ylim([0,110]);
 legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
 hold off;
 
 figure(3); % ACORR
 hold on;
-title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
 fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
+title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
 legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
 hold off;
 
 cd CMRpilot_results % open pilot data folder  
-cd CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
-cd Psychometric_Curves_CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
-cd All_Subjects_CMR2 % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd Psychometric_Curves_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd All_Subjects_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 plotnameREF = sprintf('Subject_Averages_REF_%s_Pilot_Results.jpg', CMRcondition);
 plotnameCORR = sprintf('Subject_Averages_CORR_%s_Pilot_Results.jpg', CMRcondition);
 plotnameACORR = sprintf('Subject_Averages_ACORR_%s_Pilot_Results.jpg', CMRcondition);
