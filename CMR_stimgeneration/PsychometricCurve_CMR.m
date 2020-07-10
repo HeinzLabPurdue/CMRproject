@@ -100,7 +100,8 @@ hold off;
 figure(2); % CORR
 hold on;
 title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
+%fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
+plot(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 'r', 'linewidth',1.5);
 legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
