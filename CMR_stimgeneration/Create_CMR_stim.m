@@ -4,7 +4,7 @@
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
-% Updated Jul 7 2020 
+% Updated Jul 11 2020 - Generated CMR2D [0:4:40 dB] 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
 %  estimates to see if any diffs, since chins see to be broadband
@@ -63,8 +63,8 @@ ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 H
 %  auditory-filter bandwidths and excitation patterns" Journal of the Acoustical Society of America 74: 750-753, 1983. 
 %% Menu Selection: Chin or Human
 % Pick chin (C) or human (H)
-subject = input('\nSubject --> Chinchilla (C) OR Human (H): ','s');
-CMRstimuli = input('\nType of CMR stimuli: ','s');
+subject = input('\nSubject: Chinchilla (C) OR Human (H): ','s');
+CMRstimuli = input('\nCMR stimuli: ','s');
 if subject == 'C' || subject == 'c'
    BWnoise_Hz = ERB_chin_Hz;
    fprintf('...Using chin ERBs\n')
@@ -81,7 +81,7 @@ end
 % CMR condition predetermined from Menu option (CMRChin or CMRHuman)
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
-levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
+levelVEC_tone_dBSPL = 0:4:40;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
@@ -206,8 +206,8 @@ if signalsave_user == 'Y' || signalsave_user == 'y'
         std_ACORR_fname = sprintf('%s_ACORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz); % test condition3
         sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  
         
-        cd('new_signals')
-        cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+        cd ('new_signals')
+        cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
         fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
         audiowrite(std_REF_fname,standard_REF,Fs_Hz)
         audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
@@ -284,7 +284,7 @@ signal_output_CORR = signal_output_CORR/max_amplitude;
 signal_output_ACORR = signal_output_ACORR/max_amplitude;
 %% save signal and standard output vectors
 cd new_signals
-cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
 filename = sprintf('%s_Stimuli.mat',CMRcondition);  % test condition1
 save(filename,'standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
 cd ../

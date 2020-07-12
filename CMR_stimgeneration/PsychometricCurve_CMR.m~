@@ -1,42 +1,35 @@
 % File: PsychometricCurve_CMR.m
 % Created: Fernando Aguilera - Jun 28 2020
-% Last Modified by: Fernando Aguilera de Alba - July 7 2020
+% Last Modified by: Fernando Aguilera de Alba - July 11 2020
 %% Goal
 % Generate psychometric curver for REF, CORR, and ACORR conditions from user data for CMR pilot testing.
 clear all; close all; clc;
 %% Requirement
 CMRstimuli = input('\nType of CMR stimuli: ','s');
-subject = input('\nSubject --> Chinchilla (C) OR Human (H): ','s');
-if subject == 'H' || subject == 'h'
-    subject = 'Human';
-elseif subject == 'C' || subject == 'c'
-    subject = 'Chin';
-else
-    error('Please enter a valid character (C or H)');
-end
-filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
-cd new_signals
-cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-load(filename,'CMRcondition');
-cd ../
-cd ../
+%% Load subject's matlab data file
+% filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
+% cd new_signals
+% cd CMR2C % CHANGE FOLDER TO TYPE OF STIMULI --> CMR [35:4:65 dB] | CMR2B [25:4:65 dB] | CMR2C [0:5:65 dB]
+% load(filename,'CMRcondition');
+% cd ../
+% cd ../
 % Load all blocks from user files from CMRpilot_results folder
-fprintf('\nAnalyze individual subject data -- 1');
+fprintf('\nAnalyze individual subject data -- 1'); 
 fprintf('\nAnalyze all subjects data -- 2');
 menuresponse = input('\n\nMenu option: ');
 while isempty(menuresponse)
     fprintf('\n\nERROR: Invalid menu option');
     menuresponse = input('\n\nMenu option: ');
 end
-%% Individual data
+%% Individual data: plot all blocks and average
 if menuresponse == 1
     userid = input('\nUser ID: ','s');
     blocks = input('Number of blocks: ');
     cd CMRpilot_results % open pilot data folder
     cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-% load files for subject based on userid    
+% load block files for subject based on userid    
     for i = 1:blocks   
-        filename = [userid '_Block' num2str(i) '_' CMRcondition '_Pilot_Results.mat'];
+        filename = [userid '_Block' num2str(i) '_' CMRstimuli '_Pilot_Results.mat'];
         load(filename);
         REFresults_avg(:,i+1) = (REFtonescore(:,2)/2)*100;
         CORRresults_avg(:,i+1) = (CORRtonescore(:,2)/2)*100;
@@ -59,7 +52,6 @@ for j = 1:length(levelVEC_tone_dBSPL)
     REF = 0; CORR = 0; ACORR = 0;
 end
 REFresults_avg(:,1) = levelVEC_tone_dBSPL'; CORRresults_avg(:,1) = levelVEC_tone_dBSPL'; ACORRresults_avg(:,1) = levelVEC_tone_dBSPL';
-REFresults_avg = REFresults_avg(6:length(REFresults_avg),:); % delete
 %% Psychometric curve generation for each block
 plotlegend = string(zeros(blocks,1));
 for i = 1:blocks
@@ -94,21 +86,23 @@ ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', useri
 figure(1); % REF 
 hold on;
 title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-fitPsychometricFunctionCMR(REFresults_avg(:,1), REFresults_avg(:,(blocks+2)), 1, criteria);
+REF_TH = fitPsychometricFunctionCMR(REFresults_avg(:,1), REFresults_avg(:,(blocks+2)), 1, criteria);
 legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
 figure(2); % CORR
 hold on;
 title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
+CORR_TH = fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
+%plot(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 'r', 'linewidth',1.5);
 legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
 figure(3); % ACORR
+
 hold on;
 title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-fitPsychometricFunctionCMR(ACORRresults_avg(:,1), ACORRresults_avg(:,(blocks+2)), 1, criteria);
+ACORR_TH = fitPsychometricFunctionCMR(ACORRresults_avg(:,1), ACORRresults_avg(:,(blocks+2)), 1, criteria);
 legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
@@ -116,28 +110,38 @@ cd CMRpilot_results
 cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 cd Psychometric_Curves_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 cd Subject_Average_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-plotnameREF = sprintf('%s_Block_Averages_REF_%s_Pilot_Results.jpg',userid, CMRcondition);
-plotnameCORR = sprintf('%s_Block_Averages_CORR_%s_Pilot_Results.jpg',userid, CMRcondition);
-plotnameACORR = sprintf('%s_Block_Averages_ACORR_%s_Pilot_Results.jpg',userid, CMRcondition);
+plotnameREF = sprintf('%s_Block_Averages_REF_%s_Pilot_Results.jpg',userid, CMRstimuli);
+plotnameCORR = sprintf('%s_Block_Averages_CORR_%s_Pilot_Results.jpg',userid, CMRstimuli);
+plotnameACORR = sprintf('%s_Block_Averages_ACORR_%s_Pilot_Results.jpg',userid, CMRstimuli);
 saveas(figure(1), plotnameREF); saveas(figure(2), plotnameCORR); saveas(figure(3), plotnameACORR);
 cd ../
 cd ../
 cd ../
+%% CMR effect
+clc;
+thresholds = string(zeros(1,4)); % col1 = userid | col2 = REF | col3 = CORR | col4 = ACORR
+thresholds(1,1) = userid; thresholds(1,2) = REF_TH; thresholds(1,3) = CORR_TH; thresholds(1,4) = ACORR_TH;
+CMR_AC = ACORR_TH - CORR_TH;
+CMR_RC = REF_TH - CORR_TH;
+fprintf('\nThresholds (USER ID: %s)',userid);
+fprintf('\nREF:%6.1f dB',REF_TH); fprintf('\nCORR:%6.1f dB',CORR_TH); fprintf('\nACORR:%6.1f dB',ACORR_TH);
+fprintf('\n\nCMR Score (ACORR - CORR):%6.1f dB', CMR_AC); fprintf('\nCMR Score (REF - CORR):%6.1f dB', CMR_RC);
 end
 
-%% All subjects
+%% All subjects: plot subject average and population average (no individual blocks)
 REFtotalavg = []; CORRtotalavg = []; ACORRtotalavg = [];
 if menuresponse == 2
     numsubjects = input('\nNumber of Subjects: ');
     cd CMRpilot_results % open pilot data folder   
     cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-% load files for each subject based on userid    
+% load files for each subject based on userid  
+plotlegend = string(zeros(numsubjects,1));
 for i = 1:numsubjects
         fprintf('\n\nUser ID #%d: ', i); userid = input('','s');
         blocks = input('Number of blocks: ');
         plotlegend(i,:) = ['Subject: ' userid ', Blocks: ' mat2str(blocks)];
         for j = 1:blocks
-            filename = [userid '_Block' num2str(j) '_' CMRcondition '_Pilot_Results.mat'];
+            filename = [userid '_Block' num2str(j) '_' CMRstimuli '_Pilot_Results.mat'];
             load(filename);
             REFresults_avg(:,j+1) = (REFtonescore(:,2)/2)*100;
             CORRresults_avg(:,j+1) = (CORRtonescore(:,2)/2)*100;
@@ -200,42 +204,61 @@ counter = counter + 1;
 end
 %% Psychometric curve generation average
 criteria = 75; % 
-REFplot = sprintf('Subject Averages Psychometric Curve (Condition: REF | Subjects: %d)',numsubjects);
-CORRplot = sprintf('Subject Averages Psychometric Curve (Condition: CORR | Subjects: %d)',numsubjects');
-ACORRplot = sprintf('Subject Averages Psychometric Curve (Condition: ACORR | Subjects: %d)',numsubjects');
+REFplot = sprintf('Population Averages Psychometric Curve (Condition: REF | Subjects: %d)',numsubjects);
+CORRplot = sprintf('Population Averages Psychometric Curve (Condition: CORR | Subjects: %d)',numsubjects');
+ACORRplot = sprintf('Population Averages Psychometric Curve (Condition: ACORR | Subjects: %d)',numsubjects');
 
 figure(1); % REF 
 hold on;
-fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,(numsubjects+1)), 1, criteria);
-title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);ylim([0,110]);
-legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
+REF_TH = fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,(numsubjects+1)), 1, criteria);
+title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);ylim([45,110]);
+legend(plotlegend(1:numsubjects,:),'Location','southeast');
 hold off;
 
 figure(2); % CORR
 hold on;
-fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
-title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); ylim([0,110]);
-legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
+CORR_TH = fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
+title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); ylim([45,110]);
+legend(plotlegend(1:numsubjects,:),'Location','southeast');
 hold off;
 
 figure(3); % ACORR
 hold on;
-fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
-title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
+ACORR_TH = fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
+title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([45,110]);
+legend(plotlegend(1:numsubjects,:),'Location','southeast');
 hold off;
+
+figure(4); % ALL conditions
+hold on;
+fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,(numsubjects+1)), 1, criteria);
+fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
+fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
+title('Population Average (All Conditions)'); 
+xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([45,110]);
 
 cd CMRpilot_results % open pilot data folder  
 cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 cd Psychometric_Curves_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
 cd All_Subjects_CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-plotnameREF = sprintf('Subject_Averages_REF_%s_Pilot_Results.jpg', CMRcondition);
-plotnameCORR = sprintf('Subject_Averages_CORR_%s_Pilot_Results.jpg', CMRcondition);
-plotnameACORR = sprintf('Subject_Averages_ACORR_%s_Pilot_Results.jpg', CMRcondition);
-saveas(figure(1), plotnameREF); saveas(figure(2), plotnameCORR); saveas(figure(3), plotnameACORR);
+plotnameREF = sprintf('Subject_Averages_REF_%s_Pilot_Results.jpg', CMRstimuli);
+plotnameCORR = sprintf('Subject_Averages_CORR_%s_Pilot_Results.jpg', CMRstimuli);
+plotnameACORR = sprintf('Subject_Averages_ACORR_%s_Pilot_Results.jpg', CMRstimuli);
+plotnameALL = sprintf('Subject_Averages_ALL_%s_Pilot_Results.jpg', CMRstimuli);
+saveas(figure(1), plotnameREF); saveas(figure(2), plotnameCORR); saveas(figure(3), plotnameACORR); saveas(figure(4), plotnameALL);
 cd ../
 cd ../
+%% Average thresholds results (all subjects)
+thresholds = string(zeros(1,4)); % col1 = userid | col2 = REF | col3 = CORR | col4 = ACORR
+thresholds(1,1) = 'Average'; thresholds(1,2) = REF_TH; thresholds(1,3) = CORR_TH; thresholds(1,4) = ACORR_TH; 
+CMR_AC = ACORR_TH - CORR_TH;
+CMR_RC = REF_TH - CORR_TH;
+fprintf('\nThresholds (Population Average)');
+fprintf('\nREF:%6.1f dB',REF_TH); fprintf('\nCORR:%6.1f dB',CORR_TH); fprintf('\nACORR:%6.1f dB',ACORR_TH);
+fprintf('\n\nCMR Score (ACORR - CORR):%6.1f dB', CMR_AC); fprintf('\nCMR Score (REF - CORR):%6.1f dB', CMR_RC);
 end
 %% Notes:
-% Fix problem with curve fit for CORR condition (option 1)
-% Curve fit (option 2)
+% 2. mu = average of CMR scores (ACORR - CORR) ~12 dB   (CORR - REF) ~3 dB
+% 3. calculate variability between subject CMR scores
+
+
