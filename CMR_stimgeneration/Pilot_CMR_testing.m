@@ -1,6 +1,6 @@
 % File: Pilot_CMR_testing.m
 % Created: Fernando Aguilera - Jun 16 2020
-% Last Modified by: Fernando Aguilera - July 7 2020
+% Last Modified by: Fernando Aguilera - July 11 2020 - Pilot CMR2D
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -12,8 +12,8 @@
 %% Requirement
 clear all; close all; clc;
 % Load stimuli from folder "new_signals"
-CMRstimuli = input('\nType of CMR stimuli: ','s');
-subject = input('\nSubject --> Chinchilla (C) OR Human (H): ','s');
+CMRstimuli = input('\nCMR stimuli: ','s');
+subject = input('\nSubject: Chinchilla (C) | Human (H): ','s');
 if subject == 'H' || subject == 'h'
     subject = 'Human';
 elseif subject == 'C' || subject == 'c'
@@ -23,7 +23,7 @@ else
 end
 filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
 cd new_signals
-cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
 load(filename);
 %% USER INTERFACE
 % User input
@@ -64,36 +64,36 @@ input('\nPress Enter when you are ready to begin the demo block');
 fprintf('***********************************************************************************************');
 fprintf('\n\nDEMO BLOCK WILL BEGIN NOW\n');
 demo_trials = 6;
-demo_parameters = zeros(demo_trials,3);
+demo_parameters = zeros(demo_trials,3); 
 demo_parameters(:,1) = levelVEC_tone_dBSPL(end); % loudest tone level
 for i = 1:demo_trials
     if i <= demo_trials/3
         demo_parameters(i,2) = 1; % REF
         if i <= (demo_trials/6)
-                demo_parameters(i,3) = 1; % standard first, signal second
+                demo_parameters(i,3) = 1; % standard first, signal second (forward masking)
         end
         if i > (demo_trials/6) && i <= (demo_trials/3)
-            demo_parameters(i,3) = 2; % signal first, standard second
+            demo_parameters(i,3) = 2; % signal first, standard second (backward masking)
         end
     elseif i >= demo_trials/3 && i <= 2*demo_trials/3
         demo_parameters(i,2) = 2; % CORR
         if i > (demo_trials/3) && i <= (demo_trials/2)
-                demo_parameters(i,3) = 1; % standard first, signal second
+                demo_parameters(i,3) = 1; % standard first, signal second (forward masking)
         end
         if i > (demo_trials/2) && i <= (2*demo_trials/3)  
-            demo_parameters(i,3) = 2; % signal first, standard second
+            demo_parameters(i,3) = 2; % ssignal first, standard second (backward masking)
         end
     else
         demo_parameters(i,2) = 3; % ACORR
         if i > (2*demo_trials/3) && i <= (5*demo_trials/6)
-                demo_parameters(i,3) = 1; % standard first, signal second
+                demo_parameters(i,3) = 1; % standard first, signal second (forward masking)
         end
         if i > (5*demo_trials/6) && i <= demo_trials
-            demo_parameters(i,3) = 2; % signal first, standard second
+            demo_parameters(i,3) = 2; % signal first, standard second (backward masking)
         end
     end
 end
-% Play sounds for demo
+% Play stimuli for demo block
 demoResponse = 'Y';
 while demoResponse == 'Y' || demoResponse == 'y'
 for i = 1:length(demo_parameters)
@@ -172,40 +172,40 @@ fprintf('***********************************************************************
 end
 %% Signal presentation
 fprintf('\n\nTESTING BLOCK WILL BEGIN NOW\n\n');
-trials = length(levelVEC_tone_dBSPL) * 3 * 2; % number of audios played (# of tones * # of conditions * # of outputs)
+trials = length(levelVEC_tone_dBSPL) * 3 * 2; % set of stimuli played -> # of tones * # of conditions * 2(forward/backward masking)
 user_parameters = zeros(trials,3); % row # = audio # | col1 = tone level | col2 = condition | col3 = output order |
-% create user parameters for 66 trials
+% create user parameters
 for i = 1:trials
 if i <= trials/3
     user_parameters(i,1) = i;
     user_parameters(i,2) = 1; % REF
         if i <= (trials/6)
-            user_parameters(i,3) = 1; % standard first, signal second
+            user_parameters(i,3) = 1; % forward masking
         end
         if i > (trials/6) && i <= (trials/3)
             user_parameters(i,1) = i - length(levelVEC_tone_dBSPL);
-            user_parameters(i,3) = 2; % signal first, standard second
+            user_parameters(i,3) = 2; % backward masking
         end
 elseif i >= trials/3 && i <= 2*trials/3
     user_parameters(i,1) = i-(trials/3);
     user_parameters(i,2) = 2; % CORR
         if i > (trials/3) && i <= (trials/2)
-            user_parameters(i,3) = 1; % standard first, signal second
+            user_parameters(i,3) = 1; % forward masking
         end
         if i > (trials/2) && i <= (2*trials/3)            
             user_parameters(i,1) = i - 3*length(levelVEC_tone_dBSPL);          
-            user_parameters(i,3) = 2; % signal first, standard second
+            user_parameters(i,3) = 2; % backward masking
         end
 else
     user_parameters(i,1) = i-(2*trials/3);
     user_parameters(i,2) = 3; % ACORR
    
         if i > (2*trials/3) && i <= (5*trials/6)
-            user_parameters(i,3) = 1; % standard first, signal second
+            user_parameters(i,3) = 1; % forward masking
         end
         if i > (5*trials/6) && i <= trials
             user_parameters(i,1) = i - 5*length(levelVEC_tone_dBSPL);
-            user_parameters(i,3) = 2; % signal first, standard second
+            user_parameters(i,3) = 2; % backward masking
         end
 end
 end
@@ -289,7 +289,7 @@ end
 userResults = [user_parameters testResponse]; % row = audio # | col1 = tone level | col2 = condition (1 = REF, 2 = CORR, 3 = ACORR) 
                                                               % col3 = output order (1 = standard first, 2 = signal first) | col4 = user responses (correct answers on col3)
 REFresults = []; CORRresults = []; ACORRresults = [];
-% Separate data by condition
+% Separate data by condition for data analysis 
 % col1 = tone level | col2 = response points -> correct = 1   incorrect = 0
 for i = 1:length(userResults)
 % REF
@@ -393,7 +393,8 @@ fprintf('\nScore By Condition\nREF: %6.2f \nCORR: %6.2f \nACORR: %6.2f\n',(REFsc
 cd ../
 cd ../
 cd CMRpilot_results
-cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
 save(user_filename,'demoScore','userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 %% Notes:
-% give option to do demo block
+% July 10: check that user response is 1 or 2 --> while userResponse ~= 1
+% || ~=2 ask for user response
