@@ -34,15 +34,5 @@ if plotYN
 	text(TH_dB+1,.9*crit,sprintf('THR = %.1f dB',TH_dB))
 	ylim([0 110])
 end
-
 fit_vec_dB = x;
 fit_correctness_vec = f(BETA,x);
-
-
-% %%
-% fit(x,y,'a + b ./ (1 + exp(-(x-m)/s))','start',[0 20 50 5])
-
-% p1=initial value (left horizontal asymptote)
-% p2=final value-p1 (right horizontal asymptote - p1)
-% p3=center (point of inflection)
-% p4=width (dx) 
