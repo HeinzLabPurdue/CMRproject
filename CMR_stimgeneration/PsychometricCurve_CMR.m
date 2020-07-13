@@ -1,18 +1,13 @@
 % File: PsychometricCurve_CMR.m
 % Created: Fernando Aguilera - Jun 28 2020
+
 % Last Modified by: Fernando Aguilera de Alba - July 11 2020
 %% Goal
-% Generate psychometric curver for REF, CORR, and ACORR conditions from user data for CMR pilot testing.
+% Generate psychometric curves for REF, CORR, and ACORR conditions from user data for CMR pilot testing.
 clear all; close all; clc;
 %% Requirement
 CMRstimuli = input('\nType of CMR stimuli: ','s');
 %% Load subject's matlab data file
-% filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
-% cd new_signals
-% cd CMR2C % CHANGE FOLDER TO TYPE OF STIMULI --> CMR [35:4:65 dB] | CMR2B [25:4:65 dB] | CMR2C [0:5:65 dB]
-% load(filename,'CMRcondition');
-% cd ../
-% cd ../
 % Load all blocks from user files from CMRpilot_results folder
 fprintf('\nAnalyze individual subject data -- 1'); 
 fprintf('\nAnalyze all subjects data -- 2');
@@ -261,5 +256,8 @@ end
 %% Notes:
 % 2. mu = average of CMR scores (ACORR - CORR) ~12 dB   (CORR - REF) ~3 dB
 % 3. calculate variability between subject CMR scores
+
+% Code to choose curve fitting for CORR when threshold is not available 
+% (% correctness > 75% for all tone levels)
 
 
