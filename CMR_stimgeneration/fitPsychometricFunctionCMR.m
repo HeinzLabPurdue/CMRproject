@@ -31,7 +31,7 @@ if plotYN
     plot(x,crit*ones(size(x)),'--k','markersize',10,'linewidth',1)
 	xlabel('dB')
 	ylabel('Correctness (%)')
-	text(TH_dB+1,.9*crit,sprintf('THR = %.1f dB',TH_dB))
+	text(TH_dB+1,.95*crit,sprintf('THR = %.1f dB',TH_dB))
 	ylim([0 110])
 end
 fit_vec_dB = x;
