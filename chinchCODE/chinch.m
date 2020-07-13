@@ -2281,9 +2281,6 @@ end
 
 
 
-
-
-
 %% AEH added 1/12/14
 % Play tone and noise waveforms simultaneously
 % and set atten separately for noise vs tone
