@@ -1,8 +1,6 @@
 % File: Pilot_CMR_testing.m
 % Created: Fernando Aguilera - Jun 16 2020
-
-% Last Modified by: Fernando Aguilera - July 13 2020 - Check for invalid
-% user responses (~= 1 and ~= 2)
+% Last Modified by: Fernando Aguilera - July 11 2020 - Pilot CMR2D
 %% Goal
 % Randomize tone levels, condition (REF, CORR, ACORR), and output order
 % (standard vs signal). Present 66 audio samples based on randomized user
@@ -287,24 +285,16 @@ if user_parameters(i,2) == 1 % REF
         else
             fprintf('\nError: Cannot play audio');
         end
-    % Collect user input            
-    response = input('In which interval (1 or 2) did you hear the tone? ');
+% Collect user input            
+    userResponse = input('In which interval (1 or 2) did you hear the tone? ');
     % Check for invalid user input
-    check = [];
-    if response == 1 || response == 2
-        check = 1; % valid input
-    else
-        check = 0; % invalid input
-    end
-    while check == 0
-        response = input('ERROR: Invalid input. New response (1 or 2): ');
-        if response == 1 || response == 2
-            check = 1; % valid input
-        else
-            check = 0; % invalid input
+    while userResponse 
+        if userResponse ~= 1 || userResponse ~= 2 % invalid input
+            userResponse = input('ERROR: Invalid input. New response (1 or 2): ');
         end
+            break
     end
-    testResponse(i,1) = response; 
+    testResponse(i,1) = userResponse; 
 % CORR user input/output
 elseif user_parameters(i,2) == 2 % CORR
     input('\nPress Enter to play audio');            
@@ -316,24 +306,16 @@ elseif user_parameters(i,2) == 2 % CORR
         else
             fprintf('\nError: Cannot play audio');
         end
-    % Collect user input            
-    response = input('In which interval (1 or 2) did you hear the tone? ');
+% Collect user input            
+    userResponse = input('In which interval (1 or 2) did you hear the tone? ');
     % Check for invalid user input
-    check = [];
-    if response == 1 || response == 2
-        check = 1; % valid input
-    else
-        check = 0; % invalid input
-    end
-    while check == 0
-        response = input('ERROR: Invalid input. New response (1 or 2): ');
-        if response == 1 || response == 2
-            check = 1; % valid input
-        else
-            check = 0; % invalid input
+    while userResponse 
+        if userResponse ~= 1 || userResponse ~= 2 % invalid input
+            userResponse = input('ERROR: Invalid input. New response (1 or 2): ');
         end
+            break
     end
-    testResponse(i,1) = response; 
+    testResponse(i,1) = userResponse; 
 % ACORR user input/output            
 elseif user_parameters(i,2) == 3 % ACORR
     input('\nPress Enter to play audio');
