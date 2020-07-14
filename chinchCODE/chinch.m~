@@ -1709,7 +1709,7 @@ if ~running(handles)
                 % signal zeros(size(standard) standard zeros(size(standard) ];
                 
                 stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
-                %sound(stimulus,handles.fs_TDT)                
+%               sound(stimulus,handles.fs_TDT)                
 
                 
                 while toc < t   % WHY NEEDED?
@@ -1771,12 +1771,10 @@ if ~running(handles)
                 AbCriterion = 0;
                 
                 % response time in miliseconds (duration of lever press)
-                % replace second rt with the actual spacebar response time
-                
                 if ~handles.DEBUG_emulate
-                    rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
+                    rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000);
                 else
-                    rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
+                    rt = (nplay)*1000+150+500;   %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
                 end
                 
                 %% FROM HERE, all is the same  %% 
