@@ -476,7 +476,7 @@ if ACORRresults(i,1) ~= 0
 end
 end
 userScore = ((REFscore + CORRscore + ACORRscore)/length(userResults))*100; % total percent score
-user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRcondition);  % user results file name
+user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRstimuli);  % user results file name
 fprintf('\n\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + CORRscore + ACORRscore), userScore);
 fprintf('\nScore By Condition\nREF: %6.2f \nCORR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
 %% Data analysis for psychometric curves

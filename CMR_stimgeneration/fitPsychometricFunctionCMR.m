@@ -1,4 +1,5 @@
 function [TH_dB,MSE,fit_vec_dB,fit_correctness_vec] = fitPsychometricFunctionCMR(vec_dB,correctness_vec,plotYN,crit)
+ll = 49;  ul = 101; % lower and upper limit for curves
 x = vec_dB;
 y = correctness_vec;
 lower_asymptote = 50; % Min %correct in a 2AFC expt = 50% (chance level)
@@ -25,6 +26,7 @@ catch
    TH_dB = NaN;
 end
 if plotYN
+    hold on;
     % plot(x,y,'k*'); hold on % plot average scatter plot
     line(x,f(BETA,x),'color','r','linewidth',1.5)
     plot(TH_dB,crit,'ok','markersize',10,'linewidth',2)
@@ -32,7 +34,8 @@ if plotYN
 	xlabel('dB')
 	ylabel('Correctness (%)')
 	text(TH_dB+1,.95*crit,sprintf('THR = %.1f dB',TH_dB))
-	ylim([0 110])
+    ylim([ll ul]);
 end
 fit_vec_dB = x;
 fit_correctness_vec = f(BETA,x);
+end

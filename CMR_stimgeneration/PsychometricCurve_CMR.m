@@ -7,6 +7,7 @@
 clear all; close all; clc;
 %% Requirement
 criteria = 75; % percent correctness threshold
+ll = 49;  ul = 101; % lower and upper limit for curves
 CMRstimuli = input('\nCMR stimuli: ','s');
 %% Load subject's matlab data file
 % Load all blocks from user files from CMRpilot_results folder
@@ -80,18 +81,17 @@ ACORRplot = sprintf('Psychometric Curve (Condition: ACORR | User ID: %s)', useri
 
 figure(1); % REF 
 hold on;
-title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
+title(REFplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
 [REF_TH,REF_MSE,REF_fit_vec_dB,REF_fit_correctness_vec] = fitPsychometricFunctionCMR(REFresults_avg(:,1), REFresults_avg(:,(blocks+2)), 1, criteria);
 legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
 figure(2); % CORR
 hold on;
-title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-if min(CORRresults_avg(:,blocks+2)) > 75 % no intersection at 75%
-    plot(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 'r', 'linewidth',1.5); CORR_TH = NaN;
-    CORR_fit_vec_dB = CORRresults_avg(:,1);
-    CORR_fit_correctness_vec = CORRresults_avg(:,(blocks+2));
+title(CORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
+if min(CORRresults_avg(:,blocks+2)) > 75 &&  min(CORRresults_avg(:,blocks+2)) < 100 % no intersection at 75%
+    [CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR2(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
+    CORR_TH = NaN;
 else
     [CORR_TH,CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,(blocks+2)), 1, criteria);
 end
@@ -99,27 +99,31 @@ legend(plotlegend(1:blocks,:),'Location','SouthEast');
 hold off;
 
 figure(3); % ACORR
-
 hold on;
-title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([0,110]);
-[ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRresults_avg(:,1), ACORRresults_avg(:,(blocks+2)), 1, criteria);
-legend(plotlegend(1:blocks,:),'Location','SouthEast');
+title(ACORRplot); xlabel('Tone Level (dB)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); 
+if max(ACORRresults_avg(:,blocks+2)) > 0 && max(ACORRresults_avg(:,blocks+2)) < 75 % no intersection at 75%
+    [ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR2(ACORRresults_avg(:,1), ACORRresults_avg(:,(blocks+2)), 1, criteria);
+    ACORR_TH = NaN;
+else
+    [ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRresults_avg(:,1), ACORRresults_avg(:,(blocks+2)), 1, criteria);
+end
+legend(plotlegend(1:blocks,:),'location','southeast'); ylim([ll ul]);
 hold off;
-
+offsetCORR = 5; offsetACORR = 0;
 figure(4); % ALL conditions
 hold on;
 plot(REF_fit_vec_dB,REF_fit_correctness_vec,'k','linewidth',1.5); % REF curve fit - black
 plot(CORR_fit_vec_dB,CORR_fit_correctness_vec,'r','linewidth',1.5); % CORR curve fit - red
 plot(ACORR_fit_vec_dB,ACORR_fit_correctness_vec,'b','linewidth',1.5); % ACORR curve fit - blue
 plot(REF_TH,criteria,'ok','markersize',10,'linewidth',2); % REF Threshold
-text(REF_TH+1,.95*criteria,sprintf('REF = %.1f dB',REF_TH)); % REF Threshold label
+text(REF_TH,.95*criteria,sprintf('REF = %.1f dB',REF_TH)); % REF Threshold label
 plot(CORR_TH,criteria,'ok','markersize',10,'linewidth',2); % CORR Threshold
-text(CORR_TH-1,.95*criteria,sprintf('CORR = %.1f dB',CORR_TH)); % CORR Threshold label
+text(CORR_TH-offsetCORR,.95*criteria,sprintf('CORR = %.1f dB',CORR_TH)); % CORR Threshold label
 plot(ACORR_TH,criteria,'ok','markersize',10,'linewidth',2); % ACORR Threshold
-text(ACORR_TH+1,.95*criteria,sprintf('ACORR = %.1f dB',ACORR_TH)); % ACORR Threshold label
+text(ACORR_TH+offsetACORR,.95*criteria,sprintf('ACORR = %.1f dB',ACORR_TH)); % ACORR Threshold label
 plot(levelVEC_tone_dBSPL,criteria*ones(size(levelVEC_tone_dBSPL)),'--k','markersize',10,'linewidth',1); % threshold line
 title('Population Block Average (All Conditions)'); 
-xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([45,110]);
+xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 hold off;
 
 cd CMRpilot_results
@@ -226,45 +230,50 @@ ACORRplot = sprintf('Population Block Averages Psychometric Curve (Condition: AC
 
 figure(1); % REF 
 hold on;
+title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
 [REF_TH,REF_MSE,REF_fit_vec_dB,REF_fit_correctness_vec] = fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,(numsubjects+1)), 1, criteria);
-title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);ylim([45,110]);
-legend(plotlegend(1:numsubjects,:),'Location','southeast');
+legend(plotlegend(1:numsubjects,:),'Location','SouthEast');
 hold off;
 
 figure(2); % CORR
 hold on;
 if min(CORRtotalavg(:,numsubjects+1)) > 75 % no intersection at 75%
-    plot(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 'r', 'linewidth',1.5); CORR_TH = NaN;
-    CORR_fit_vec_dB = CORRtotalavg(:,1);
-    CORR_fit_correctness_vec = CORRtotalavg(:,(numsubjects+1));
+    [CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR2(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
+    CORR_TH = NaN;
 else
-[CORR_TH,CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
+    [CORR_TH,CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,(numsubjects+1)), 1, criteria);
 end
-title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); ylim([45,110]);
+title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)');
 legend(plotlegend(1:numsubjects,:),'Location','southeast');
 hold off;
 
 figure(3); % ACORR
 hold on;
-[ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
-title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([45,110]);
-legend(plotlegend(1:numsubjects,:),'Location','southeast');
+if max(ACORRtotalavg(:,numsubjects+1)) < 75 % no intersection at 75%
+    [ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR2(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
+    ACORR_TH = NaN;
+else
+    [ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,(numsubjects+1)), 1, criteria);
+end
+title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); 
+legend(plotlegend(1:numsubjects,:),'Location','southeast'); ylim([ll ul]);
 hold off;
 
+offsetCORR = 4; offsetACORR = 0;
 figure(4); % ALL conditions
 hold on;
 plot(REF_fit_vec_dB,REF_fit_correctness_vec,'k','linewidth',1.5); % REF curve fit - black
 plot(CORR_fit_vec_dB,CORR_fit_correctness_vec,'r','linewidth',1.5); % CORR curve fit - red
 plot(ACORR_fit_vec_dB,ACORR_fit_correctness_vec,'b','linewidth',1.5); % ACORR curve fit - blue
 plot(REF_TH,criteria,'ok','markersize',10,'linewidth',2); % REF Threshold
-text(REF_TH+1,.95*criteria,sprintf('REF = %.1f dB',REF_TH)); % REF Threshold label
+text(REF_TH,.95*criteria,sprintf('REF = %.1f dB',REF_TH)); % REF Threshold label
 plot(CORR_TH,criteria,'ok','markersize',10,'linewidth',2); % CORR Threshold
-text(CORR_TH-1,.95*criteria,sprintf('CORR = %.1f dB',CORR_TH)); % CORR Threshold label
+text(CORR_TH-offsetCORR,.95*criteria,sprintf('CORR = %.1f dB',CORR_TH)); % CORR Threshold label
 plot(ACORR_TH,criteria,'ok','markersize',10,'linewidth',2); % ACORR Threshold
-text(ACORR_TH+1,.95*criteria,sprintf('ACORR = %.1f dB',ACORR_TH)); % ACORR Threshold label
+text(ACORR_TH+offsetACORR,.95*criteria,sprintf('ACORR = %.1f dB',ACORR_TH)); % ACORR Threshold label
 plot(levelVEC_tone_dBSPL,criteria*ones(size(levelVEC_tone_dBSPL)),'--k','markersize',10,'linewidth',1); % threshold line
 title('Population Block Average (All Conditions)'); 
-xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([45,110]);
+xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 hold off;
 
 cd CMRpilot_results % open pilot data folder  
@@ -292,6 +301,8 @@ end
 % 1. Code to choose curve fitting for CORR when threshold is not available 
 % (% correctness > 75% for all tone levels) -- DONE
 % 2. Plot all three conditions in one plot for both menu options -- DONE
+% 3. APLLY #1 to all conditions (working on menuresponse == 1 now) -- DONE
+% 4. Check legend for CORR condition (not showing up) -- DONE
 
 % Analysis
 % - mu = average of CMR scores (ACORR - CORR) ~12 dB   (CORR - REF) ~3 dB
