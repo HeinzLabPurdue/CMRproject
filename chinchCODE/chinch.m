@@ -1747,7 +1747,7 @@ if ~running(handles)
                 startTime = datestr(now,13);
                 wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
                 input('Press Enter to Start trial')
-                tic
+                
                 
                 %% Play stimuli - HUMAN 
                 % Updated by: Fernando July 14
@@ -1765,7 +1765,7 @@ if ~running(handles)
                  %mod by: Andrew July 15
                  snd = audioplayer(stimulus,handles.fs_TDT);
                  play(snd);
-                 
+                 tic
   %%              
                 if ~running(handles)
                     break
@@ -1822,7 +1822,7 @@ if ~running(handles)
                      %rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
                       input('Press Enter when you hear the signal')
                       stop(snd)
-                     rt = toc;
+                     rt = toc*1000;
                 end
                 
                 %% FROM HERE, all is the same  %% 
