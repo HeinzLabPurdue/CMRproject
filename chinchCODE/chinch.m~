@@ -1703,8 +1703,9 @@ if ~running(handles)
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
                 % nplay versions of standard, with silence in between ;
                 % then (nb=4); SIG sil STD sil SIG sil STD sil 
-               
-                % Updated by: Fernando July 14
+                % [standard zeros(size(standard) standard
+                % zeros(size(standard) ... standard zeros(size(standard) ||
+                
                 % Standard only before response window --> # of standard
                 % stimuli based on nplay
                 standard_preresponse = [];
@@ -1719,9 +1720,16 @@ if ~running(handles)
                 end
                 % Normalize stimuli based on max amplitude
                 maxAmp = 0.08; % find max of signal and standard amp
-                standard_preresponse = standard_preresponse/maxAmp;
-                stimuli_response = stimuli_response/maxAmp;
-     %%
+
+            
+                % Play stimuli 
+                for i = 1:nplay
+                    sound(standard_preresponse(i,:),handles.fs_TDT);
+                end
+                for i = 1:nb                   
+                    sound(stimuli_response(i,:),handles.fs_TDT);
+                end
+     
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -1734,15 +1742,6 @@ if ~running(handles)
                 wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
                 input('Press Enter to Start trial')
                 
-                %% Play stimuli - HUMAN 
-                % Updated by: Fernando July 14
-                for i = 1:nplay
-                    sound(standard_preresponse(i,:),handles.fs_TDT);
-                end
-                for i = 1:nb                   
-                    sound(stimuli_response(i,:),handles.fs_TDT);
-                end
-  %%              
                 if ~running(handles)
                     break
                 end
