@@ -1764,15 +1764,12 @@ if ~running(handles)
                 result = 'xx';
                 AbCriterion = 0;
                 
-                % response time in miliseconds (duration of lever press)
-                % replace second rt with the actual spacebar response time
-                
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
                     input('Press Enter when you hear the signal')
                     stop(snd)
-                    rt = round(toc*1000);
+                    rt = round(toc*1000); % response time after pressing enter
                 end
                 
 %% User response output (Chinch and  Human)
