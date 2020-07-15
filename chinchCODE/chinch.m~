@@ -95,7 +95,11 @@ varargout{1} = handles.output;
 
 
 % --- Executes on button press in exit.
+<<<<<<< HEAD
 function exit_Callback(~, eventdata, handles)
+=======
+function exit_Callback(hObject, eventdata, handles)
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
 % hObject    handle to exit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -1698,13 +1702,18 @@ if ~running(handles)
                     end
                 end
                 standard = standard';
+<<<<<<< HEAD
                 signal = signal';
+=======
+                signal = signal'
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
                 
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
                 % nplay versions of standard, with silence in between ;
                 % then (nb=4); SIG sil STD sil SIG sil STD sil 
                 % [standard zeros(size(standard) standard
                 % zeros(size(standard) ... standard zeros(size(standard) ||
+<<<<<<< HEAD
                 
                 % Standard only before response window --> # of standard
                 % stimuli based on nplay
@@ -1730,6 +1739,15 @@ if ~running(handles)
                     sound(stimuli_response(i,:),handles.fs_TDT);
                 end
      
+=======
+                % signal zeros(size(standard) standard zeros(size(standard)
+                % signal zeros(size(standard) standard zeros(size(standard) ];
+                
+                stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
+%               sound(stimulus,handles.fs_TDT)                
+
+                
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -2299,9 +2317,12 @@ end
 
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
 %% AEH added 1/12/14
 % Play tone and noise waveforms simultaneously
 % and set atten separately for noise vs tone
@@ -2406,7 +2427,11 @@ if ~accepted(handles)
     elseif get_reinforce(handles) < 0
         waitfor(errordlg('You must indicate percent reinforcement', 'Parameter error', 'modal'));
     else
+<<<<<<< HEAD
         np_file = [get_np(handles) '.NP'];
+=======
+        np_file = [get_np(handles) '.np'];
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
         fid = fopen(np_file, 'rt');
         if fid == -1
             waitfor(errordlg(sprintf('Unable to find %s.', np_file), 'File error', 'modal'));
@@ -2418,7 +2443,11 @@ if ~accepted(handles)
             waitfor(errordlg(sprintf('There are no NPs in %s.', np_file), 'NP error', 'modal'))
             return
         end
+<<<<<<< HEAD
         stm_file = [get_np(handles), '.STM'];
+=======
+        stm_file = [get_np(handles), '.stm'];
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
         fid = fopen(stm_file, 'rt');
         if fid == -1
             waitfor(errordlg(sprintf('Unable to find %s.', stm_file), 'File error', 'modal'));

@@ -1703,6 +1703,7 @@ if ~running(handles)
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
                 % nplay versions of standard, with silence in between ;
                 % then (nb=4); SIG sil STD sil SIG sil STD sil 
+<<<<<<< HEAD
                
                 % Updated by: Fernando July 14
                 % Standard only before response window --> # of standard
@@ -1722,6 +1723,17 @@ if ~running(handles)
                 standard_preresponse = standard_preresponse/maxAmp;
                 stimuli_response = stimuli_response/maxAmp;
      %%
+=======
+                % [standard zeros(size(standard) standard
+                % zeros(size(standard) ... standard zeros(size(standard) ||
+                % signal zeros(size(standard) standard zeros(size(standard)
+                % signal zeros(size(standard) standard zeros(size(standard) ];
+                
+                stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
+                %sound(stimulus,handles.fs_TDT)                
+
+                
+>>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -1790,10 +1802,12 @@ if ~running(handles)
                 AbCriterion = 0;
                 
                 % response time in miliseconds (duration of lever press)
+                % replace second rt with the actual spacebar response time
+                
                 if ~handles.DEBUG_emulate
-                    rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000);
+                    rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
-                    rt = (nplay)*1000+150+500;   %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
+                    rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
                 end
                 
                 %% FROM HERE, all is the same  %% 
@@ -2300,9 +2314,6 @@ end
 
 
 
-
-
-
 %% AEH added 1/12/14
 % Play tone and noise waveforms simultaneously
 % and set atten separately for noise vs tone
@@ -2407,7 +2418,7 @@ if ~accepted(handles)
     elseif get_reinforce(handles) < 0
         waitfor(errordlg('You must indicate percent reinforcement', 'Parameter error', 'modal'));
     else
-        np_file = [get_np(handles) '.NP'];
+        np_file = [get_np(handles) '.np'];
         fid = fopen(np_file, 'rt');
         if fid == -1
             waitfor(errordlg(sprintf('Unable to find %s.', np_file), 'File error', 'modal'));
@@ -2419,7 +2430,7 @@ if ~accepted(handles)
             waitfor(errordlg(sprintf('There are no NPs in %s.', np_file), 'NP error', 'modal'))
             return
         end
-        stm_file = [get_np(handles), '.STM'];
+        stm_file = [get_np(handles), '.stm'];
         fid = fopen(stm_file, 'rt');
         if fid == -1
             waitfor(errordlg(sprintf('Unable to find %s.', stm_file), 'File error', 'modal'));
