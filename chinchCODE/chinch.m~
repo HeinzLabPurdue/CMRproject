@@ -38,7 +38,10 @@ function varargout = chinch(varargin)
 % M.Heinz - setting up DEBUG_emulate version to allow offline (no TDT)
 % debugging
 global DEBUG_emulate
-DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT
+DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT'
+
+global DEBUG_trialDisplay
+DEBUG_trialDisplay = 0; %Displays trial type in the command line before each trial runs
 
 %% %%%%%
 % Modified 5-Sept-2013 by AEH
@@ -1093,6 +1096,7 @@ global mancount
 global animpresscount
 global magtraincount
 global nplayfromfile
+global DEBUG_trialDisplay
 
 if ~running(handles)
     if get_device_number(handles) == 0
@@ -1561,45 +1565,47 @@ if ~running(handles)
                 a2 = atten2;
                 thisSPL = 80-atten2; % for display purposes only
                 
-                % AEH moved here after "atten2" is set, while in "dB"
-                if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
-                    else
-                        disp([testtype,' trial, ',num2str(thisSPL),' dB SPL,',' ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
+                    if DEBUG_trialDisplay
+                        
+                        % AEH moved here after "atten2" is set, while in "dB"
+                        if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
+                            else
+                                disp([testtype,' trial, ',num2str(thisSPL),' dB SPL,',' ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
+                            end
+                        elseif nplayfromfile==997 || nplayfromfile==996
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                            else
+                                disp([testtype,' trial, Noise at ',num2str(atten1),' dB atten, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                            end
+                        elseif nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                            else
+                                disp([testtype,' trial, Mod. Depth ',num2str(attenarrayAMdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                            end
+                        elseif nplayfromfile==892 || nplayfromfile==891
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                            else
+                                disp([testtype,' trial, SNR ',num2str(attenarraySNRdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                            end
+                        elseif nplayfromfile==890
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                            else
+                                fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRstimPARAMS.CMRsetupNum{stimcount},CMRstimPARAMS.CMRcondition{stimcount});
+                            end
+                        elseif nplayfromfile==995
+                            if handles.stmlist(handles.stmidx(stim)).same
+                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                            else
+                                disp([testtype,' trial, Standard at ',num2str(atten1),' dB atten, Test at ',num2str(atten2),' dB atten, ',num2str(nplay),'s hold time',]);
+                            end
+                        end
                     end
-                elseif nplayfromfile==997 || nplayfromfile==996
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                    else
-                        disp([testtype,' trial, Noise at ',num2str(atten1),' dB atten, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                    end
-                elseif nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                    else
-                        disp([testtype,' trial, Mod. Depth ',num2str(attenarrayAMdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                    end
-                elseif nplayfromfile==892 || nplayfromfile==891
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                    else
-                        disp([testtype,' trial, SNR ',num2str(attenarraySNRdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                    end
-                elseif nplayfromfile==890
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                    else
-                        fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRstimPARAMS.CMRsetupNum{stimcount},CMRstimPARAMS.CMRcondition{stimcount});
-                    end
-                elseif nplayfromfile==995
-                    if handles.stmlist(handles.stmidx(stim)).same
-                        disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                    else
-                        disp([testtype,' trial, Standard at ',num2str(atten1),' dB atten, Test at ',num2str(atten2),' dB atten, ',num2str(nplay),'s hold time',]);
-                    end
-                end
-                
                 atten1 = 10^(-atten1/20);
                 atten2 = 10^(-atten2/20);
                 
@@ -1708,7 +1714,7 @@ if ~running(handles)
                 % Updated by: Fernando July 14
                 % Standard only before response window --> # of standard
                 % stimuli based on nplay
-                standard_preresponse = zeros(nplay*length[st];
+                standard_preresponse = [];
                 
                 for i = 1:nplay
                     %standard_preresponse(i,:) = [standard zeros(size(standard))];
@@ -1717,7 +1723,8 @@ if ~running(handles)
                 % Stimuli (signal and standard) for response window --> #
                 % based on nb
                 stimuli_response = [];
-                for i = 1:nb
+                
+                for i = 1:nb/2
                     %stimuli_response(i,:) = [signal zeros(size(standard)) standard zeros(size(standard))];
                     stimuli_response = horzcat(stimuli_response,[signal zeros(size(standard)) standard zeros(size(standard))]);
                 end
@@ -1822,7 +1829,7 @@ if ~running(handles)
                      %rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
                       input('Press Enter when you hear the signal')
                       stop(snd)
-                     rt = toc*1000;
+                     rt = round(toc*1000);
                 end
                 
                 %% FROM HERE, all is the same  %% 
@@ -1973,21 +1980,21 @@ if ~running(handles)
                         set(handles.output_log, 'String', ...
                             [output_log; {sprintf('%2d %2d %8s %3d %8s %1d %s %4d', trial, stim, ...
                             handles.stmlist(handles.stmidx(stim)).name1, ...
-                            thisSPLdisp, ...
+                            handles.stmlist(handles.stmidx(stim)).isi, ...
                             handles.stmlist(handles.stmidx(stim)).name2, ...
                             nplay, result, rt)}]); % AEH 130905 added 1 for display purposes % MH_AM:9/10/2018 fix dumWav.wav
                     elseif nplayfromfile==997 || nplayfromfile==996 || nplayfromfile==995 || nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893 || nplayfromfile==892 || nplayfromfile==891 || nplayfromfile==890
                         set(handles.output_log, 'String', ...
                             [output_log; {sprintf('%2d %2d %8s %3d %8s %1d %s %4d', trial, stim, ...
                             handles.stmlist(handles.stmidx(stim)).name1, ...
-                            thisSPLdisp, ...
+                            handles.stmlist(handles.stmidx(stim)).isi, ...
                             handles.stmlist(handles.stmidx(stim)).name2, ...
                             nplay, result, rt)}]); % AEH 130905 added 1 for display purposes
                     elseif nplayfromfile~=800 % shaping, not magtrain
                         set(handles.output_log, 'String', ...
                             [output_log; {sprintf('%2d %2d %8s %3d %8s %1d %s %4d', trial, stim, ...
                             handles.stmlist(handles.stmidx(stim)).name1, ...
-                            thisSPLdisp, ...
+                            handles.stmlist(handles.stmidx(stim)).isi, ...
                             handles.stmlist(handles.stmidx(stim)).name2, ...
                             nplay, result, rt)}]); % AEH 130905 added 1 for display purposes
                     end
