@@ -1709,14 +1709,17 @@ if ~running(handles)
                 % Standard only before response window --> # of standard
                 % stimuli based on nplay
                 standard_preresponse = [];
+                
                 for i = 1:nplay
-                    standard_preresponse(i,:) = [standard zeros(size(standard))];
+                    %standard_preresponse(i,:) = [standard zeros(size(standard))];
+                    standard_preresponse = horzcat(standard_preresponse,[standard zeros(size(standard))]);
                 end
                 % Stimuli (signal and standard) for response window --> #
                 % based on nb
                 stimuli_response = [];
                 for i = 1:nb
-                    stimuli_response(i,:) = [signal zeros(size(standard)) standard zeros(size(standard))];
+                    %stimuli_response(i,:) = [signal zeros(size(standard)) standard zeros(size(standard))];
+                    stimuli_response = horzcat(stimuli_response,[signal zeros(size(standard)) standard zeros(size(standard))]);
                 end
                 % Normalize stimuli based on max amplitude
                 maxAmp = 0.08; % find max of signal and standard amp
@@ -1728,7 +1731,8 @@ if ~running(handles)
                 % signal zeros(size(standard) standard zeros(size(standard)
                 % signal zeros(size(standard) standard zeros(size(standard) ];
                 
-                stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
+                %stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
+                stimulus = horzcat(standard_preresponse,stimuli_response);
                 %sound(stimulus,handles.fs_TDT)                
 
                 
@@ -1743,15 +1747,25 @@ if ~running(handles)
                 startTime = datestr(now,13);
                 wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
                 input('Press Enter to Start trial')
+                tic
                 
                 %% Play stimuli - HUMAN 
                 % Updated by: Fernando July 14
-                for i = 1:nplay
-                    sound(standard_preresponse(i,:),handles.fs_TDT);
-                end
-                for i = 1:nb                   
-                    sound(stimuli_response(i,:),handles.fs_TDT);
-                end
+%                 for i = 1:nplay
+%                     %sound(standard_preresponse(i,:),handles.fs_TDT);
+%                     snd = audioplayer(standard_preresponse(i,:),handles.fs_TDT);
+%                     play(snd);
+%                 end
+%                 for i = 1:nb                   
+%                     sound(stimuli_response(i,:),handles.fs_TDT);
+% %                     snd = audioplayer(stimuli_response(i,:),handles.fs_TDT);
+% %                     play(snd);
+%                 end
+
+                 %mod by: Andrew July 15
+                 snd = audioplayer(stimulus,handles.fs_TDT);
+                 play(snd);
+                 
   %%              
                 if ~running(handles)
                     break
@@ -1805,7 +1819,10 @@ if ~running(handles)
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
-                    rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
+                     %rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
+                      input('Press Enter when you hear the signal')
+                      stop(snd)
+                     rt = toc;
                 end
                 
                 %% FROM HERE, all is the same  %% 
