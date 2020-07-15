@@ -1703,7 +1703,7 @@ if ~running(handles)
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
                 % nplay versions of standard, with silence in between ;
                 % then (nb=4); SIG sil STD sil SIG sil STD sil 
-<<<<<<< HEAD
+
                
                 % Updated by: Fernando July 14
                 % Standard only before response window --> # of standard
@@ -1723,7 +1723,6 @@ if ~running(handles)
                 standard_preresponse = standard_preresponse/maxAmp;
                 stimuli_response = stimuli_response/maxAmp;
      %%
-=======
                 % [standard zeros(size(standard) standard
                 % zeros(size(standard) ... standard zeros(size(standard) ||
                 % signal zeros(size(standard) standard zeros(size(standard)
@@ -1733,7 +1732,6 @@ if ~running(handles)
                 %sound(stimulus,handles.fs_TDT)                
 
                 
->>>>>>> 174143f05403210b6dfd5e7945ec02c3f5f32eaf
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
