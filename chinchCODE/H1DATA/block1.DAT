@@ -24,3 +24,92 @@ Weight: 65000
 19:50:20 Trial: 1; Stim: 14; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 8 Ht 9550 A1: 10.0 A2: 10.0
 19:50:27 Trial: 1; Stim: 15; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 4 Ht 5242 A1: 10.0 A2: 10.0
 19:50:45 Trial: 1; Stim: 16; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 15905 A1: 10.0 A2: 10.0
+20:03:26 Trial: 1; Stim: 1; CMR2_REF_No30_std 500 CMR2_REF_No30_std 4 CR 10007 A1: 10.0 A2: 10.0
+20:03:39 Trial: 1; Stim: 2; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 3 Ht 4292 A1: 10.0 A2: 10.0
+20:03:55 Trial: 1; Stim: 3; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 7 Ms 12333 A1: 10.0 A2: 10.0
+20:04:06 Trial: 1; Stim: 4; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 8 Ht 9367 A1: 10.0 A2: 10.0
+20:04:18 Trial: 1; Stim: 5; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 4 Ht 5585 A1: 10.0 A2: 10.0
+20:04:33 Trial: 1; Stim: 6; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 13552 A1: 10.0 A2: 10.0
+20:04:43 Trial: 1; Stim: 7; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 7 Ht 8431 A1: 10.0 A2: 10.0
+20:04:59 Trial: 1; Stim: 8; CMR2_REF_No30_std 500 CMR2_REF_No30_std 2 CR 8318 A1: 10.0 A2: 10.0
+20:05:08 Trial: 1; Stim: 9; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 6 Ht 7322 A1: 10.0 A2: 10.0
+20:05:20 Trial: 1; Stim: 10; CMR2_REF_No30_std 500 CMR2_REF_No30_std 5 CR 10528 A1: 10.0 A2: 10.0
+20:05:37 Trial: 1; Stim: 11; CMR2_REF_No30_std 500 CMR2_REF_No30_std 9 CR 14237 A1: 10.0 A2: 10.0
+20:05:47 Trial: 1; Stim: 12; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 2 Ms 8666 A1: 10.0 A2: 10.0
+20:05:58 Trial: 1; Stim: 13; CMR2_REF_No30_std 500 CMR2_REF_No30_std 5 CR 10215 A1: 10.0 A2: 10.0
+20:06:06 Trial: 1; Stim: 14; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 5 Ht 6371 A1: 10.0 A2: 10.0
+20:06:15 Trial: 1; Stim: 15; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 5 Ht 6404 A1: 10.0 A2: 10.0
+20:06:26 Trial: 1; Stim: 16; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 8 Ht 9565 A1: 10.0 A2: 10.0
+20:06:52 Trial: 1; Stim: 17; CMR2_REF_No30_std 500 CMR2_REF_No30_std 4 CR 9288 A1: 10.0 A2: 10.0
+20:07:01 Trial: 1; Stim: 18; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 8 Ht 9178 A1: 10.0 A2: 10.0
+20:07:10 Trial: 1; Stim: 19; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 5 Ht 6373 A1: 10.0 A2: 10.0
+20:07:22 Trial: 1; Stim: 20; CMR2_REF_No30_std 500 CMR2_REF_No30_std 2 CR 7384 A1: 10.0 A2: 10.0
+20:07:27 Trial: 1; Stim: 21; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 3 Ht 4298 A1: 10.0 A2: 10.0
+20:07:43 Trial: 1; Stim: 22; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 12175 A1: 10.0 A2: 10.0
+20:07:51 Trial: 1; Stim: 23; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 5 Ht 6408 A1: 10.0 A2: 10.0
+20:08:00 Trial: 1; Stim: 24; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 8269 A1: 10.0 A2: 10.0
+20:08:07 Trial: 1; Stim: 25; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 4 Ht 5242 A1: 10.0 A2: 10.0
+20:08:15 Trial: 1; Stim: 26; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 6 Ht 6857 A1: 10.0 A2: 10.0
+20:08:27 Trial: 1; Stim: 27; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 8570 A1: 10.0 A2: 10.0
+20:08:37 Trial: 1; Stim: 28; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 7 Ht 8380 A1: 10.0 A2: 10.0
+20:08:57 Trial: 1; Stim: 29; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 3 Ht 4542 A1: 10.0 A2: 10.0
+20:09:09 Trial: 1; Stim: 30; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 9 Ht 10335 A1: 10.0 A2: 10.0
+20:09:16 Trial: 1; Stim: 31; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 4 Ht 5547 A1: 10.0 A2: 10.0
+20:09:32 Trial: 1; Stim: 32; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 13901 A1: 10.0 A2: 10.0
+20:09:47 Trial: 1; Stim: 33; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 8826 A1: 10.0 A2: 10.0
+20:10:00 Trial: 1; Stim: 34; CMR2_REF_No30_std 500 CMR2_REF_No30_std 4 CR 9693 A1: 10.0 A2: 10.0
+20:10:05 Trial: 1; Stim: 35; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 2 Ht 3476 A1: 10.0 A2: 10.0
+20:10:15 Trial: 1; Stim: 36; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 6 Ht 7513 A1: 10.0 A2: 10.0
+20:10:29 Trial: 1; Stim: 37; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 12578 A1: 10.0 A2: 10.0
+20:10:38 Trial: 1; Stim: 38; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 6 Ht 7485 A1: 10.0 A2: 10.0
+20:10:49 Trial: 1; Stim: 39; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 5 Ms 10256 A1: 10.0 A2: 10.0
+20:10:59 Trial: 1; Stim: 40; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 7 Ht 8568 A1: 10.0 A2: 10.0
+20:11:16 Trial: 1; Stim: 41; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 7 Ht 8614 A1: 10.0 A2: 10.0
+20:11:35 Trial: 1; Stim: 42; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 12446 A1: 10.0 A2: 10.0
+20:11:49 Trial: 1; Stim: 43; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 12521 A1: 10.0 A2: 10.0
+20:12:01 Trial: 1; Stim: 44; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 9 Ht 10474 A1: 10.0 A2: 10.0
+20:12:33 Trial: 1; Stim: 45; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 9002 A1: 10.0 A2: 10.0
+20:12:44 Trial: 1; Stim: 46; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 7 Ht 8408 A1: 10.0 A2: 10.0
+20:12:54 Trial: 1; Stim: 47; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 8503 A1: 10.0 A2: 10.0
+20:12:59 Trial: 1; Stim: 48; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 2 Ht 3259 A1: 10.0 A2: 10.0
+20:13:08 Trial: 1; Stim: 49; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 6 Ht 7261 A1: 10.0 A2: 10.0
+20:13:20 Trial: 1; Stim: 50; CMR2_REF_No30_std 500 CMR2_REF_No30_std 5 CR 10357 A1: 10.0 A2: 10.0
+20:13:30 Trial: 1; Stim: 51; CMR2_REF_No30_std 500 CMR2_REF_No30_std 5 CR 10161 A1: 10.0 A2: 10.0
+20:13:40 Trial: 1; Stim: 52; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 7 Ht 8414 A1: 10.0 A2: 10.0
+20:13:50 Trial: 1; Stim: 53; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 8 Ht 9102 A1: 10.0 A2: 10.0
+20:14:02 Trial: 1; Stim: 54; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 4 Ht 5417 A1: 10.0 A2: 10.0
+20:14:16 Trial: 1; Stim: 55; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 12838 A1: 10.0 A2: 10.0
+
+------------------------------------------------
+Experiment Parameters
+
+ID: H1
+Weight (g): 65000
+Run name (NP): CMR2_REF_test30_3070
+Replications: 1
+Rove amplitudes? 0
+Time Between Trials (ms): 0
+Buzzer duration (ms): 2
+Total Time Out (ms): 0
+Replace Errors? 1
+Attenuation 1: 120 dB
+Attenuation 2: 0 dB
+Percent of Responses Reinforced: 100
+
+------------------------------------------------
+Summary
+
+Number of Trials :    55
+Valid Trials     :    55
+Hits   :    30     Adj Hits   :    30
+Misses :     3     Adj Misses :     3
+CRs    :    22     Adj CRs    :    22
+FAs    :     0     Adj FAs    :     0
+Aborts :     0
+
+% Corr : 94.55     Adj d'     :   Inf     Adj d'     :   Inf
+------------------------------------------------
+NP        Hits      Misses    CorRej    FlsAlrm
+890         30         3        22         0
+------------------------------------------------
+Total pellets delivered: 48
