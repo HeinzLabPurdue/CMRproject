@@ -1708,42 +1708,21 @@ if ~running(handles)
                 signal = signal';
                 
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
-                % nplay versions of standard, with silence in between ;
-                % then (nb=4); SIG sil STD sil SIG sil STD sil 
-
-               
                 % Updated by: Fernando July 14
-                % Standard only before response window --> # of standard
-                % stimuli based on nplay
-                standard_preresponse = [];
-                
+                standard_preresponse = []; % save preresponse window stimuli (standard only)
                 for i = 1:nplay
-                    %standard_preresponse(i,:) = [standard zeros(size(standard))];
                     standard_preresponse = horzcat(standard_preresponse,[standard zeros(size(standard))]);
                 end
-                % Stimuli (signal and standard) for response window --> #
-                % based on nb
+                % Stimuli (signal and standard) for response window --> # based on nb
                 stimuli_response = [];
                 
                 for i = 1:nb/2
-                    %stimuli_response(i,:) = [signal zeros(size(standard)) standard zeros(size(standard))];
                     stimuli_response = horzcat(stimuli_response,[signal zeros(size(standard)) standard zeros(size(standard))]);
                 end
                 % Normalize stimuli based on max amplitude
-                maxAmp = 0.08; % find max of signal and standard amp
-                standard_preresponse = standard_preresponse/maxAmp;
-                stimuli_response = stimuli_response/maxAmp;
-     %%
-                % [standard zeros(size(standard) standard
-                % zeros(size(standard) ... standard zeros(size(standard) ||
-                % signal zeros(size(standard) standard zeros(size(standard)
-                % signal zeros(size(standard) standard zeros(size(standard) ];
-                
-                %stimulus = [standard zeros(size(standard)) signal zeros(size(standard))]/.08; %Need to find the max amplitude for standard and signal to normalize, instead of 0.8
                 stimulus = horzcat(standard_preresponse,stimuli_response);
-                %sound(stimulus,handles.fs_TDT)                
-
-                
+                maxAmp = max(abs(stimulus)); % find max of signal and standard ampn
+                stimulus = stimulus/maxAmp;  
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -1755,26 +1734,10 @@ if ~running(handles)
                 startTime = datestr(now,13);
                 wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
                 input('Press Enter to Start trial')
-                
-                
-                %% Play stimuli - HUMAN 
-                % Updated by: Fernando July 14
-%                 for i = 1:nplay
-%                     %sound(standard_preresponse(i,:),handles.fs_TDT);
-%                     snd = audioplayer(standard_preresponse(i,:),handles.fs_TDT);
-%                     play(snd);
-%                 end
-%                 for i = 1:nb                   
-%                     sound(stimuli_response(i,:),handles.fs_TDT);
-% %                     snd = audioplayer(stimuli_response(i,:),handles.fs_TDT);
-% %                     play(snd);
-%                 end
-
                  %mod by: Andrew July 15
                  snd = audioplayer(stimulus,handles.fs_TDT);
                  play(snd);
-                 tic
-  %%              
+                 tic     
                 if ~running(handles)
                     break
                 end
@@ -1784,20 +1747,7 @@ if ~running(handles)
                 % Tried 1, .5, .1 - ALL WORKED.  yes just too fast a PC
                 pause(.1);
                 play_pair(hObject, eventdata, handles);  % Replace with play_pair_Human
-                
-
                 %% rt = play_pair_HUMAN structure
-                % Press Enter to start trial
-                % tic
-                % sound(stimulus)
-                % wait for space bar press
-                % toc
-                % shut off sound (see Rose's code ADC = audioplayer??)
-                % rt = toc - tic (in seconds?)
-                % return rt to main run 
-                
-                
-                
                 %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
                 %                keyboard
                 
@@ -1821,24 +1771,19 @@ if ~running(handles)
                 result = 'xx';
                 AbCriterion = 0;
                 
-                % response time in miliseconds (duration of lever press)
-                % replace second rt with the actual spacebar response time
-                
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
-                     %rt = (nplay)*1000+150+500;  %always a hit**  %% REPLACE with tic/toc measure between (Enter and Space Bar Press)
-                      input('Press Enter when you hear the signal')
-                      stop(snd)
-                     rt = round(toc*1000);
+                    input('Press Enter when you hear the signal')
+                    stop(snd)
+                    rt = round(toc*1000); % response time after pressing enter
                 end
                 
-                %% FROM HERE, all is the same  %% 
-                 
+%% User response output (Chinch and  Human)
                 if nplayfromfile==800 % magazine training
                     reinforce(handles); % reward!
                     reward_count = reward_count+1;
-                    animpresscount = animpresscount + 1;
+                    a  nimpresscount = animpresscount + 1;
                     magtraincount = magtraincount + 1;
                     fprintf(handles.fid,'%s\t Animal pressed lever (%d)\n', datestr(now,13), magtraincount); % AEH
                     output_log = get(handles.output_log, 'String');
