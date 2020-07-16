@@ -40,9 +40,15 @@ function varargout = chinch(varargin)
 global DEBUG_emulate
 DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT'
 
-
+% A. Sivaprakasam - DEBUG_trialDisplay for toggle on/off trial type
+% displayed in CL
 global DEBUG_trialDisplay
 DEBUG_trialDisplay = 0; %Displays trial type in the command line before each trial runs
+
+
+%automatically adds all subject and stimulus files to path
+folder = fileparts(which('chinch.m'));
+addpath(genpath(folder));
 
 %% %%%%%
 % Modified 5-Sept-2013 by AEH
@@ -1733,6 +1739,10 @@ if ~running(handles)
                 end
                 startTime = datestr(now,13);
                 wait_for_bar_press(handles,nplayfromfile);    %%%% press Enter or SPace to START TRIAL 
+                newline;
+                disp(' ');
+
+                disp(['Trial number: ', num2str(stim),' of ', num2str(length(handles.stmidx))]);
                 input('Press Enter to Start trial')
                  %mod by: Andrew July 15
                  snd = audioplayer(stimulus,handles.fs_TDT);
@@ -1774,7 +1784,7 @@ if ~running(handles)
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
-                    input('Press Enter when you hear the signal')
+                    input('Press Enter when you hear the signal.')
                     stop(snd)
                     rt = round(toc*1000); % response time after pressing enter
                 end

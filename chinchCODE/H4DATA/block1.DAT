@@ -1,0 +1,98 @@
+Output from MATLAB Chinchilla Program
+Version 22; All tests for AM cohort 2 (AEH 20 May 2014)
+
+Date: 2020/07/16
+Time: 14:37
+Chinchilla ID: H4
+Weight: 500
+%FFW: 100.00 %
+
+14:38:06 Trial: 1; Stim: 1; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 6 Ht 6443 A1: 10.0 A2: 10.0
+14:38:15 Trial: 1; Stim: 2; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 7 Ht 7398 A1: 10.0 A2: 10.0
+14:38:47 Trial: 1; Stim: 3; CMR2_REF_No30_std 500 CMR2_REF_No30_std 9 CR 14355 A1: 10.0 A2: 10.0
+14:38:59 Trial: 1; Stim: 4; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 9 Ht 9475 A1: 10.0 A2: 10.0
+14:39:06 Trial: 1; Stim: 5; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 6 Ht 6427 A1: 10.0 A2: 10.0
+14:39:11 Trial: 1; Stim: 6; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 3 Ht 3829 A1: 10.0 A2: 10.0
+14:39:19 Trial: 1; Stim: 7; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 7592 A1: 10.0 A2: 10.0
+14:39:28 Trial: 1; Stim: 8; CMR2_REF_No30_std 500 CMR2_REF_No30_std 4 CR 8556 A1: 10.0 A2: 10.0
+14:40:49 Trial: 1; Stim: 9; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 8 Ht 8843 A1: 10.0 A2: 10.0
+14:40:54 Trial: 1; Stim: 10; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 4 Ht 4324 A1: 10.0 A2: 10.0
+14:41:03 Trial: 1; Stim: 11; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 8 Ht 8500 A1: 10.0 A2: 10.0
+14:41:07 Trial: 1; Stim: 12; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 3 Ht 3619 A1: 10.0 A2: 10.0
+14:41:18 Trial: 1; Stim: 13; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 9 Ht 9759 A1: 10.0 A2: 10.0
+14:41:23 Trial: 1; Stim: 14; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 4 Ht 4466 A1: 10.0 A2: 10.0
+14:41:27 Trial: 1; Stim: 15; CMR2_REF_No30_std 500 CMR2_REF_No30_T66_sig 3 Ht 3875 A1: 10.0 A2: 10.0
+14:41:32 Trial: 1; Stim: 16; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 4 Ht 4616 A1: 10.0 A2: 10.0
+14:41:39 Trial: 1; Stim: 17; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 6 Ht 6542 A1: 10.0 A2: 10.0
+14:41:45 Trial: 1; Stim: 18; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 5 Ht 5472 A1: 10.0 A2: 10.0
+14:41:59 Trial: 1; Stim: 19; CMR2_REF_No30_std 500 CMR2_REF_No30_std 4 CR 13087 A1: 10.0 A2: 10.0
+14:42:19 Trial: 1; Stim: 20; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 12388 A1: 10.0 A2: 10.0
+14:42:28 Trial: 1; Stim: 21; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 6 Ht 6560 A1: 10.0 A2: 10.0
+14:42:36 Trial: 1; Stim: 22; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 6 Ht 6571 A1: 10.0 A2: 10.0
+14:42:49 Trial: 1; Stim: 23; CMR2_REF_No30_std 500 CMR2_REF_No30_std 9 CR 13369 A1: 10.0 A2: 10.0
+14:43:02 Trial: 1; Stim: 24; CMR2_REF_No30_std 500 CMR2_REF_No30_T50_sig 4 Ht 4705 A1: 10.0 A2: 10.0
+14:43:11 Trial: 1; Stim: 25; CMR2_REF_No30_std 500 CMR2_REF_No30_T38_sig 8 Ht 8801 A1: 10.0 A2: 10.0
+14:43:24 Trial: 1; Stim: 26; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 12357 A1: 10.0 A2: 10.0
+14:43:30 Trial: 1; Stim: 27; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 5 Ht 5633 A1: 10.0 A2: 10.0
+14:43:37 Trial: 1; Stim: 28; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 6 Ht 6796 A1: 10.0 A2: 10.0
+14:43:42 Trial: 1; Stim: 29; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 2 Ht 4495 A1: 10.0 A2: 10.0
+14:43:59 Trial: 1; Stim: 30; CMR2_REF_No30_std 500 CMR2_REF_No30_std 2 CR 7451 A1: 10.0 A2: 10.0
+14:44:19 Trial: 1; Stim: 31; CMR2_REF_No30_std 500 CMR2_REF_No30_std 6 CR 10448 A1: 10.0 A2: 10.0
+14:44:33 Trial: 1; Stim: 32; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 12382 A1: 10.0 A2: 10.0
+14:44:43 Trial: 1; Stim: 33; CMR2_REF_No30_std 500 CMR2_REF_No30_T42_sig 9 Ht 9749 A1: 10.0 A2: 10.0
+14:44:49 Trial: 1; Stim: 34; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 3 Ht 5286 A1: 10.0 A2: 10.0
+14:45:22 Trial: 1; Stim: 35; CMR2_REF_No30_std 500 CMR2_REF_No30_T70_sig 6 Ht 6473 A1: 10.0 A2: 10.0
+14:45:28 Trial: 1; Stim: 36; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 5 Ht 5608 A1: 10.0 A2: 10.0
+14:45:35 Trial: 1; Stim: 37; CMR2_REF_No30_std 500 CMR2_REF_No30_std 2 CR 6508 A1: 10.0 A2: 10.0
+14:45:40 Trial: 1; Stim: 38; CMR2_REF_No30_std 500 CMR2_REF_No30_T30_sig 4 Ht 5023 A1: 10.0 A2: 10.0
+14:45:45 Trial: 1; Stim: 39; CMR2_REF_No30_std 500 CMR2_REF_No30_T46_sig 3 Ht 3699 A1: 10.0 A2: 10.0
+14:45:57 Trial: 1; Stim: 40; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 12257 A1: 10.0 A2: 10.0
+14:46:11 Trial: 1; Stim: 41; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 4 Ht 4755 A1: 10.0 A2: 10.0
+14:46:22 Trial: 1; Stim: 42; CMR2_REF_No30_std 500 CMR2_REF_No30_std 6 CR 10263 A1: 10.0 A2: 10.0
+14:46:26 Trial: 1; Stim: 43; CMR2_REF_No30_std 500 CMR2_REF_No30_T54_sig 3 Ht 3492 A1: 10.0 A2: 10.0
+14:46:41 Trial: 1; Stim: 44; CMR2_REF_No30_std 500 CMR2_REF_No30_std 6 CR 14051 A1: 10.0 A2: 10.0
+14:46:47 Trial: 1; Stim: 45; CMR2_REF_No30_std 500 CMR2_REF_No30_T62_sig 4 Ht 4955 A1: 10.0 A2: 10.0
+14:46:59 Trial: 1; Stim: 46; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 11351 A1: 10.0 A2: 10.0
+14:47:12 Trial: 1; Stim: 47; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 11477 A1: 10.0 A2: 10.0
+14:47:24 Trial: 1; Stim: 48; CMR2_REF_No30_std 500 CMR2_REF_No30_std 7 CR 11445 A1: 10.0 A2: 10.0
+14:47:31 Trial: 1; Stim: 49; CMR2_REF_No30_std 500 CMR2_REF_No30_T58_sig 5 Ht 6612 A1: 10.0 A2: 10.0
+14:47:38 Trial: 1; Stim: 50; CMR2_REF_No30_std 500 CMR2_REF_No30_std 2 CR 6439 A1: 10.0 A2: 10.0
+14:47:48 Trial: 1; Stim: 51; CMR2_REF_No30_std 500 CMR2_REF_No30_std 3 CR 7971 A1: 10.0 A2: 10.0
+14:48:02 Trial: 1; Stim: 52; CMR2_REF_No30_std 500 CMR2_REF_No30_std 9 CR 13403 A1: 10.0 A2: 10.0
+14:48:07 Trial: 1; Stim: 53; CMR2_REF_No30_std 500 CMR2_REF_No30_T34_sig 3 Ht 3845 A1: 10.0 A2: 10.0
+14:48:19 Trial: 1; Stim: 54; CMR2_REF_No30_std 500 CMR2_REF_No30_std 8 CR 12405 A1: 10.0 A2: 10.0
+14:48:33 Trial: 1; Stim: 55; CMR2_REF_No30_std 500 CMR2_REF_No30_std 6 CR 12985 A1: 10.0 A2: 10.0
+
+------------------------------------------------
+Experiment Parameters
+
+ID: H4
+Weight (g): 500
+Run name (NP): CMR2_REF_test30_3070
+Replications: 1
+Rove amplitudes? 0
+Time Between Trials (ms): 0
+Buzzer duration (ms): 2
+Total Time Out (ms): 0
+Replace Errors? 1
+Attenuation 1: 120 dB
+Attenuation 2: 0 dB
+Percent of Responses Reinforced: 100
+
+------------------------------------------------
+Summary
+
+Number of Trials :    55
+Valid Trials     :    55
+Hits   :    33     Adj Hits   :    33
+Misses :     0     Adj Misses :     0
+CRs    :    22     Adj CRs    :    22
+FAs    :     0     Adj FAs    :     0
+Aborts :     0
+
+% Corr : 100.00     Adj d'     :   Inf     Adj d'     :   Inf
+------------------------------------------------
+NP        Hits      Misses    CorRej    FlsAlrm
+890         33         0        22         0
+------------------------------------------------
+Total pellets delivered: 50
