@@ -40,6 +40,7 @@ function varargout = chinch(varargin)
 global DEBUG_emulate
 DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT'
 
+
 global DEBUG_trialDisplay
 DEBUG_trialDisplay = 0; %Displays trial type in the command line before each trial runs
 
