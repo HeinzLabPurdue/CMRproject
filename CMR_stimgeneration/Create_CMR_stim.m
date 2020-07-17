@@ -39,25 +39,40 @@
 clear all; close all; clc
 
 %% Define CMR condition to keep different stimulus sets apart (e.g., chin vs human, different ways of defiing things - keep log in NOTES on chinCMRstimuli.docx 
-CMRcondition='CMR2';
+CMRcondition='CMR3';
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
 
 %% Noise BW set to 1 ERB (either chin or human)
 % Chin
-Q10_chin = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and Heinz 2010)
-BW10dB_chin_Hz = f_Hz/Q10_chin;
-% ERB_chin_Hz = BW10dB_chin_Hz; % use Q10 as approx for ERB [1080 Hz at 4kHz] % Probably not right.
-ERB_chin_Hz = BW10dB_chin_Hz/2;  % from Patterson et al (2005) ISH2003, response to comment from Kollmeier (pp 28-29).
-%% ****** TO DO - decide how to handle this.  Lab mammals are ~2-3 worse tuning than humans (Shera at al), so the 1080 to 456 ratio makes sense.  But, Q10 BWs are 2 times bigger than ERB estimates (Patterson et al., 2005 (ISH2003)), so perhaps they are closer than 2-3 times?  Look at Shoffner pitch studies as well (resolved harmonics - he must comment on chin vs human).
-% Niemiec et al (Shofner), 1992 - measured behavior ERBs in chins, and
-% found NN estimates in chins were comparable (or narrower) to humans, but
-% CR and CB estimate using noise bands centered on tone gave estimate much
-% broader - they attribute this to chins being more broadband listeners
-% than humans (e.g., central processing diffs, more than peripheral diffs -
-% SO WE MAY NEED TO TRY CMR WITH SEVERAL BWs to explore.  Go with narrower
-% for now.
+if strcmp(CMRcondition,'CMR2')
+    Q10_chin = 3.7;  % for chins at 4kHz (Temchin and Ruggero 2008 (I; Fig. 6B); Kale and Heinz 2010)
+    BW10dB_chin_Hz = f_Hz/Q10_chin;
+    % ERB_chin_Hz = BW10dB_chin_Hz; % use Q10 as approx for ERB [1080 Hz at 4kHz] % Probably not right.
+    ERB_chin_Hz = BW10dB_chin_Hz/2;  % from Patterson et al (2005) ISH2003, response to comment from Kollmeier (pp 28-29).
+    %% ****** TO DO - decide how to handle this.  Lab mammals are ~2-3 worse tuning than humans (Shera at al), so the 1080 to 456 ratio makes sense.  But, Q10 BWs are 2 times bigger than ERB estimates (Patterson et al., 2005 (ISH2003)), so perhaps they are closer than 2-3 times?  Look at Shoffner pitch studies as well (resolved harmonics - he must comment on chin vs human).
+    % Niemiec et al (Shofner), 1992 - measured behavior ERBs in chins, and
+    % found NN estimates in chins were comparable (or narrower) to humans, but
+    % CR and CB estimate using noise bands centered on tone gave estimate much
+    % broader - they attribute this to chins being more broadband listeners
+    % than humans (e.g., central processing diffs, more than peripheral diffs -
+    % SO WE MAY NEED TO TRY CMR WITH SEVERAL BWs to explore.  Go with narrower
+    % for now.
+elseif strcmp(CMRcondition,'CMR3')
+    %
+    % Niemiec found (at 4 kHz): NN = 335; CB = ~1800
+    % Yost and Shofner have CB data across several studies:
+    % Fig.1: CR:  chins: 1250, 1350, 1700 = mean 1433 Hz
+    % 1400 causes problems with lower bnd crossing ZERO
+    % USE 1200 Hz as ~CB (~CR in studies 1 and 2; and our Q10 BW = 1080),
+    % which is perhaps more apprporiate since on-CF energy is what CNR uses
+    % (so CR, CB more comparable than NN) 
+    % This leave 400 Hz gap from DC to 400Hz - avoids any real LF issues. 
+    ERB_chin_Hz = 1200;
+end
+
+
 % Human
 ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 Hz at 4kHz]
 %  B.C.J. Moore and B.R. Glasberg, "Suggested formulae for calculating
@@ -67,18 +82,18 @@ ERB_human_Hz = 24.7*(4.37*f_Hz/1000+1);  % from Moore and Glasberg (1983) [456 H
 chin = 1;  % 0 = human
 if chin
     BWnoise_Hz = ERB_chin_Hz;
-    fprintf('...Using chin ERBs\n')
+    fprintf('...Using chin ERBs (%.f Hz)\n',BWnoise_Hz)
 else % human 
     BWnoise_Hz = ERB_human_Hz;
-    fprintf('...Using human ERBs\n')
+    fprintf('...Using human ERBs (%.f Hz)\n',BWnoise_Hz)
 end
 
 %%%%%%%%%%%%%%%%%%% 
 % Adjust to find threshold
 %%%%%%%%%%%%%%%%%%%
 %% LATER - 
-levelVEC_tone_dBSPL = 30:4:70;  % ALL tone levels to include
-NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+levelVEC_tone_dBSPL = 23:4:75;  % ALL tone levels to include
+NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
 rft_tone_sec=150/1000;
@@ -247,7 +262,7 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         %% Play sounds
         
         disp('Playing Standard the Signal:  REF condition then CORR then ACORR')
-        soundsc([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
+        sound([standard_REF zeros(size(signal_REF)) signal_REF zeros(1,3*len_samples) ...
             standard_CORR zeros(size(signal_CORR)) signal_CORR zeros(1,3*len_samples) ...
             standard_ACORR zeros(size(signal_ACORR)) signal_ACORR],Fs_Hz)
         
