@@ -3,6 +3,9 @@
 % Created: M. Heinz Jun 1 2020
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
+% updated: July 18 2020 by M Heinz to:
+% 1) randomize noise across all instances (REF/COR/ACORR and all SPLs) 
+% 2) incorporate CMR2 and CMR3 (wider chin BWs)
 
 % Updated Jul 11 2020 - Generated CMR2D [0:4:40 dB] 
 
@@ -38,6 +41,8 @@
 % are modualted out of phase (180 deg) with the center band.
 %% CMR_dB = Threshold_ACORR (tone dB SPL) - Thresholds_CORR (tone dB SPL)  (Hari YNH: ~10-12 dB, < 5% have 3 dB or less) 
 %% or CMR_dB = Threshold_REF (tone dB SPL) - Thresholds_CORR (tone dB SPL) (Hari YNH: ~3 dB)
+
+
 
 clear all; close all; clc
 % -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
