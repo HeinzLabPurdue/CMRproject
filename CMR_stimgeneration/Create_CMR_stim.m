@@ -3,11 +3,12 @@
 % Created: M. Heinz Jun 1 2020
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
-% updated: July 18 2020 by M Heinz to:
-% 1) randomize noise across all instances (REF/COR/ACORR and all SPLs) 
-% 2) incorporate CMR2 and CMR3 (wider chin BWs)
 
 % Updated Jul 11 2020 - Generated CMR2D [0:4:40 dB] 
+
+% Updated: July 18 2020 by M Heinz to:
+% 1) randomize noise across all instances (REF/COR/ACORR and all SPLs) 
+% 2) incorporate CMR2 and CMR3 (wider chin BWs)
 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
