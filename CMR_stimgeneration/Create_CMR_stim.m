@@ -106,8 +106,16 @@ end
 % CMR condition predetermined from Menu option (CMRChin or CMRHuman)
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
-levelVEC_tone_dBSPL = 0:4:40;  % ALL tone levels to include
-NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+if ~isempty(strfind(CMRcondition,'Chin'))
+    levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
+elseif ~isempty(strfind(CMRcondition,'Human'))
+    levelVEC_tone_dBSPL = 9:4:65;  % ALL tone levels to include
+end
+if strcmp(CMRstimuli,'CMR2')
+    NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+elseif strcmp(CMRstimuli,'CMR3')
+    NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+end
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
 rft_tone_sec=150/1000;
@@ -137,7 +145,7 @@ timevec_sec = (0:(len_samples-1))/Fs_Hz;
 freqvec_Hz = (0:(len_samples-1))*Fs_Hz/len_samples;
 % Tone
 tone = sin(2*pi*f_Hz*timevec_sec);
-%% Make noise bands
+%% Make noise-band filter
 fprintf('...Creating noise-band filter\n')
 % Filter design (LPF at BW/2)
 Rp  = 0.00057565; % Corresponds to 0.01 dB peak-to-peak ripple
@@ -145,29 +153,9 @@ Rst = 1e-4;       % Corresponds to 80 dB stopband attenuation
 TW_Hz=50;  % Transition Width = 100 Hz
 b = firgr('minorder',[0,((BWnoise_Hz)/2/(Fs_Hz/2)),((BWnoise_Hz/2+TW_Hz)/(Fs_Hz/2)),1],[1 1 0 0],...
     [Rp Rst]);
-% fvt = fvtool(b,1,'Fs',Fs_Hz,'Color','White');
+% fvt = fvtool(b,1,'Fs',Fs_Hz,'Color','White');  %
 
-fprintf('...Creating stimuli\n')
-% start with BBnoise,
-noise_BB = randn(3,2*len_samples);  % 3 independent samples for 3 bands
-% ??? Should sig and Std OFB be diff samples - probably not unless it can be every trial (not possible with wav files), bc could give diff cue to use
-% create LPnoise,
-temp_noise(1,:)=filter(b,1,noise_BB(1,:));  % Apply filter to BB noise (twice length to avoid endpt issues)
-temp_noise(2,:)=filter(b,1,noise_BB(2,:));  % Apply filter to BB noise (twice length to avoid endpt issues)
-temp_noise(3,:)=filter(b,1,noise_BB(3,:));  % Apply filter to BB noise (twice length to avoid endpt issues)
-noise_LPF=temp_noise(:,2*length(b):(len_samples+2*length(b)-1));  % proper length LPnoise by taking from middle
-% modulate up to 3 CFs
-noise_OFB = noise_LPF(1,:).*sin(2*pi*f_Hz*timevec_sec);
-noise_LSB = noise_LPF(1,:).*sin(2*pi*f_LSB_Hz*timevec_sec);
-noise_USB = noise_LPF(1,:).*sin(2*pi*f_USB_Hz*timevec_sec);
-
-%% Modulate all noise bands
-noise_OFB = noise_OFB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
-noise_LSB_CORR = noise_LSB.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated modulation
-noise_USB_CORR = noise_USB.*(1+sin(2*pi*fmod_Hz*timevec_sec));
-noise_LSB_ACORR = noise_LSB.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation
-noise_USB_ACORR = noise_USB.*(1-sin(2*pi*fmod_Hz*timevec_sec));
-%% Generate all tone levels
+%% Decide if save/plot wav files
 signalsave_user = input('\nSave audio files (Y/N): ', 's');
 if signalsave_user == 'Y' || signalsave_user == 'y'
     signalplot_user = input('\nPlot audio files (Y/N): ','s');
@@ -176,36 +164,94 @@ end
 if signalsave_user == 'N' || signalsave_user == 'n'
     signalplot_user = 'N';
 end
+
+%% Generate Stimuli fprintf('...Creating stimuli\n')
+% Prior to Jul 18,2020 - we had things set to generate same noise token
+% for (may have led to better performance for some listeners): 
+% 1) sig&std
+% 2) three bands
+% 3) three conditions (REF/CORR/ACORR)
+% 4) all SPLs
+% NOW: fresh noise token for all bands, stg & std, all 3 conditions, all SPLs 
+% Ideally we'd do fresh for all stimuli, but with WAV files this is best
+% without many many wav files
+
+% start with BBnoise (long enough to avoid end point issues with filtering,
+% and 3 bands to be chosen from with (5 times length needed)
+Nconds=3; % REF=1; CORR=1; ACORR=3
+Nsigstd=2; % Signal = 1; Standard = 2;
+NlevsT=length(levelVEC_tone_dBSPL);
+NlevsN=length(NoVEC_dBSPL_Hz);
+noise_OFB=cell(NlevsT,NlevsN,Nsigstd,Nconds);
+noise_LSB=cell(NlevsT,NlevsN,Nsigstd,Nconds);
+noise_USB=cell(NlevsT,NlevsN,Nsigstd,Nconds);
+
+% Gen all indep noise bands
+for noiseIND=1:NlevsN
+    for toneIND=1:NlevsT
+        for SigStdIND=1:Nsigstd  % Signal = 1; Standard = 2;
+            for CondIND=1:Nconds   % REF=1; CORR=1; ACORR=3
+                % Apply filter to BB noise (extra length to avoid endpt
+                % issues); 3 bands (LSB, OFB, USB) are taken from middle 3 independent samples
+                temp_noise_LPF = filter(b,1,randn(1,5*len_samples));
+
+                % modulate up to 3 CFs
+                noise_OFB{noiseIND,toneIND,SigStdIND,CondIND} = temp_noise_LPF(1,len_samples+1:2*len_samples).*sin(2*pi*f_Hz*timevec_sec);
+                noise_LSB{noiseIND,toneIND,SigStdIND,CondIND} = temp_noise_LPF(1,2*len_samples+1:3*len_samples).*sin(2*pi*f_LSB_Hz*timevec_sec);
+                noise_USB{noiseIND,toneIND,SigStdIND,CondIND} = temp_noise_LPF(1,3*len_samples+1:4*len_samples).*sin(2*pi*f_USB_Hz*timevec_sec);
+ 
+                %% Modulate each noise band - depending on condition
+                % All 3 conditions same for OFB
+                noise_OFB{noiseIND,toneIND,SigStdIND,CondIND} = noise_OFB{noiseIND,toneIND,SigStdIND,CondIND}.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+                if CondIND==1 % REF
+                    noise_LSB{noiseIND,toneIND,SigStdIND,CondIND} = NaN*ones(size(noise_LSB{noiseIND,toneIND,SigStdIND,CondIND}));  % no LSB for REF
+                    noise_USB{noiseIND,toneIND,SigStdIND,CondIND} = NaN*ones(size(noise_USB{noiseIND,toneIND,SigStdIND,CondIND}));  % no USB for REF
+                elseif CondIND==2 % CORR
+                    noise_LSB{noiseIND,toneIND,SigStdIND,CondIND} = noise_LSB{noiseIND,toneIND,SigStdIND,CondIND}.*(1+sin(2*pi*fmod_Hz*timevec_sec));   % Correlated modulation
+                    noise_USB{noiseIND,toneIND,SigStdIND,CondIND} = noise_USB{noiseIND,toneIND,SigStdIND,CondIND}.*(1+sin(2*pi*fmod_Hz*timevec_sec));
+                elseif CondIND==3 % ACORR
+                    noise_LSB{noiseIND,toneIND,SigStdIND,CondIND} = noise_LSB{noiseIND,toneIND,SigStdIND,CondIND}.*(1-sin(2*pi*fmod_Hz*timevec_sec));  % Anti-correlated modulation
+                    noise_USB{noiseIND,toneIND,SigStdIND,CondIND} = noise_USB{noiseIND,toneIND,SigStdIND,CondIND}.*(1-sin(2*pi*fmod_Hz*timevec_sec));
+                end
+            end
+        end
+    end
+end
+
+%% Generate all stimuli for all tone and No levels
 for noiseIND=1:length(NoVEC_dBSPL_Hz)
     No_dBSPL_Hz=NoVEC_dBSPL_Hz(noiseIND);  % Noise Spectrum level (OAL noise = No + 10*log10(BW))
+    rms_noise_new = calib_70dBtone_rms * 10^((No_dBSPL_Hz+10*log10(BWnoise_Hz)-calib_dBSPL)/20);
     for toneIND=1:length(levelVEC_tone_dBSPL)
         level_tone_dBSPL = levelVEC_tone_dBSPL(toneIND);
         %% Calibration
         rms_tone_new = calib_70dBtone_rms * 10^((level_tone_dBSPL-calib_dBSPL)/20);
         tone = tone/rms(tone)*rms_tone_new;
         
-        rms_noise_new = calib_70dBtone_rms * 10^((No_dBSPL_Hz+10*log10(BWnoise_Hz)-calib_dBSPL)/20);
-        noise_OFB= noise_OFB/rms(noise_OFB)*rms_noise_new;
-        noise_LSB_CORR= noise_LSB_CORR/rms(noise_LSB_CORR)*rms_noise_new;
-        noise_USB_CORR= noise_USB_CORR/rms(noise_USB_CORR)*rms_noise_new;
-        noise_LSB_ACORR= noise_LSB_ACORR/rms(noise_LSB_ACORR)*rms_noise_new;
-        noise_USB_ACORR= noise_USB_ACORR/rms(noise_USB_ACORR)*rms_noise_new;
+        for SigStdIND=1:Nsigstd  % Signal = 1; Standard = 2;
+            for CondIND=1:Nconds   % REF=1; CORR=1; ACORR=3
+                noise_OFB{noiseIND,toneIND,SigStdIND,CondIND} = noise_OFB{noiseIND,toneIND,SigStdIND,CondIND}/rms(noise_OFB{noiseIND,toneIND,SigStdIND,CondIND})*rms_noise_new;
+                noise_LSB{noiseIND,toneIND,SigStdIND,CondIND} = noise_LSB{noiseIND,toneIND,SigStdIND,CondIND}/rms(noise_LSB{noiseIND,toneIND,SigStdIND,CondIND})*rms_noise_new;
+                noise_USB{noiseIND,toneIND,SigStdIND,CondIND} = noise_USB{noiseIND,toneIND,SigStdIND,CondIND}/rms(noise_USB{noiseIND,toneIND,SigStdIND,CondIND})*rms_noise_new;
+                %                 noise_USB_CORR = noise_USB_CORR/rms(noise_USB_CORR)*rms_noise_new;
+                %                 noise_LSB_ACORR = noise_LSB_ACORR/rms(noise_LSB_ACORR)*rms_noise_new;
+                %                 noise_USB_ACORR = noise_USB_ACORR/rms(noise_USB_ACORR)*rms_noise_new;
         
-        %% Apply ramps to each signals (after calibration)
-        tone_rft=linear_window_waveform(tone,Fs_Hz,rft_tone_sec);    % Tone is ramped differently then noise bands
-        noise_OFB_rft=linear_window_waveform(noise_OFB,Fs_Hz,rft_noise_sec);
-        noise_LSB_CORR_rft=linear_window_waveform(noise_LSB_CORR,Fs_Hz,rft_noise_sec);
-        noise_USB_CORR_rft=linear_window_waveform(noise_USB_CORR,Fs_Hz,rft_noise_sec);
-        noise_LSB_ACORR_rft=linear_window_waveform(noise_LSB_ACORR,Fs_Hz,rft_noise_sec);
-        noise_USB_ACORR_rft=linear_window_waveform(noise_USB_ACORR,Fs_Hz,rft_noise_sec);
-        
+                %% Apply ramps to each signals (after calibration)
+                tone_rft=linear_window_waveform(tone,Fs_Hz,rft_tone_sec);    % Tone is ramped differently then noise bands (keep rft separate from tone for calibrations)
+                noise_OFB{noiseIND,toneIND,SigStdIND,CondIND}=linear_window_waveform(noise_OFB{noiseIND,toneIND,SigStdIND,CondIND},Fs_Hz,rft_noise_sec);
+                noise_LSB{noiseIND,toneIND,SigStdIND,CondIND}=linear_window_waveform(noise_LSB{noiseIND,toneIND,SigStdIND,CondIND},Fs_Hz,rft_noise_sec);
+                noise_USB{noiseIND,toneIND,SigStdIND,CondIND}=linear_window_waveform(noise_USB{noiseIND,toneIND,SigStdIND,CondIND},Fs_Hz,rft_noise_sec);
+            end % Cond
+        end %SigStd
+            
         %% Create complete signals
-        signal_REF = tone_rft + noise_OFB_rft;
-        standard_REF = noise_OFB_rft;
-        signal_CORR = tone_rft + noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
-        standard_CORR = noise_OFB_rft + noise_LSB_CORR_rft + noise_USB_CORR_rft;
-        signal_ACORR = tone_rft + noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
-        standard_ACORR = noise_OFB_rft + noise_LSB_ACORR_rft + noise_USB_ACORR_rft;
+        signal_REF = tone_rft + noise_OFB{noiseIND,toneIND,1,1};  %Sig,REF: 1,1
+        standard_REF = noise_OFB{noiseIND,toneIND,2,1};  %Std,REF: 2,1
+        signal_CORR = tone_rft + noise_OFB{noiseIND,toneIND,1,2} + noise_LSB{noiseIND,toneIND,1,2} + noise_USB{noiseIND,toneIND,1,2};  %Sig,CORR: 1,2
+        standard_CORR = noise_OFB{noiseIND,toneIND,2,2} + noise_LSB{noiseIND,toneIND,2,2} + noise_USB{noiseIND,toneIND,2,2};  %Std,CORR: 2,2
+        signal_ACORR = tone_rft + noise_OFB{noiseIND,toneIND,1,3} + noise_LSB{noiseIND,toneIND,1,3} + noise_USB{noiseIND,toneIND,1,3};  %Sig,ACORR: 1,3
+        standard_ACORR = noise_OFB{noiseIND,toneIND,2,3} + noise_LSB{noiseIND,toneIND,2,3} + noise_USB{noiseIND,toneIND,2,3};  %Std,ACORR: 2,3
         % save all audio in signal and standard matrices
         standard_output_REF(toneIND,:) = standard_REF;
         standard_output_CORR(toneIND,:) = standard_CORR;
@@ -224,15 +270,24 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
             % noise level, BW)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
-            std_REF_fname = sprintf('%s_REF_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition1
+            % need to save T levels for std as well, since independent
+            % noises
+            std_REF_fname = sprintf('%s_REF_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
             sig_REF_fname = sprintf('%s_REF_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_CORR_fname = sprintf('%s_CORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition2
+            std_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition2
             sig_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_ACORR_fname = sprintf('%s_ACORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz); % test condition3
+            std_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL); % test condition3
             sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
             
             cd ('new_signals')
-            cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
+            % Check if CMRcondition Directory there, if not make it
+            Dlist=dir(CMRcondition);
+            if isempty(Dlist)
+                fprintf('   ***Creating "%s" Directory\n',CMRcondition);
+                mkdir(CMRcondition);
+            end
+            cd(CMRcondition);   % CHANGE FOLDER TO TYPE OF STIMULI
+            
             fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
             audiowrite(std_REF_fname,standard_REF,Fs_Hz)
             audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
@@ -309,7 +364,7 @@ signal_output_CORR = signal_output_CORR/max_amplitude;
 signal_output_ACORR = signal_output_ACORR/max_amplitude;
 %% save signal and standard output vectors
 cd new_signals
-cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
+cd(CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
 filename = sprintf('%s_Stimuli.mat',CMRcondition);  % test condition1
 save(filename,'standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
 cd ../
