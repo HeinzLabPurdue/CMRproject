@@ -18,14 +18,16 @@ CMRstimuli = input('\nCMR stimuli: ','s');
 subject = input('\nSubject: Chinchilla (C) | Human (H): ','s');
 if subject == 'H' || subject == 'h'
     subject = 'Human';
+    CMRcondition = sprintf('%s_%s',CMRstimuli,subject);
 elseif subject == 'C' || subject == 'c'
     subject = 'Chin';
+    CMRcondition = sprintf('%s_%s',CMRstimuli,subject);
 else
     error('Please enter a valid character (C or H)');
 end
 filename = sprintf('%s_%s_Stimuli.mat',CMRstimuli, subject);
 cd new_signals
-cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
+cd(CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
 load(filename);
 %% USER INTERFACE
 % User input
@@ -483,6 +485,13 @@ fprintf('\nScore By Condition\nREF: %6.2f \nCORR: %6.2f \nACORR: %6.2f\n',(REFsc
 cd ../
 cd ../
 cd CMRpilot_results
-cd CMR2D % CHANGE FOLDER TO TYPE OF STIMULI
+% Check if CMRcondition Directory there, if not make it
+Dlist=dir(CMRcondition);
+if isempty(Dlist)
+    fprintf('   ***Creating "%s" Directory\n',CMRcondition);
+    mkdir(CMRcondition);
+end
+cd(CMRcondition);   % CHANGE FOLDER TO TYPE OF STIMULI
+
 save(user_filename,'demoScore','userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 %% Notes:

@@ -109,12 +109,12 @@ fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 if ~isempty(strfind(CMRcondition,'Chin'))
     levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
-    levelVEC_tone_dBSPL = 9:4:65;  % ALL tone levels to include
+    levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
 end
-if strcmp(CMRstimuli,'CMR2')
-    NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
-elseif strcmp(CMRstimuli,'CMR3')
+if strcmp(CMRstimuli,'CMR3_Chin')
     NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+else
+    NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 end
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
@@ -155,14 +155,20 @@ b = firgr('minorder',[0,((BWnoise_Hz)/2/(Fs_Hz/2)),((BWnoise_Hz/2+TW_Hz)/(Fs_Hz/
     [Rp Rst]);
 % fvt = fvtool(b,1,'Fs',Fs_Hz,'Color','White');  %
 
-%% Decide if save/plot wav files
+%% Decide if save/plot/listen wav files
 signalsave_user = input('\nSave audio files (Y/N): ', 's');
 if signalsave_user == 'Y' || signalsave_user == 'y'
     signalplot_user = input('\nPlot audio files (Y/N): ','s');
+    if signalplot_user == 'Y' || signalplot_user == 'y'
+        listen_user = input('\nListen to audio files (Y/N): ','s');
+    else
+        listen_user = 'N';
+    end
 end
 % cannot plot signals if they are not saved
 if signalsave_user == 'N' || signalsave_user == 'n'
     signalplot_user = 'N';
+    listen_user = 'N';
 end
 
 %% Generate Stimuli fprintf('...Creating stimuli\n')
@@ -339,6 +345,17 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
             linkaxes([ax4, ax5, ax6])
             
             set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324])
+            
+            %% Listen to files
+            if listen_user == 'Y' || listen_user == 'y'
+                disp('Playing Standard then Signal:  REF then CORR then ACORR')
+                sound([standard_REF zeros(1,len_samples) signal_REF zeros(1,2*len_samples) ...
+                    standard_CORR zeros(1,len_samples) signal_CORR zeros(1,2*len_samples) ...
+                    standard_ACORR zeros(1,len_samples) signal_ACORR],Fs_Hz)
+                input('press Enter to move to next level)')
+            end
+            
+        
         end % plot prompt
     end % tone levels
 end % noise levels
