@@ -4,11 +4,9 @@
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
-% Updated Jul 11 2020 - Generated CMR2D [0:4:40 dB]
-
 % Updated: July 18 2020 by M Heinz to:
 % 1) randomize noise across all instances (REF/COR/ACORR and all SPLs)
-% *2) incorporate CMR2 and CMR3 (wider chin BWs)
+% 2) incorporate CMR2 and CMR3 (wider chin BWs)
 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -52,7 +50,7 @@ clear all; close all; clc
 %% Menu Selection: Chin or Human & CMRstim condition (e.g., CMR2, CMR3)
 % Pick chin (C) or human (H)
 subject = input('\nSubject: Chinchilla (C) OR Human (H): ','s');
-CMRstimuli = input('\nCMR stimuli (e.g., CMR3): ','s');
+CMRstimuli = input('\nCMR stimuli (e.g.,CMR1, CMR2, CMR3): ','s');
 
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
@@ -106,10 +104,10 @@ end
 % CMR condition predetermined from Menu option (CMRChin or CMRHuman)
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
-<<<<<<< HEAD
+
 levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
-=======
+
 if ~isempty(strfind(CMRcondition,'Chin'))
     levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
@@ -120,7 +118,7 @@ if strcmp(CMRstimuli,'CMR3_Chin')
 else
     NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 end
->>>>>>> master
+
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
 rft_tone_sec=150/1000;
@@ -271,7 +269,7 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         signal_output_CORR(toneIND,:) = signal_CORR;
         signal_output_ACORR(toneIND,:) = signal_ACORR;
         %% Save files
-<<<<<<< HEAD
+
 if signalsave_user == 'Y' || signalsave_user == 'y'
         % eventually we'll need to put in some parameter values for all the signal
         % levels
@@ -360,7 +358,7 @@ if signalplot_user == 'Y' || signalplot_user == 'y'
 end % plot prompt
     end % tone levels
 end % noise levels
-=======
+
         if signalsave_user == 'Y' || signalsave_user == 'y'
             % eventually we'll need to put in some parameter values for all the signal
             % levels
@@ -452,8 +450,9 @@ end % noise levels
             
         
         end % plot prompt
-    end % tone levels
-end % noise levels
+%     end % tone levels
+% end % noise levels
+
 %% Normalize output amplitude
 standard_output = [max(max(abs(standard_output_REF))) max(max(abs(standard_output_CORR))) max(max(abs(standard_output_ACORR)))];
 signal_output = [max(max(abs(signal_output_REF))) max(max(abs(signal_output_CORR))) max(max(abs(signal_output_ACORR)))];
@@ -468,7 +467,7 @@ end
 if max_standard_output > max_signal_output
     max_amplitude = max_standard_output;
 end
->>>>>>> master
+
 standard_output_REF = standard_output_REF/max_amplitude;
 standard_output_CORR = standard_output_CORR/max_amplitude;
 standard_output_ACORR = standard_output_ACORR/max_amplitude;
@@ -477,11 +476,8 @@ signal_output_CORR = signal_output_CORR/max_amplitude;
 signal_output_ACORR = signal_output_ACORR/max_amplitude;
 %% save signal and standard output vectors
 cd new_signals
-<<<<<<< HEAD
-cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
-=======
 cd(CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
->>>>>>> master
+
 filename = sprintf('%s_Stimuli.mat',CMRcondition);  % test condition1
 save(filename,'standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
 cd ../
