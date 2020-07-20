@@ -107,11 +107,11 @@ end
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
 if ~isempty(strfind(CMRcondition,'Chin'))
-    levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
+    levelVEC_tone_dBSPL = 19:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
     levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
 end
-if strcmp(CMRstimuli,'CMR3_Chin')
+if strcmp(CMRcondition,'CMR3_Chin')
     NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 else
     NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
@@ -278,11 +278,11 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
             
             % need to save T levels for std as well, since independent
             % noises
-            std_REF_fname = sprintf('%s_REF_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
+            std_REF_fname = sprintf('%s_REF_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND);  % test condition1
             sig_REF_fname = sprintf('%s_REF_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition2
+            std_CORR_fname = sprintf('%s_CORR_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND);  % test condition2
             sig_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL); % test condition3
+            std_ACORR_fname = sprintf('%s_ACORR_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND); % test condition3
             sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
             
             cd ('new_signals')
