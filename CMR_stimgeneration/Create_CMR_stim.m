@@ -105,13 +105,13 @@ end
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
 
-levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
+levelVEC_tone_dBSPL = 13:4:65;  % ALL tone levels to include
 NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 
 if ~isempty(strfind(CMRcondition,'Chin'))
     levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
-    levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
+    levelVEC_tone_dBSPL = 13:4:65;  % ALL tone levels to include
 end
 if strcmp(CMRstimuli,'CMR3_Chin')
     NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
@@ -288,7 +288,7 @@ if signalsave_user == 'Y' || signalsave_user == 'y'
         sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  
         
         cd ('new_signals')
-        cd CMR2B % CHANGE FOLDER TO TYPE OF STIMULI
+        cd (CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
         fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
         audiowrite(std_REF_fname,standard_REF,Fs_Hz)
         audiowrite(sig_REF_fname,signal_REF,Fs_Hz)

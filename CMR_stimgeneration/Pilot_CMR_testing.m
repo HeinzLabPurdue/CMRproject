@@ -504,6 +504,12 @@ if isempty(Dlist)
     mkdir(CMRcondition);
 end
 cd(CMRcondition);   % CHANGE FOLDER TO TYPE OF STIMULI
+% Check if USERID Directory there, if not make it
+Dlist=dir(userID);
+if isempty(Dlist)
+    fprintf('   ***Creating "%s" Directory\n',userID);
+    mkdir(userID);
+end
 cd(userID)
 save(user_filename,'demoScore','userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 %% Notes:
