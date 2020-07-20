@@ -107,11 +107,11 @@ end
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
 if ~isempty(strfind(CMRcondition,'Chin'))
-    levelVEC_tone_dBSPL = 35:4:75;  % ALL tone levels to include
+    levelVEC_tone_dBSPL = 19:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
     levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
 end
-if strcmp(CMRstimuli,'CMR3_Chin')
+if strcmp(CMRcondition,'CMR3_Chin')
     NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 else
     NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
