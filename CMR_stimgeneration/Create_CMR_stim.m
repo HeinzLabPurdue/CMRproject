@@ -278,11 +278,11 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
             
             % need to save T levels for std as well, since independent
             % noises
-            std_REF_fname = sprintf('%s_REF_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition1
+            std_REF_fname = sprintf('%s_REF_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND);  % test condition1
             sig_REF_fname = sprintf('%s_REF_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  % test condition2
+            std_CORR_fname = sprintf('%s_CORR_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND);  % test condition2
             sig_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
-            std_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_std.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL); % test condition3
+            std_ACORR_fname = sprintf('%s_ACORR_No%.f_std%d.wav',CMRcondition,No_dBSPL_Hz,toneIND); % test condition3
             sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
             
             cd ('new_signals')
