@@ -1,0 +1,43 @@
+Output from MATLAB Chinchilla Program
+Version 22; All tests for AM cohort 2 (AEH 20 May 2014)
+
+Date: 2020/07/19
+Time: 23:33
+Chinchilla ID: Q334
+Weight: 500
+%FFW: 99.42 %
+
+
+------------------------------------------------
+Experiment Parameters
+
+ID: Q334
+Weight (g): 500
+Run name (NP): CMR3_ACR_train20_60
+Replications: 1
+Rove amplitudes? 0
+Time Between Trials (ms): 0
+Buzzer duration (ms): 2
+Total Time Out (ms): 0
+Replace Errors? 1
+Attenuation 1: 120 dB
+Attenuation 2: 0 dB
+Percent of Responses Reinforced: 100
+
+------------------------------------------------
+Summary
+
+Number of Trials :     0
+Valid Trials     :     0
+Hits   :     0     Adj Hits   :     0
+Misses :     0     Adj Misses :     0
+CRs    :     0     Adj CRs    :     0
+FAs    :     0     Adj FAs    :     0
+Aborts :     0
+
+% Corr :   NaN     Adj d'     :   Inf     Adj d'     :   Inf
+------------------------------------------------
+NP        Hits      Misses    CorRej    FlsAlrm
+890          0         0         0         0
+------------------------------------------------
+Total pellets delivered: 0
