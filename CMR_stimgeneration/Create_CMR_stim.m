@@ -4,11 +4,9 @@
 % Modified by: Fernando Aguilera de Alba
 % Branched Created: June 5th 2020
 
-% Updated Jul 11 2020 - Generated CMR2D [0:4:40 dB]
-
 % Updated: July 18 2020 by M Heinz to:
 % 1) randomize noise across all instances (REF/COR/ACORR and all SPLs)
-% *2) incorporate CMR2 and CMR3 (wider chin BWs)
+% 2) incorporate CMR2 and CMR3 (wider chin BWs)
 
 %  1) to be more precise in chin ERB (*** still issues to resolve *** - see
 %  Niemiec et al 1992 - we likely need to try CMR with narrow and broad ERB
@@ -52,7 +50,7 @@ clear all; close all; clc
 %% Menu Selection: Chin or Human & CMRstim condition (e.g., CMR2, CMR3)
 % Pick chin (C) or human (H)
 subject = input('\nSubject: Chinchilla (C) OR Human (H): ','s');
-CMRstimuli = input('\nCMR stimuli (e.g., CMR3): ','s');
+CMRstimuli = input('\nCMR stimuli (e.g.,CMR1, CMR2, CMR3): ','s');
 
 %% Parameters
 f_Hz = 4000;  % center frequency of tone and on-frequency band (OFB)
@@ -106,16 +104,21 @@ end
 % CMR condition predetermined from Menu option (CMRChin or CMRHuman)
 fprintf('Generating "%s" stimuli ...\n',CMRcondition)
 %% Adjust to find threshold
+
+levelVEC_tone_dBSPL = 13:4:65;  % ALL tone levels to include
+NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
+
 if ~isempty(strfind(CMRcondition,'Chin'))
     levelVEC_tone_dBSPL = 19:4:75;  % ALL tone levels to include
 elseif ~isempty(strfind(CMRcondition,'Human'))
-    levelVEC_tone_dBSPL = 25:4:65;  % ALL tone levels to include
+    levelVEC_tone_dBSPL = 13:4:65;  % ALL tone levels to include
 end
 if strcmp(CMRcondition,'CMR3_Chin')
     NoVEC_dBSPL_Hz=20;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 else
     NoVEC_dBSPL_Hz=30;  % ALL Noise Spectrum levels to include (OAL noise = No + 10*log10(BW))
 end
+
 dur_sec=500/1000;
 rft_noise_sec=20/1000;
 rft_tone_sec=150/1000;
@@ -266,6 +269,96 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
         signal_output_CORR(toneIND,:) = signal_CORR;
         signal_output_ACORR(toneIND,:) = signal_ACORR;
         %% Save files
+
+if signalsave_user == 'Y' || signalsave_user == 'y'
+        % eventually we'll need to put in some parameter values for all the signal
+        % levels
+        % sigSNR_fname=sprintf('%s%s.wav',sig_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+        % stdSNR_fname=sprintf('%s%s.wav',std_fname(1:end-4),SNRaddon_text);   %'4kHz80dBT_999dBAM_NN.wav';
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % LATER - add to file name/chinch code storage (chin/human, tone level,
+        % noise level, BW)
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        std_REF_fname = sprintf('%s_REF_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition1
+        sig_REF_fname = sprintf('%s_REF_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
+        std_CORR_fname = sprintf('%s_CORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz);  % test condition2
+        sig_CORR_fname = sprintf('%s_CORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);
+        std_ACORR_fname = sprintf('%s_ACORR_No%.f_std.wav',CMRcondition,No_dBSPL_Hz); % test condition3
+        sig_ACORR_fname = sprintf('%s_ACORR_No%.f_T%.f_sig.wav',CMRcondition,No_dBSPL_Hz,level_tone_dBSPL);  
+        
+        cd ('new_signals')
+        cd (CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
+        fprintf('Saving WAV files:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n',std_REF_fname,sig_REF_fname,std_CORR_fname,sig_CORR_fname,std_ACORR_fname,sig_ACORR_fname)
+        audiowrite(std_REF_fname,standard_REF,Fs_Hz)
+        audiowrite(sig_REF_fname,signal_REF,Fs_Hz)
+        audiowrite(std_CORR_fname,standard_CORR,Fs_Hz)
+        audiowrite(sig_CORR_fname,signal_CORR,Fs_Hz)
+        audiowrite(std_ACORR_fname,standard_ACORR,Fs_Hz)
+        audiowrite(sig_ACORR_fname,signal_ACORR,Fs_Hz)   
+        cd ../
+        cd ../
+end % save files prompt
+%% Plot Stimuli
+%% Normalize output amplitude
+standard_output = [max(max(abs(standard_output_REF))) max(max(abs(standard_output_CORR))) max(max(abs(standard_output_ACORR)))];
+signal_output = [max(max(abs(signal_output_REF))) max(max(abs(signal_output_CORR))) max(max(abs(signal_output_ACORR)))];
+max_standard_output = max(standard_output);
+max_signal_output = max(signal_output);
+max_amplitude = 0;
+% max amplitude is signal
+if max_signal_output > max_standard_output
+    max_amplitude = max_signal_output;
+end
+% max amplitude is standard
+if max_standard_output > max_signal_output
+    max_amplitude = max_standard_output;
+end 
+
+if signalplot_user == 'Y' || signalplot_user == 'y'
+        %REF stimuli
+        figure(toneIND); clf;
+        ax1=subplot(231);
+        plot(timevec_sec*1000,signal_REF/max_amplitude,'r'); hold on; plot(timevec_sec*1000,standard_REF/max_amplitude,'b'); hold off
+        xlim([0 dur_sec*1000])
+        ylabel('Amplitude')
+        title(sprintf('REF CONDITION:\nSTD: %s;    \nSIG: %s',std_REF_fname,sig_REF_fname),'interpreter','none')
+        ax4=subplot(234);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_REF))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_REF))),'b'); hold off
+        xlim([0 10])
+        ylabel('Magnitude (dB)')
+        set(gca,'XTick',[0:2:10])
+        
+        % CORR stimuli
+        ax2=subplot(232);
+        plot(timevec_sec*1000,signal_CORR/max_amplitude,'r'); hold on; plot(timevec_sec*1000,standard_CORR/max_amplitude,'b'); hold off
+        xlim([0 dur_sec*1000])
+        xlabel('Time (msec)')
+        title(sprintf('CORR CONDITION:\nSTD: %s;    \nSIG: %s',std_CORR_fname,sig_CORR_fname),'interpreter','none')
+        ax5=subplot(235);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_CORR))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_CORR))),'b'); hold off
+        xlim([0 10])
+        xlabel('Frequency (kHz)')
+        set(gca,'XTick',[0:2:10])
+        
+        % ACORR stimuli
+        ax3=subplot(233);
+        plot(timevec_sec*1000,signal_ACORR/max_amplitude,'r'); hold on; plot(timevec_sec*1000,standard_ACORR/max_amplitude,'b'); hold off
+        xlim([0 dur_sec*1000])
+        title(sprintf('ACORR CONDITION:\nSTD: %s;    \nSIG: %s',std_ACORR_fname,sig_ACORR_fname),'interpreter','none')
+        ax6=subplot(236);
+        plot(freqvec_Hz/1000,20*log10(abs(fft(signal_ACORR))),'r'); hold on; plot(freqvec_Hz/1000,20*log10(abs(fft(standard_ACORR))),'b'); hold off
+        xlim([0 10])
+        set(gca,'XTick',[0:2:10])
+        
+        linkaxes([ax1, ax2, ax3])
+        linkaxes([ax4, ax5, ax6])
+        
+        set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
+end % plot prompt
+    end % tone levels
+end % noise levels
+
         if signalsave_user == 'Y' || signalsave_user == 'y'
             % eventually we'll need to put in some parameter values for all the signal
             % levels
@@ -357,8 +450,9 @@ for noiseIND=1:length(NoVEC_dBSPL_Hz)
             
         
         end % plot prompt
-    end % tone levels
-end % noise levels
+%     end % tone levels
+% end % noise levels
+
 %% Normalize output amplitude
 standard_output = [max(max(abs(standard_output_REF))) max(max(abs(standard_output_CORR))) max(max(abs(standard_output_ACORR)))];
 signal_output = [max(max(abs(signal_output_REF))) max(max(abs(signal_output_CORR))) max(max(abs(signal_output_ACORR)))];
@@ -373,6 +467,7 @@ end
 if max_standard_output > max_signal_output
     max_amplitude = max_standard_output;
 end
+
 standard_output_REF = standard_output_REF/max_amplitude;
 standard_output_CORR = standard_output_CORR/max_amplitude;
 standard_output_ACORR = standard_output_ACORR/max_amplitude;
@@ -382,6 +477,7 @@ signal_output_ACORR = signal_output_ACORR/max_amplitude;
 %% save signal and standard output vectors
 cd new_signals
 cd(CMRcondition) % CHANGE FOLDER TO TYPE OF STIMULI
+
 filename = sprintf('%s_Stimuli.mat',CMRcondition);  % test condition1
 save(filename,'standard_output_REF','standard_output_CORR','standard_output_ACORR','signal_output_REF','signal_output_CORR','signal_output_ACORR','levelVEC_tone_dBSPL','Fs_Hz','CMRcondition');
 cd ../

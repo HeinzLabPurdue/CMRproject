@@ -293,15 +293,19 @@ if user_parameters(i,2) == 1 % REF
     response = input('In which interval (1 or 2) did you hear the tone? ');
     % Check for invalid user input
     check = [];
-    if response == 1 || response == 2
-        check = 1; % valid input
+    if isempty(response)
+        check = -1; % valid input
+    elseif response == 1 || response == 2 
+        check = 1; % invalid input
     else
         check = 0; % invalid input
     end
-    while check == 0
+    while check == 0 || check == -1
         response = input('ERROR: Invalid input. New response (1 or 2): ');
-        if response == 1 || response == 2
-            check = 1; % valid input
+        if isempty(response)
+            check = -1; % valid input
+        elseif response == 1 || response == 2 
+            check = 1; % invalid input
         else
             check = 0; % invalid input
         end
@@ -322,15 +326,19 @@ elseif user_parameters(i,2) == 2 % CORR
     response = input('In which interval (1 or 2) did you hear the tone? ');
     % Check for invalid user input
     check = [];
-    if response == 1 || response == 2
-        check = 1; % valid input
+    if isempty(response)
+        check = -1; % valid input
+    elseif response == 1 || response == 2 
+        check = 1; % invalid input
     else
         check = 0; % invalid input
     end
-    while check == 0
+    while check == 0 || check == -1
         response = input('ERROR: Invalid input. New response (1 or 2): ');
-        if response == 1 || response == 2
-            check = 1; % valid input
+        if isempty(response)
+            check = -1; % valid input
+        elseif response == 1 || response == 2 
+            check = 1; % invalid input
         else
             check = 0; % invalid input
         end
@@ -351,15 +359,19 @@ elseif user_parameters(i,2) == 3 % ACORR
     response = input('In which interval (1 or 2) did you hear the tone? ');
     % Check for invalid user input
     check = [];
-    if response == 1 || response == 2
-        check = 1; % valid input
+    if isempty(response)
+        check = -1; % valid input
+    elseif response == 1 || response == 2 
+        check = 1; % invalid input
     else
         check = 0; % invalid input
     end
-    while check == 0
+    while check == 0 || check == -1
         response = input('ERROR: Invalid input. New response (1 or 2): ');
-        if response == 1 || response == 2
-            check = 1; % valid input
+        if isempty(response)
+            check = -1; % valid input
+        elseif response == 1 || response == 2 
+            check = 1; % invalid input
         else
             check = 0; % invalid input
         end
@@ -478,7 +490,7 @@ if ACORRresults(i,1) ~= 0
 end
 end
 userScore = ((REFscore + CORRscore + ACORRscore)/length(userResults))*100; % total percent score
-user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRcondition);  % user results file name
+user_filename = sprintf('%s_Block%s_%s_Pilot_Results.mat',userID,userBlock,CMRstimuli);  % user results file name
 fprintf('\n\nRESULTS\n\nTotal Correct: %d\nTotal Score: %6.2f\n',(REFscore + CORRscore + ACORRscore), userScore);
 fprintf('\nScore By Condition\nREF: %6.2f \nCORR: %6.2f \nACORR: %6.2f\n',(REFscore/(trials/3)*100), (CORRscore/(trials/3)*100), (ACORRscore/(trials/3)*100));
 %% Data analysis for psychometric curves
@@ -492,6 +504,12 @@ if isempty(Dlist)
     mkdir(CMRcondition);
 end
 cd(CMRcondition);   % CHANGE FOLDER TO TYPE OF STIMULI
-
+% Check if USERID Directory there, if not make it
+Dlist=dir(userID);
+if isempty(Dlist)
+    fprintf('   ***Creating "%s" Directory\n',userID);
+    mkdir(userID);
+end
+cd(userID)
 save(user_filename,'demoScore','userResults','userScore','REFscore','CORRscore', 'ACORRscore','CMRcondition','REFtonescore','CORRtonescore','ACORRtonescore','levelVEC_tone_dBSPL');
 %% Notes:
