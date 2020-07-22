@@ -40,10 +40,15 @@ function varargout = chinch(varargin)
 global DEBUG_emulate
 DEBUG_emulate = 1; % 1: not connected to TDT; 0: yes connected to TDT'
 
-% A. Sivaprakasam - DEBUG_trialDisplay for toggle on/off trial type
-% displayed in CL
-global DEBUG_trialDisplay
-DEBUG_trialDisplay = 0; %Displays trial type in the command line before each trial runs
+% A. Sivaprakasam - DEBUG_humanTEST (eg for toggle on/off trial type
+% displayed in CL; show feedback)
+global DEBUG_humanTEST
+DEBUG_humanTEST = 1;
+if ~DEBUG_emulate
+    DEBUG_humanTEST = 0;   % NO human testing on TDT
+end
+% set to 1 to avoid display trial type in the command line before each trial runs
+% set to 0 to run auto response for offline debugging (M. Heinz update)
 
 
 %automatically adds all subject and stimulus files to path
@@ -198,7 +203,8 @@ function device_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to device (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-global DEBUG_emulate
+global DEBUG_emulate 
+global DEBUG_humanTEST
 
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -207,6 +213,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 handles.DEBUG_emulate = DEBUG_emulate;
+handles.DEBUG_humanTEST = DEBUG_humanTEST;
 
 if ~handles.DEBUG_emulate
     handles.RP_bot = actxcontrol('RPco.x', [0 0 0 0]);
@@ -328,7 +335,7 @@ elseif eventdata == handles.device
     % Removed "Select feature, which had error horzcat error anyway.
     
     %     CHAMBER='TOP'
-    CHAMBER='BOTTOM'
+    CHAMBER='BOTTOM';
     
     if strcmp(CHAMBER,'TOP')
         set(hObject, 'Enable', 'on', 'String', '1');
@@ -1103,7 +1110,6 @@ global mancount
 global animpresscount
 global magtraincount
 global nplayfromfile
-global DEBUG_trialDisplay
 
 if ~running(handles)
     if get_device_number(handles) == 0
@@ -1387,19 +1393,35 @@ if ~running(handles)
                         strIND1a=1;
                         strIND2a=underscoreINDs(1)-1;
                         % CMR condition : REF/CORR/UCORR
-                        strIND1b=underscoreINDs(1)+1;
-                        strIND2b=underscoreINDs(2)-1;
+                        if length(underscoreINDs)<5
+                            strIND1b=underscoreINDs(1)+1;
+                            strIND2b=underscoreINDs(2)-1;
+                        elseif length(underscoreINDs)==5
+                            strIND1b=underscoreINDs(2)+1;
+                            strIND2b=underscoreINDs(3)-1;
+                        else
+                            error('too many underscores in 890 = CHECK line ~1384')
+                        end
                         CMRstimPARAMS.CMRsetupNum{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1a:strIND2a);
                         CMRstimPARAMS.CMRcondition{sigINDtemp}=handles.stmlist(handles.stmidx(stim)).name2(strIND1b:strIND2b);
                         % CMR1 did not have No and T values in filename, so
                         % have to hard code that
                         if ~strcmp(CMRstimPARAMS.CMRsetupNum{sigINDtemp},'CMR1')
-                            % No Level
-                            strIND1_No=underscoreINDs(2)+3;
-                            strIND2_No=underscoreINDs(3)-1;
-                            % T Level
-                            strIND1_T=underscoreINDs(3)+2;
-                            strIND2_T=underscoreINDs(4)-1;
+                            if length(underscoreINDs)<5
+                                % No Level
+                                strIND1_No=underscoreINDs(2)+3;
+                                strIND2_No=underscoreINDs(3)-1;
+                                % T Level
+                                strIND1_T=underscoreINDs(3)+2;
+                                strIND2_T=underscoreINDs(4)-1;
+                            elseif length(underscoreINDs)==5
+                                % No Level
+                                strIND1_No=underscoreINDs(3)+3;
+                                strIND2_No=underscoreINDs(4)-1;
+                                % T Level
+                                strIND1_T=underscoreINDs(4)+2;
+                                strIND2_T=underscoreINDs(5)-1;
+                            end
                             % Edited June 28 - to explicitly save T and No
                             % levels (M. Heinz)
                             CMRstimPARAMS.No_dBSPL(sigINDtemp)=str2num(handles.stmlist(handles.stmidx(stim)).name2(strIND1_No:strIND2_No));
@@ -1572,47 +1594,47 @@ if ~running(handles)
                 a2 = atten2;
                 thisSPL = 80-atten2; % for display purposes only
                 
-                    if DEBUG_trialDisplay
-                        
-                        % AEH moved here after "atten2" is set, while in "dB"
-                        if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
-                            else
-                                disp([testtype,' trial, ',num2str(thisSPL),' dB SPL,',' ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
-                            end
-                        elseif nplayfromfile==997 || nplayfromfile==996
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                            else
-                                disp([testtype,' trial, Noise at ',num2str(atten1),' dB atten, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                            end
-                        elseif nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                            else
-                                disp([testtype,' trial, Mod. Depth ',num2str(attenarrayAMdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                            end
-                        elseif nplayfromfile==892 || nplayfromfile==891
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                            else
-                                disp([testtype,' trial, SNR ',num2str(attenarraySNRdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
-                            end
-                        elseif nplayfromfile==890
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                            else
-                                fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRstimPARAMS.CMRsetupNum{stimcount},CMRstimPARAMS.CMRcondition{stimcount});
-                            end
-                        elseif nplayfromfile==995
-                            if handles.stmlist(handles.stmidx(stim)).same
-                                disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
-                            else
-                                disp([testtype,' trial, Standard at ',num2str(atten1),' dB atten, Test at ',num2str(atten2),' dB atten, ',num2str(nplay),'s hold time',]);
-                            end
+                if ~handles.DEBUG_humanTEST
+                    
+                    % AEH moved here after "atten2" is set, while in "dB"
+                    if nplayfromfile==999 || nplayfromfile==998 % Random or PTA
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
+                        else
+                            disp([testtype,' trial, ',num2str(thisSPL),' dB SPL,',' ',num2str(nplay),'s hold time',]);  %MH_AM:9/10/2018 fix dumWav.wav
+                        end
+                    elseif nplayfromfile==997 || nplayfromfile==996
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                        else
+                            disp([testtype,' trial, Noise at ',num2str(atten1),' dB atten, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                        end
+                    elseif nplayfromfile==994 || nplayfromfile==993 || nplayfromfile==893
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                        else
+                            disp([testtype,' trial, Mod. Depth ',num2str(attenarrayAMdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                        end
+                    elseif nplayfromfile==892 || nplayfromfile==891
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                        else
+                            disp([testtype,' trial, SNR ',num2str(attenarraySNRdB(stimcount)),' dB, Signal at ',num2str(thisSPL),' dB SPL, ',num2str(nplay),'s hold time',]);
+                        end
+                    elseif nplayfromfile==890
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                        else
+                            fprintf('%s trial, %.fs hold time, Setup: %s, Condition: %s\n',testtype,nplay,CMRstimPARAMS.CMRsetupNum{stimcount},CMRstimPARAMS.CMRcondition{stimcount});
+                        end
+                    elseif nplayfromfile==995
+                        if handles.stmlist(handles.stmidx(stim)).same
+                            disp([testtype,' trial, ',num2str(nplay),'s hold time',]);
+                        else
+                            disp([testtype,' trial, Standard at ',num2str(atten1),' dB atten, Test at ',num2str(atten2),' dB atten, ',num2str(nplay),'s hold time',]);
                         end
                     end
+                end
                 atten1 = 10^(-atten1/20);
                 atten2 = 10^(-atten2/20);
                 
@@ -1712,7 +1734,8 @@ if ~running(handles)
                 end
                 standard = standard';
                 signal = signal';
-                
+
+                                
                 %% Create stimulus HERE (apply scaling to be same MAXamp)
                 % Updated by: Fernando July 14
                 standard_preresponse = []; % save preresponse window stimuli (standard only)
@@ -1721,14 +1744,13 @@ if ~running(handles)
                 end
                 % Stimuli (signal and standard) for response window --> # based on nb
                 stimuli_response = [];
-                
                 for i = 1:nb/2
                     stimuli_response = horzcat(stimuli_response,[signal zeros(size(standard)) standard zeros(size(standard))]);
                 end
                 % Normalize stimuli based on max amplitude
                 stimulus = horzcat(standard_preresponse,stimuli_response);
                 maxAmp = max(abs(stimulus)); % find max of signal and standard ampn
-                stimulus = stimulus/maxAmp;  
+                stimulus = stimulus/maxAmp;
                 while toc < t   % WHY NEEDED?
                     if ~running(handles)
                         break
@@ -1744,10 +1766,10 @@ if ~running(handles)
 
                 disp(['Trial number: ', num2str(stim),' of ', num2str(length(handles.stmidx))]);
                 input('Press Enter to Start trial')
-                 %mod by: Andrew July 15
-                 snd = audioplayer(stimulus,handles.fs_TDT);
-                 play(snd);
-                 tic     
+                %mod by: Andrew July 15
+                snd = audioplayer(stimulus,handles.fs_TDT);
+                play(snd);
+                tic
                 if ~running(handles)
                     break
                 end
@@ -1755,11 +1777,13 @@ if ~running(handles)
                 %% Nov 15 2019 - when breakpoint here, all works.  OW/ often getting 500ms rt even when hold
                 % maybe new PC too fast?  Add in 1 sec pause here.
                 % Tried 1, .5, .1 - ALL WORKED.  yes just too fast a PC
-                pause(.1);
-                play_pair(hObject, eventdata, handles);  % Replace with play_pair_Human
-                %% rt = play_pair_HUMAN structure
-                %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
-                %                keyboard
+                if ~handles.DEBUG_humanTEST
+                    pause(.1);
+                    play_pair(hObject, eventdata, handles);  % Replace with play_pair_Human
+                    %% rt = play_pair_HUMAN structure
+                    %                buffer = handles.RP_bot.ReadTagVEX('Buffer', 0, handles.RP_bot.GetTagVal('RT'), 'F32', 'F64', 1);
+                    %                keyboard
+                end
                 
                 if getbar(handles)
                     pause(handles.stmlist(handles.stmidx(stim)).isi/1000)
@@ -1784,12 +1808,12 @@ if ~running(handles)
                 if ~handles.DEBUG_emulate
                     rt = round(handles.RP_bot.GetTagVal('RT')/fs_TDT*1000); %measuring response time using the TDT, won't always hit
                 else
-                    input('Press Enter when you hear the signal.')
+                    input('Press Enter when you hear the tone (or when the sounds stop).')
                     stop(snd)
                     rt = round(toc*1000); % response time after pressing enter
                 end
                 
-%% User response output (Chinch and  Human)
+                %% User response output (Chinch and  Human)
                 if nplayfromfile==800 % magazine training
                     reinforce(handles); % reward!
                     reward_count = reward_count+1;
@@ -1830,12 +1854,24 @@ if ~running(handles)
                             result = 'Ab';
                         elseif (rt <= HtCriterion) &&  (rt > AbCriterion) && handles.stmlist(handles.stmidx(stim)).same % AEH
                             result = 'FA';
+                            if handles.DEBUG_humanTEST
+                                disp('INCORRECT')
+                            end
                         elseif (rt <= HtCriterion) &&  (rt > AbCriterion) && handles.stmlist(handles.stmidx(stim)).test % AEH
                             result = 'Ht';
+                            if handles.DEBUG_humanTEST
+                                disp('CORRECT')
+                            end
                         elseif (rt > HtCriterion) && handles.stmlist(handles.stmidx(stim)).same % AEH was nb +1
                             result = 'CR';
+                            if handles.DEBUG_humanTEST
+                                disp('CORRECT')
+                            end
                         elseif (rt > HtCriterion) && handles.stmlist(handles.stmidx(stim)).test
                             result = 'Ms';
+                            if handles.DEBUG_humanTEST
+                                disp('INCORRECT')
+                            end
                         end
                     else % there are only test trials
                         if (rt <= AbCriterion)
