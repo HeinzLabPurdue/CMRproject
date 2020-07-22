@@ -1852,25 +1852,32 @@ if ~running(handles)
                     if ScoreFlag % there are test trials and same trials
                         if (rt <= AbCriterion)
                             result = 'Ab';
+                            if handles.DEBUG_humanTEST
+                                disp('ABORT')
+                            end
                         elseif (rt <= HtCriterion) &&  (rt > AbCriterion) && handles.stmlist(handles.stmidx(stim)).same % AEH
                             result = 'FA';
-                            if handles.DEBUG_humanTEST
-                                disp('INCORRECT')
+                            if handles.DEBUG_humanTEST  % don't give feedback on INCORRECT
+                                % disp('INCORRECT')
                             end
                         elseif (rt <= HtCriterion) &&  (rt > AbCriterion) && handles.stmlist(handles.stmidx(stim)).test % AEH
                             result = 'Ht';
                             if handles.DEBUG_humanTEST
-                                disp('CORRECT')
+                                if rand*100<newpct    % Only give feedback newpct of the time
+                                    disp('CORRECT')
+                                end
                             end
                         elseif (rt > HtCriterion) && handles.stmlist(handles.stmidx(stim)).same % AEH was nb +1
                             result = 'CR';
                             if handles.DEBUG_humanTEST
-                                disp('CORRECT')
+                                if rand*100<newpct    % Only give feedback newpct of the time
+                                    disp('CORRECT')
+                                end
                             end
                         elseif (rt > HtCriterion) && handles.stmlist(handles.stmidx(stim)).test
                             result = 'Ms';
-                            if handles.DEBUG_humanTEST
-                                disp('INCORRECT')
+                            if handles.DEBUG_humanTEST   % don't give feedback on INCORRECT
+                                % disp('INCORRECT')
                             end
                         end
                     else % there are only test trials
