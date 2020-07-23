@@ -14,8 +14,6 @@ if plotYN
     % plot(x,y,'k*'); hold on % plot average scatter plot
     line(x,f(BETA,x),'color','r','linewidth',1.5)
     plot(x,crit*ones(size(x)),'--k','markersize',10,'linewidth',1)
-	xlabel('dB')
-	ylabel('Correctness (%)')
 	ylim([ll ul]);
 end
 fit_vec_dB = x;

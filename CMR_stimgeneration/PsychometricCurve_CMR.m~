@@ -99,7 +99,7 @@ if min(REFresults_avg(:,end)) > 75  && min(REFresults_avg(:,end)) < 100 % no int
 else
     [REF_TH,REF_MSE,REF_fit_vec_dB,REF_fit_correctness_vec] = fitPsychometricFunctionCMR(REFresults_avg(:,1), REFresults_avg(:,end), 1, criteria);
 end
-title(REFplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
+title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
 legend(plotlegend(1:blocks,:),'Location','SouthEastoutside','fontsize',15);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -112,7 +112,7 @@ if min(CORRresults_avg(:,end)) > 75 &&  min(CORRresults_avg(:,end)) < 100 % no i
 else
     [CORR_TH,CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR(CORRresults_avg(:,1), CORRresults_avg(:,end), 1, criteria);
 end
-title(CORRplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
+title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
 legend(plotlegend(1:blocks,:),'Location','SouthEastoutside','fontsize',15);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -125,7 +125,7 @@ if max(ACORRresults_avg(:,end)) > 0 && max(ACORRresults_avg(:,end)) < 75 % no in
 else
     [ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRresults_avg(:,1), ACORRresults_avg(:,end), 1, criteria);
 end
-title(ACORRplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); 
+title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); 
 legend(plotlegend(1:blocks,:),'location','SouthEastoutside','fontsize',15); ylim([ll ul]);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -138,7 +138,7 @@ plot(REF_fit_vec_dB,REF_fit_correctness_vec,'k','linewidth',1.5); % REF curve fi
 plot(CORR_fit_vec_dB,CORR_fit_correctness_vec,'r','linewidth',1.5); % CORR curve fit - red
 plot(ACORR_fit_vec_dB,ACORR_fit_correctness_vec,'b','linewidth',1.5); % ACORR curve fit - blue
 plot(levelVEC_tone_dBSPL,criteria*ones(size(levelVEC_tone_dBSPL)),'--k','markersize',10,'linewidth',1); % threshold line
-title(ALLplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
+title(ALLplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 plot(REF_TH,criteria,'ok','markersize',10,'linewidth',2,'color','black'); % REF Threshold
 plot(CORR_TH,criteria,'ok','markersize',10,'linewidth',2,'color','red'); % CORR Threshold
 plot(ACORR_TH,criteria,'ok','markersize',10,'linewidth',2,'color','blue'); % ACORR Threshold
@@ -260,10 +260,10 @@ hold off;
 counter = counter + 1; 
 end
 %% Psychometric curve generation average
-REFplot = sprintf('Population Average 2I-2AFC Tone Detection Threshold (Condition: REF)');
-CORRplot = sprintf('Population Average 2I-2AFC Tone Detection Threshold (Condition: CORR)');
-ACORRplot = sprintf('Population Average 2I-2AFC Tone Detection Threshold (Condition: ACORR)');
-ALLplot = sprintf('Population Average 2I-2AFC Tone Detection Threshold (All Conditions)');
+REFplot = sprintf('Population Average 2-Interval, 2-Alternative Forced Choice Tone Detection Threshold (Condition: REF | Subjects: %d)',numsubjects);
+CORRplot = sprintf('Population Average 2-Interval, 2-Alternative Forced Choice Tone Detection Threshold (Condition: CORR | Subjects: %d)',numsubjects);
+ACORRplot = sprintf('Population Average 2-Interval, 2-Alternative Forced Choice Tone Detection Threshold (Condition: ACORR | Subjects: %d)',numsubjects);
+ALLplot = sprintf('Population Average 2-Alternative Forced Choice Tone Detection Threshold (All Conditions | Subjects: %d)',numsubjects);
 
 figure(1); % REF 
 hold on;
@@ -273,7 +273,7 @@ if min(REFtotalavg(:,end)) > 75 && min(REFtotalavg(:,end)) < 100% no intersectio
 else
     [REF_TH,REF_MSE,REF_fit_vec_dB,REF_fit_correctness_vec] = fitPsychometricFunctionCMR(REFtotalavg(:,1), REFtotalavg(:,end), 1, criteria);
 end
-title(REFplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); 
+title(REFplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); 
 legend(plotlegend(1:numsubjects,:),'location','southeastoutside','fontsize',15); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -286,7 +286,7 @@ if min(CORRtotalavg(:,end)) > 75 % no intersection at 75%
 else
     [CORR_TH,CORR_MSE,CORR_fit_vec_dB,CORR_fit_correctness_vec] = fitPsychometricFunctionCMR(CORRtotalavg(:,1), CORRtotalavg(:,end), 1, criteria);
 end
-title(CORRplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)');
+title(CORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)');
 legend(plotlegend(1:numsubjects,:),'location','southeastoutside','fontsize',15); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -300,7 +300,7 @@ if max(ACORRtotalavg(:,end)) < 75 % no intersection at 75%
 else
     [ACORR_TH,ACORR_MSE,ACORR_fit_vec_dB,ACORR_fit_correctness_vec] = fitPsychometricFunctionCMR(ACORRtotalavg(:,1), ACORRtotalavg(:,end), 1, criteria);
 end
-title(ACORRplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); 
+title(ACORRplot); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); 
 legend(plotlegend(1:numsubjects,:),'location','southeastoutside','fontsize',15); ylim([ll ul]); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]);
 hold off;
 set(gcf,'units','norm','pos',[0.2    0.0565    0.8    0.8324]) 
@@ -314,14 +314,14 @@ plot(REF_fit_vec_dB,REF_fit_correctness_vec,'k','linewidth',1.5); % REF curve fi
 plot(CORR_fit_vec_dB,CORR_fit_correctness_vec,'r','linewidth',1.5); % CORR curve fit - red
 plot(ACORR_fit_vec_dB,ACORR_fit_correctness_vec,'b','linewidth',1.5); % ACORR curve fit - blue
 plot(levelVEC_tone_dBSPL,criteria*ones(size(levelVEC_tone_dBSPL)),'--k','markersize',10,'linewidth',1); % threshold line
-title(ALLplot,'fontsize',22); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
+title(ALLplot,'fontsize;); xlabel('Tone Level (dB SPL)'); ylabel('Correctness (%)'); xlim([levelVEC_tone_dBSPL(1) levelVEC_tone_dBSPL(end)]); ylim([ll ul]);
 plot(REF_TH,criteria,'ok','markersize',10,'linewidth',2,'color','black'); % REF Threshold
 plot(CORR_TH,criteria,'ok','markersize',10,'linewidth',2,'color','red'); % CORR Threshold
 plot(ACORR_TH,criteria,'ok','markersize',10,'linewidth',2,'color','blue'); % ACORR Threshold
 % Thresholds
-text(levelVEC_tone_dBSPL(end)+1,90,sprintf('REF THR = %.1f dB SPL',REF_TH),'fontsize',15,'color','black','backgroundcolor','white')
-text(levelVEC_tone_dBSPL(end)+1,85,sprintf('CORR THR = %.1f dB SPL',CORR_TH),'fontsize',15,'color','red','backgroundcolor','white')
-text(levelVEC_tone_dBSPL(end)+1,80,sprintf('ACORR THR = %.1f dB SPL',ACORR_TH),'fontsize',15,'color','blue','backgroundcolor','white')
+text(levelVEC_tone_dBSPL(end)+1,90,sprintf('REF THR = %.1f dB SPL',REF_TH),'fontsize',20,'color','black','backgroundcolor','white')
+text(levelVEC_tone_dBSPL(end)+1,85,sprintf('CORR THR = %.1f dB SPL',CORR_TH),'fontsize',20,'color','red','backgroundcolor','white')
+text(levelVEC_tone_dBSPL(end)+1,80,sprintf('ACORR THR = %.1f dB SPL',ACORR_TH),'fontsize',20,'color','blue','backgroundcolor','white')
 % CMR Effect
 text(levelVEC_tone_dBSPL(end)+1,70,sprintf('CMR-AC = %.1f dB',CMR_AC),'fontsize',20,'color','black','backgroundcolor','white')
 text(levelVEC_tone_dBSPL(end)+1,65,sprintf('CMR-RC = %.1f dB',CMR_RC),'fontsize',20,'color','black','backgroundcolor','white')
