@@ -1051,18 +1051,83 @@ function output_select_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-id = get_id(handles);
-directory = [id 'DATA'];
+%% Update: July 22 2020 - M Heinz - AUTO generate the filename
+% sets as default, then you can change in uiputfile MENU choice.
+% WORKS AS:
+% 1) if data has already been collected today, it picks the next Block
+% letter and uses same Day
+% 2) if data has not been collected today yet, it picks the next Day, and
+% sets Block to 'a'
+% 3) if no data exists for this ChinID, it picks Day 1, Block 'a'
+ChinID = get_id(handles);
+directory = [ChinID 'DATA'];
 if ~exist(directory, 'dir')
     errordlg(sprintf('Directory %s does not exist', directory));
     return
 end
-[filename pathname] = uiputfile(fullfile(directory, '*.DAT'), 'Save Data File');
+% Construct defaultfilename 
+Condition=handles.np.String(handles.np.Value);
+cd(directory)
+Dlist=dir(sprintf('%s*.DAT',ChinID));
+cd ..
+if ~isempty(Dlist)
+    BlockLIST=cell(size(Dlist'));
+    clear DayLIST
+    for fileIND=1:length(Dlist)
+        [~,TEMP.fname,~]=fileparts(Dlist(fileIND).name);
+        id_Dstr=sprintf('%s_D',ChinID);
+        % find D
+        Dind=findstr(TEMP.fname,id_Dstr)+length(id_Dstr)-1;
+        % find end of Day#
+        strIND=Dind+1;
+        while ~isempty(str2num(TEMP.fname(strIND)))
+            strIND=strIND+1;
+        end
+        DayINDs=(Dind+1):(strIND-1);
+        DayLIST(fileIND)=str2num(TEMP.fname(DayINDs));
+        BlockLIST{fileIND}=lower(TEMP.fname(max(DayINDs)+1));
+    end
+    LastDay=max(DayLIST);
+    LastDayBlocks=BlockLIST(find(DayLIST==LastDay));
+    sortBlocks=sort(LastDayBlocks);
+    LastBlock=sortBlocks{end};
+    LastIND=find((DayLIST==LastDay)&(strcmp(BlockLIST,LastBlock)));
+    LastFile=Dlist(LastIND).name;
+    LastDate=Dlist(LastIND).date;
+    LastFileDayNum=floor(datenum(Dlist(LastIND).date));
+    CurDayNum=floor(datenum(datetime('now')));
+    if LastFileDayNum==CurDayNum  % New file is same day as last file
+        Day = LastDay;
+        Block = char(LastBlock+1);
+    else  % New file is new day
+        Day = LastDay+1;
+        Block = 'a';
+    end
+else  % no data exists already in this folder
+    Day = 1;
+    Block = 'a';
+end
+defaultfilename = sprintf('%s_D%d%s_%s',ChinID,Day,Block,Condition{1});
+[filename pathname] = uiputfile(fullfile(directory, '*.DAT'), 'Save Data File',fullfile(directory,sprintf('%s.DAT',defaultfilename)));
 if isequal(filename, 0)
     set(handles.output_file, 'String', '', 'UserData', '');
 else
     set(handles.output_file, 'String', filename, 'UserData', pathname);
 end
+
+% %% ORIG
+% id = get_id(handles);
+% directory = [id 'DATA'];
+% if ~exist(directory, 'dir')
+%     errordlg(sprintf('Directory %s does not exist', directory));
+%     return
+% end
+% [filename pathname] = uiputfile(fullfile(directory, '*.DAT'), 'Save Data File');
+% if isequal(filename, 0)
+%     set(handles.output_file, 'String', '', 'UserData', '');
+% else
+%     set(handles.output_file, 'String', filename, 'UserData', pathname);
+% end
 
 function a = running(handles)
 a = strcmp(get(handles.run, 'String'), 'Abort');

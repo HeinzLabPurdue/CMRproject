@@ -1,0 +1,98 @@
+Output from MATLAB Chinchilla Program
+Version 22; All tests for AM cohort 2 (AEH 20 May 2014)
+
+Date: 2020/07/22
+Time: 21:15
+Chinchilla ID: Q334
+Weight: 500
+%FFW: 99.42 %
+
+21:23:06 Trial: 1; Stim: 1; CMR3_Chin_REF_No20_std8 500 CMR3_Chin_REF_No20_T67_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:07 Trial: 1; Stim: 2; CMR3_Chin_REF_No20_std5 500 CMR3_Chin_REF_No20_T55_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:08 Trial: 1; Stim: 3; CMR3_Chin_REF_No20_std9 500 CMR3_Chin_REF_No20_std2 3 FA 3650 A1: 10.0 A2: 10.0
+21:23:09 Trial: 1; Stim: 4; CMR3_Chin_REF_No20_std10 500 CMR3_Chin_REF_No20_T63_sig 8 Ht 8650 A1: 10.0 A2: 10.0
+21:23:10 Trial: 1; Stim: 5; CMR3_Chin_REF_No20_std11 500 CMR3_Chin_REF_No20_T63_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:11 Trial: 1; Stim: 6; CMR3_Chin_REF_No20_std4 500 CMR3_Chin_REF_No20_std10 6 FA 6650 A1: 10.0 A2: 10.0
+21:23:12 Trial: 1; Stim: 7; CMR3_Chin_REF_No20_std9 500 CMR3_Chin_REF_No20_T35_sig 7 Ht 7650 A1: 10.0 A2: 10.0
+21:23:12 Trial: 1; Stim: 8; CMR3_Chin_REF_No20_std1 500 CMR3_Chin_REF_No20_std11 9 FA 9650 A1: 10.0 A2: 10.0
+21:23:13 Trial: 1; Stim: 9; CMR3_Chin_REF_No20_std3 500 CMR3_Chin_REF_No20_std4 9 FA 9650 A1: 10.0 A2: 10.0
+21:23:13 Trial: 1; Stim: 10; CMR3_Chin_REF_No20_std9 500 CMR3_Chin_REF_No20_std8 6 FA 6650 A1: 10.0 A2: 10.0
+21:23:14 Trial: 1; Stim: 11; CMR3_Chin_REF_No20_std8 500 CMR3_Chin_REF_No20_T39_sig 3 Ht 3650 A1: 10.0 A2: 10.0
+21:23:15 Trial: 1; Stim: 12; CMR3_Chin_REF_No20_std6 500 CMR3_Chin_REF_No20_T71_sig 3 Ht 3650 A1: 10.0 A2: 10.0
+21:23:16 Trial: 1; Stim: 13; CMR3_Chin_REF_No20_std10 500 CMR3_Chin_REF_No20_T51_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:17 Trial: 1; Stim: 14; CMR3_Chin_REF_No20_std5 500 CMR3_Chin_REF_No20_T43_sig 8 Ht 8650 A1: 10.0 A2: 10.0
+21:23:18 Trial: 1; Stim: 15; CMR3_Chin_REF_No20_std9 500 CMR3_Chin_REF_No20_T67_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:19 Trial: 1; Stim: 16; CMR3_Chin_REF_No20_std5 500 CMR3_Chin_REF_No20_std9 8 FA 8650 A1: 10.0 A2: 10.0
+21:23:20 Trial: 1; Stim: 17; CMR3_Chin_REF_No20_std3 500 CMR3_Chin_REF_No20_T59_sig 3 Ht 3650 A1: 10.0 A2: 10.0
+21:23:21 Trial: 1; Stim: 18; CMR3_Chin_REF_No20_std7 500 CMR3_Chin_REF_No20_T55_sig 9 Ht 9650 A1: 10.0 A2: 10.0
+21:23:22 Trial: 1; Stim: 19; CMR3_Chin_REF_No20_std4 500 CMR3_Chin_REF_No20_T71_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:22 Trial: 1; Stim: 20; CMR3_Chin_REF_No20_std4 500 CMR3_Chin_REF_No20_std5 3 FA 3650 A1: 10.0 A2: 10.0
+21:23:23 Trial: 1; Stim: 21; CMR3_Chin_REF_No20_std6 500 CMR3_Chin_REF_No20_T55_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:24 Trial: 1; Stim: 22; CMR3_Chin_REF_No20_std1 500 CMR3_Chin_REF_No20_T47_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:25 Trial: 1; Stim: 23; CMR3_Chin_REF_No20_std1 500 CMR3_Chin_REF_No20_std6 5 FA 5650 A1: 10.0 A2: 10.0
+21:23:26 Trial: 1; Stim: 24; CMR3_Chin_REF_No20_std11 500 CMR3_Chin_REF_No20_T47_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:27 Trial: 1; Stim: 25; CMR3_Chin_REF_No20_std10 500 CMR3_Chin_REF_No20_T35_sig 8 Ht 8650 A1: 10.0 A2: 10.0
+21:23:28 Trial: 1; Stim: 26; CMR3_Chin_REF_No20_std6 500 CMR3_Chin_REF_No20_std9 6 FA 6650 A1: 10.0 A2: 10.0
+21:23:29 Trial: 1; Stim: 27; CMR3_Chin_REF_No20_std3 500 CMR3_Chin_REF_No20_std10 6 FA 6650 A1: 10.0 A2: 10.0
+21:23:30 Trial: 1; Stim: 28; CMR3_Chin_REF_No20_std2 500 CMR3_Chin_REF_No20_T47_sig 9 Ht 9650 A1: 10.0 A2: 10.0
+21:23:30 Trial: 1; Stim: 29; CMR3_Chin_REF_No20_std7 500 CMR3_Chin_REF_No20_T39_sig 4 Ht 4650 A1: 10.0 A2: 10.0
+21:23:31 Trial: 1; Stim: 30; CMR3_Chin_REF_No20_std5 500 CMR3_Chin_REF_No20_T71_sig 8 Ht 8650 A1: 10.0 A2: 10.0
+21:23:31 Trial: 1; Stim: 31; CMR3_Chin_REF_No20_std8 500 CMR3_Chin_REF_No20_std2 8 FA 8650 A1: 10.0 A2: 10.0
+21:23:32 Trial: 1; Stim: 32; CMR3_Chin_REF_No20_std1 500 CMR3_Chin_REF_No20_T75_sig 5 Ht 5650 A1: 10.0 A2: 10.0
+21:23:34 Trial: 1; Stim: 33; CMR3_Chin_REF_No20_std6 500 CMR3_Chin_REF_No20_T39_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:34 Trial: 1; Stim: 34; CMR3_Chin_REF_No20_std2 500 CMR3_Chin_REF_No20_T59_sig 2 Ht 2650 A1: 10.0 A2: 10.0
+21:23:35 Trial: 1; Stim: 35; CMR3_Chin_REF_No20_std7 500 CMR3_Chin_REF_No20_T67_sig 2 Ht 2650 A1: 10.0 A2: 10.0
+21:23:36 Trial: 1; Stim: 36; CMR3_Chin_REF_No20_std3 500 CMR3_Chin_REF_No20_T43_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:36 Trial: 1; Stim: 37; CMR3_Chin_REF_No20_std3 500 CMR3_Chin_REF_No20_T75_sig 8 Ht 8650 A1: 10.0 A2: 10.0
+21:23:37 Trial: 1; Stim: 38; CMR3_Chin_REF_No20_std4 500 CMR3_Chin_REF_No20_T43_sig 9 Ht 9650 A1: 10.0 A2: 10.0
+21:23:38 Trial: 1; Stim: 39; CMR3_Chin_REF_No20_std2 500 CMR3_Chin_REF_No20_T75_sig 3 Ht 3650 A1: 10.0 A2: 10.0
+21:23:39 Trial: 1; Stim: 40; CMR3_Chin_REF_No20_std8 500 CMR3_Chin_REF_No20_T51_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:39 Trial: 1; Stim: 41; CMR3_Chin_REF_No20_std6 500 CMR3_Chin_REF_No20_std3 5 FA 5650 A1: 10.0 A2: 10.0
+21:23:40 Trial: 1; Stim: 42; CMR3_Chin_REF_No20_std9 500 CMR3_Chin_REF_No20_T51_sig 2 Ht 2650 A1: 10.0 A2: 10.0
+21:23:40 Trial: 1; Stim: 43; CMR3_Chin_REF_No20_std2 500 CMR3_Chin_REF_No20_std5 4 FA 4650 A1: 10.0 A2: 10.0
+21:23:41 Trial: 1; Stim: 44; CMR3_Chin_REF_No20_std1 500 CMR3_Chin_REF_No20_T63_sig 3 Ht 3650 A1: 10.0 A2: 10.0
+21:23:41 Trial: 1; Stim: 45; CMR3_Chin_REF_No20_std10 500 CMR3_Chin_REF_No20_std1 8 FA 8650 A1: 10.0 A2: 10.0
+21:23:42 Trial: 1; Stim: 46; CMR3_Chin_REF_No20_std2 500 CMR3_Chin_REF_No20_std11 4 FA 4650 A1: 10.0 A2: 10.0
+21:23:43 Trial: 1; Stim: 47; CMR3_Chin_REF_No20_std5 500 CMR3_Chin_REF_No20_std4 6 FA 6650 A1: 10.0 A2: 10.0
+21:23:43 Trial: 1; Stim: 48; CMR3_Chin_REF_No20_std11 500 CMR3_Chin_REF_No20_std1 3 FA 3650 A1: 10.0 A2: 10.0
+21:23:44 Trial: 1; Stim: 49; CMR3_Chin_REF_No20_std4 500 CMR3_Chin_REF_No20_T59_sig 6 Ht 6650 A1: 10.0 A2: 10.0
+21:23:45 Trial: 1; Stim: 50; CMR3_Chin_REF_No20_std11 500 CMR3_Chin_REF_No20_std6 4 FA 4650 A1: 10.0 A2: 10.0
+21:23:46 Trial: 1; Stim: 51; CMR3_Chin_REF_No20_std7 500 CMR3_Chin_REF_No20_std8 7 FA 7650 A1: 10.0 A2: 10.0
+21:23:47 Trial: 1; Stim: 52; CMR3_Chin_REF_No20_std7 500 CMR3_Chin_REF_No20_std3 7 FA 7650 A1: 10.0 A2: 10.0
+21:23:48 Trial: 1; Stim: 53; CMR3_Chin_REF_No20_std11 500 CMR3_Chin_REF_No20_T35_sig 7 Ht 7650 A1: 10.0 A2: 10.0
+21:23:49 Trial: 1; Stim: 54; CMR3_Chin_REF_No20_std8 500 CMR3_Chin_REF_No20_std7 5 FA 5650 A1: 10.0 A2: 10.0
+21:23:50 Trial: 1; Stim: 55; CMR3_Chin_REF_No20_std10 500 CMR3_Chin_REF_No20_std7 2 FA 2650 A1: 10.0 A2: 10.0
+
+------------------------------------------------
+Experiment Parameters
+
+ID: Q334
+Weight (g): 500
+Run name (NP): CMR3_REF_test20_3575
+Replications: 1
+Rove amplitudes? 0
+Time Between Trials (ms): 0
+Buzzer duration (ms): 2
+Total Time Out (ms): 0
+Replace Errors? 1
+Attenuation 1: 120 dB
+Attenuation 2: 0 dB
+Percent of Responses Reinforced: 100
+
+------------------------------------------------
+Summary
+
+Number of Trials :    55
+Valid Trials     :    55
+Hits   :    33     Adj Hits   :    33
+Misses :     0     Adj Misses :     0
+CRs    :     0     Adj CRs    :     0
+FAs    :    22     Adj FAs    :    22
+Aborts :     0
+
+% Corr : 60.00     Adj d'     :   NaN     Adj d'     :   NaN
+------------------------------------------------
+NP        Hits      Misses    CorRej    FlsAlrm
+890         33         0         0        22
+------------------------------------------------
+Total pellets delivered: 30
