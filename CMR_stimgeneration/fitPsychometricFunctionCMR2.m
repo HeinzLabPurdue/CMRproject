@@ -12,10 +12,11 @@ vals(4) = 25;
 [BETA,R,J,COVB,MSE] = nlinfit(x,y,f,vals);
 if plotYN
     % plot(x,y,'k*'); hold on % plot average scatter plot
-    line(x,f(BETA,x),'color','r','linewidth',1.5)
+    line(x,f(BETA,x),'color','r','linewidth',2.5)
     plot(x,crit*ones(size(x)),'--k','markersize',10,'linewidth',1)
 	ylim([ll ul]);
 end
 fit_vec_dB = x;
 fit_correctness_vec = f(BETA,x);
 end
+
